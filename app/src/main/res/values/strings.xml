@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">VKU</string>
+    <string name="text_news">News</string>
+    <string name="text_forum">Forum</string>
+    <string name="text_vku_news">VKU News</string>
+    <string name="text_vku_forum">VKU Forum</string>
+</resources>

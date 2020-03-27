@@ -13,6 +13,25 @@
     <fragment
         android:id="@+id/navigation_news"
         android:name="dev.tsnanh.vku.view.news.NewsFragment"
-        android:label="@string/text_vku_news"
-        tools:layout="@layout/fragment_news" />
+        android:label="@string/text_news"
+        tools:layout="@layout/fragment_news">
+        <action
+            android:id="@+id/action_navigation_news_to_activity_news"
+            app:destination="@id/activity_news" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_options"
+        android:name="dev.tsnanh.vku.view.options.OptionsFragment"
+        android:label="@string/text_options" />
+    <activity
+        android:id="@+id/activity_news"
+        android:name="dev.tsnanh.vku.view.NewsActivity"
+        tools:layout="@layout/activity_news">
+        <argument
+            android:name="url"
+            app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </activity>
 </navigation>

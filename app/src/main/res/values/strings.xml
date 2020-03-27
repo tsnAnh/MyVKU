@@ -1,7 +1,21 @@
 <resources>
-    <string name="app_name">VKU</string>
-    <string name="text_news">News</string>
+    <string name="app_name" translatable="false">VKU</string>
     <string name="text_forum">Forum</string>
-    <string name="text_vku_news">VKU News</string>
-    <string name="text_vku_forum">VKU Forum</string>
+    <string name="vku_image" translatable="false">VKU Image</string>
+    <string name="text_confession" translatable="false">Confession</string>
+    <string name="text_thong_bao_khtc">Financial planning</string>
+    <string name="text_view">See</string>
+    <string name="text_share">Share</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="preferences_key" translatable="false">dev.tsnanh.VKU</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="text_news">News</string>
+    <string name="text_vku_forum">Forum</string>
+    <string name="text_thong_bao_chung">General</string>
+    <string name="text_thong_bao_ctsv">Student Work</string>
+    <string name="text_options">Options</string>
+    <string name="text_new_thread">New Thread</string>
+    <string name="text_uncategorized">Uncategorized</string>
 </resources>

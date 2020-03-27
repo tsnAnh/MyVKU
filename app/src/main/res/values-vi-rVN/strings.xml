@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_news">Tin tức</string>
+    <string name="text_forum">Diễn đàn</string>
+    <string name="text_vku_forum">Diễn đàn</string>
+    <string name="text_thong_bao_chung">Thông báo chung</string>
+    <string name="text_thong_bao_ctsv">Công tác sinh viên</string>
+    <string name="text_thong_bao_khtc">Kế hoạch tài chính</string>
+    <string name="text_view">Xem</string>
+    <string name="text_options">Tùy chọn</string>
+    <string name="text_new_thread">Chủ Đề Mới</string>
+    <string name="title_activity_settings">Cài đặt</string>
+    <string name="text_share">Chia sẻ</string>
+    <string name="text_uncategorized">Chưa phân loại</string>
+</resources>

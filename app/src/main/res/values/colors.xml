@@ -9,4 +9,7 @@
     <color name="secondaryDarkColor">#c7ad00</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
+    <color name="bluePrimary">#0336ff</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="accountPlaceholder">@color/primaryLightColor</color>
 </resources>

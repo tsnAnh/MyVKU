@@ -9,4 +9,8 @@
         android:id="@+id/navigation_forum"
         android:icon="@drawable/ic_forum"
         android:title="@string/text_forum" />
+    <item
+        android:id="@+id/navigation_options"
+        android:icon="@drawable/ic_settings_applications_black_24dp"
+        android:title="@string/text_options" />
 </menu>

@@ -12,4 +12,8 @@
     <string name="title_activity_settings">Cài đặt</string>
     <string name="text_share">Chia sẻ</string>
     <string name="text_uncategorized">Chưa phân loại</string>
+    <string name="text_title">Tiêu đề</string>
+    <string name="text_content">Nội dung</string>
+    <string name="text_submit">Gửi đi</string>
+    <string name="text_choose_image">Chọn ảnh</string>
 </resources>

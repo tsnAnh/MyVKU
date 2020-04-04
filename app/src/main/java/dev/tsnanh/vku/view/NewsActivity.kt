@@ -17,9 +17,9 @@ class NewsActivity : AppCompatActivity() {
 
         val navArgs: NewsActivityArgs by navArgs()
 
-        actionBar?.apply {
-            title = navArgs.title
-            subtitle = "http://daotao.sict.udn.vn" + navArgs.url
+        binding.webView.apply {
+            loadUrl("http://daotao.sict.udn.vn" + navArgs.url)
+            setTitle(navArgs.title)
         }
     }
 

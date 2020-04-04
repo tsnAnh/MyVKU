@@ -1,8 +1,10 @@
 package dev.tsnanh.vku.utils
 
-import android.widget.ImageView
-import android.widget.TextView
+import android.net.Uri
+import android.view.View
+import android.widget.*
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseUser
 import dev.tsnanh.vku.R
@@ -38,5 +40,31 @@ fun ImageView.setForumImage(forum: Forum?) {
             .with(this.context)
             .load(forum.image)
             .into(this)
+    }
+}
+
+@BindingAdapter("imageChooser")
+fun ImageView.setChooserImage(uri: Uri?) {
+    uri?.let {
+        Glide
+            .with(this.context)
+            .load(it)
+            .into(this)
+    }
+}
+
+@BindingAdapter("pickerHasImage")
+fun Button.setButtonVisible(visibility: Boolean) {
+    this.visibility = when (visibility) {
+        true -> View.GONE
+        false -> View.VISIBLE
+    }
+}
+
+@BindingAdapter("hasImage")
+fun RecyclerView.setHasImage(visibility: Boolean) {
+    this.visibility = when (visibility) {
+        true -> View.VISIBLE
+        false -> View.INVISIBLE
     }
 }

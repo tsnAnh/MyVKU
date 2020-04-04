@@ -6,19 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ForumAdapter
 import dev.tsnanh.vku.adapters.ForumClickListener
-import dev.tsnanh.vku.database.VKUDatabase
 import dev.tsnanh.vku.databinding.FragmentForumBinding
 
 class ForumFragment : Fragment() {
 
     private lateinit var binding: FragmentForumBinding
-    private lateinit var viewModel: ForumViewModel
+    private val viewModel: ForumViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,11 +32,6 @@ class ForumFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        val database = VKUDatabase.getInstance(requireActivity().application)
-        val factory = ForumViewModelFactory(database)
-
-        viewModel = ViewModelProvider(this, factory).get(ForumViewModel::class.java)
 
         binding.listTopics.setHasFixedSize(true)
         binding.listTopics.layoutManager = LinearLayoutManager(requireContext())

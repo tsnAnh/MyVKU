@@ -1,10 +1,13 @@
 package dev.tsnanh.vku.database
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.ToJson
 import dev.tsnanh.vku.domain.Forum
 import dev.tsnanh.vku.domain.News
+import dev.tsnanh.vku.domain.Post
+import dev.tsnanh.vku.domain.User
 
 @Entity(tableName = "news")
 data class DatabaseNews(
@@ -13,22 +16,6 @@ data class DatabaseNews(
     var title: String,
     var category: String,
     var date: String
-)
-
-@Entity(tableName = "forums")
-data class DatabaseForum(
-    @PrimaryKey
-    var id: String,
-    var title: String,
-    var subtitle: String,
-    var description: String,
-    var image: String,
-    @ColumnInfo(name = "number_thread")
-    var numberThread: Int,
-    @ColumnInfo(name = "number_post")
-    var numberPost: Int,
-    @ColumnInfo(name = "last_updated_on")
-    var lastUpdatedOn: String
 )
 
 @JvmName(name = "ListDatabaseNewsAsDomainModel")
@@ -42,20 +29,3 @@ fun List<DatabaseNews>.asDomainModel(): List<News> {
         )
     }
 }
-
-@JvmName(name = "ListDatabaseForumAsDomainModel")
-fun List<DatabaseForum>.asDomainModel(): List<Forum> {
-    return map {
-        Forum(
-            id = it.id,
-            title = it.title,
-            subtitle = it.subtitle,
-            description = it.description,
-            image = it.image,
-            numberThread = it.numberThread,
-            numberPost = it.numberPost,
-            lastUpdatedOn = it.lastUpdatedOn
-        )
-    }
-}
-

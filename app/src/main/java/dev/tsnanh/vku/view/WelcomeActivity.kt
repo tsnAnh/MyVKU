@@ -65,13 +65,13 @@ class WelcomeActivity : AppCompatActivity() {
                                 )
                             )
                             .setLogo(R.drawable.vku_logo)
-                            .setTheme(R.style.AppTheme_NoActionBar)
                             .build(),
                         RC_SIGN_IN
                     )
                 } else {
                     val intent = Intent(this@WelcomeActivity, MainActivity::class.java)
                     startActivity(intent)
+                    this@WelcomeActivity.finish()
                 }
             }
         })
@@ -91,6 +91,7 @@ class WelcomeActivity : AppCompatActivity() {
                 sharedPreferences.edit().putString("id_token", response?.idpToken).apply()
                 val intent = Intent(this@WelcomeActivity, MainActivity::class.java)
                 startActivity(intent)
+                this@WelcomeActivity.finish()
             } else {
                 if (response == null) {
                     Toast

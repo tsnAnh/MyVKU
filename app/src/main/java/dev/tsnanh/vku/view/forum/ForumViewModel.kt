@@ -3,24 +3,29 @@ package dev.tsnanh.vku.view.forum
 import androidx.lifecycle.*
 import dev.tsnanh.vku.database.VKUDatabase
 import dev.tsnanh.vku.domain.Forum
+import dev.tsnanh.vku.network.VKUServiceApi
+import dev.tsnanh.vku.network.asDomainModel
 import dev.tsnanh.vku.repository.VKURepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.java.KoinJavaComponent.inject
 
-class ForumViewModel(database: VKUDatabase) : ViewModel() {
+class ForumViewModel : ViewModel() {
 
-    private val repository = VKURepository(database)
-    val forums = repository.forums
+    private val repository: VKURepository by inject(VKURepository::class.java)
 
     private val _navigateToListThread = MutableLiveData<Forum>()
     val navigateToListThread: LiveData<Forum>
         get() = _navigateToListThread
 
-    init {
-        viewModelScope.launch {
-            repository.refreshForums()
-        }
-    }
+    val forums = repository.forums
 
+    /**
+     * Call when item being click
+     * @param forum Forum
+     */
     fun onItemClick(forum: Forum) {
         _navigateToListThread.value = forum
     }
@@ -28,16 +33,9 @@ class ForumViewModel(database: VKUDatabase) : ViewModel() {
     fun onItemClicked() {
         _navigateToListThread.value = null
     }
-}
 
-class ForumViewModelFactory(
-    private val database: VKUDatabase
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ForumViewModel::class.java)) {
-            return ForumViewModel(database) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel")
+    override fun onCleared() {
+        viewModelScope.cancel()
+        super.onCleared()
     }
 }

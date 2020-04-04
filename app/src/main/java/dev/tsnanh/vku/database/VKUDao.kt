@@ -6,20 +6,24 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
+/**
+ * Database Access Object for VKUDatabase
+ * @author tsnAnh
+ */
 @Dao
 interface VKUDao {
+    /**
+     * Insert all news to database
+     * @param news DatabaseNews
+     */
     @Insert(entity = DatabaseNews::class, onConflict = OnConflictStrategy.REPLACE)
     fun insertAllNews(vararg news: DatabaseNews)
 
+    /**
+     * Retrieve all news cached from database
+     * @return LiveData<List<DatabaseNews>>
+     */
     @Query("SELECT * FROM news ORDER BY date DESC")
     fun getAllNews(): LiveData<List<DatabaseNews>>
 
-    @Insert(entity = DatabaseForum::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertForums(vararg forums: DatabaseForum)
-
-    @Query("DELETE FROM forums")
-    fun deleteAllForums()
-
-    @Query("SELECT * FROM forums ORDER BY last_updated_on ASC")
-    fun getAllForums(): LiveData<List<DatabaseForum>>
 }

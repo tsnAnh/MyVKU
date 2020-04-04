@@ -1,19 +1,23 @@
 package dev.tsnanh.vku.view.news
 
 import android.view.View
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.material.chip.Chip
-import dev.tsnanh.vku.database.VKUDatabase
 import dev.tsnanh.vku.domain.News
 import dev.tsnanh.vku.repository.VKURepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.java.KoinJavaComponent.get
+import org.koin.java.KoinJavaComponent.inject
 
-class NewsViewModel(
-    database: VKUDatabase
-) : ViewModel() {
-    private val repository = VKURepository(database)
+class NewsViewModel : ViewModel() {
+
+    private val repository: VKURepository by inject(VKURepository::class.java)
 
     val listNews = repository.news
 
@@ -71,16 +75,9 @@ class NewsViewModel(
             _isFiltered.value = false
         }
     }
-}
 
-class NewsViewModelFactory(
-    private val database: VKUDatabase
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {
-            return NewsViewModel(database) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel")
+    override fun onCleared() {
+        viewModelScope.cancel()
+        super.onCleared()
     }
 }

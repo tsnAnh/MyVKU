@@ -18,4 +18,11 @@
     <string name="text_options">Options</string>
     <string name="text_new_thread">New Thread</string>
     <string name="text_uncategorized">Uncategorized</string>
+    <string name="vku_database" translatable="false">vku_database</string>
+    <string name="text_title">Title</string>
+    <string name="text_content">Content</string>
+    <string name="text_submit">Submit</string>
+    <string name="text_choose_image">Choose Image</string>
+    <string name="text_clear_image_content"><![CDATA[<i>add later</i>]]></string>
+    <string name="text_add_a_photo">Add a photo</string>
 </resources>

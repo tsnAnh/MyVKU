@@ -34,13 +34,12 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:ellipsize="end"
-                android:lines="1"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:text="@{ news.title }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="24sp"
-                app:layout_constraintEnd_toStartOf="@+id/imageCard"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/category"
                 app:layout_constraintTop_toBottomOf="@+id/category"
                 tools:text="News Title" />
@@ -78,26 +77,6 @@
                 app:layout_constraintStart_toStartOf="@+id/title"
                 app:layout_constraintTop_toBottomOf="@+id/title"
                 tools:text="Date" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/imageCard"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/image"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@null"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/vku_logo" />
-            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_view"

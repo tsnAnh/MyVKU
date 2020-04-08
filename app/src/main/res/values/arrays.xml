@@ -1,12 +1,13 @@
 <resources>
-    <!-- Reply Preference -->
-    <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
+    <!-- Dark Mode Preference -->
+    <string-array name="night_mode_entries">
+        <item>Use System Settings</item>
+        <item>Dark</item>
+        <item>Light</item>
     </string-array>
-
-    <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
+    <string-array name="night_mode_values">
+        <item>system</item>
+        <item>dark</item>
+        <item>light</item>
     </string-array>
 </resources>

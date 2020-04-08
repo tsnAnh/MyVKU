@@ -1,28 +1,29 @@
-package dev.tsnanh.vku.view
+package dev.tsnanh.vku.activities
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
-    NavController.OnDestinationChangedListener {
+    NavController.OnDestinationChangedListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(
             this,
@@ -34,9 +35,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         binding.bottomNavView.setupWithNavController(navController)
         binding.bottomNavView.setOnNavigationItemSelectedListener(this)
 
-        binding.fabNewThread.setOnClickListener {
-            navController.navigate(R.id.navigation_new_thread)
-        }
+        preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        preferences.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -47,8 +47,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             R.id.navigation_news -> navController.navigate(
                 R.id.navigation_news
             )
-            R.id.navigation_options -> navController.navigate(
-                R.id.navigation_options
+            R.id.navigation_more -> navController.navigate(
+                R.id.navigation_more
+            )
+            R.id.navigation_relax -> navController.navigate(
+                R.id.navigation_relax
+            )
+            R.id.navigation_timetable -> navController.navigate(
+                R.id.navigation_timetable
             )
         }
         return true
@@ -66,15 +72,28 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         when (destination.id) {
             R.id.navigation_new_thread -> {
                 binding.bottomNavView.visibility = View.GONE
-                binding.fabNewThread.hide()
             }
             R.id.navigation_forum -> {
-                binding.fabNewThread.show()
                 binding.bottomNavView.visibility = View.VISIBLE
             }
             else -> {
                 binding.bottomNavView.visibility = View.VISIBLE
-                binding.fabNewThread.hide()
+            }
+        }
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        key?.let {
+            if (key == getString(R.string.night_mode_key)) {
+                val mode = sharedPreferences?.getString(key, "system")
+
+                AppCompatDelegate.setDefaultNightMode(
+                    when (mode) {
+                        "light" -> AppCompatDelegate.MODE_NIGHT_NO
+                        "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                        else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    }
+                )
             }
         }
     }

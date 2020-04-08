@@ -9,80 +9,87 @@
             type="dev.tsnanh.vku.view.news.NewsViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <HorizontalScrollView
-            android:id="@+id/horizontalScrollView2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <include layout="@layout/app_bar_with_logo" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:transitionGroup="true"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chips_filter_news"
+                <HorizontalScrollView
+                    android:id="@+id/horizontalScrollView2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:singleSelection="true">
+                    android:layout_height="wrap_content">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/thong_bao_chung"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
-                        android:tag="thong-bao-chung"
-                        android:text="@string/text_thong_bao_chung" />
+                        android:orientation="vertical">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/thong_bao_ctsv"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
-                        android:tag="thong-bao-ctsv"
-                        android:text="@string/text_thong_bao_ctsv" />
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chips_filter_news"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            app:singleSelection="true">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/thong_bao_khtc"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
-                        android:tag="thong-bao-khtc"
-                        android:text="@string/text_thong_bao_khtc" />
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/thong_bao_chung"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
+                                android:tag="thong-bao-chung"
+                                android:text="@string/text_thong_bao_chung" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/confession"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
-                        android:tag="confession"
-                        android:text="@string/text_confession" />
-                </com.google.android.material.chip.ChipGroup>
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/thong_bao_ctsv"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
+                                android:tag="thong-bao-ctsv"
+                                android:text="@string/text_thong_bao_ctsv" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/thong_bao_khtc"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
+                                android:tag="thong-bao-khtc"
+                                android:text="@string/text_thong_bao_khtc" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/confession"
+                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
+                                android:tag="confession"
+                                android:text="@string/text_confession" />
+                        </com.google.android.material.chip.ChipGroup>
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/list_news"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
             </LinearLayout>
-        </HorizontalScrollView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_news"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout>
 </layout>

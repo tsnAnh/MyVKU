@@ -9,13 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -25,6 +23,7 @@ import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewThreadBinding
 import dev.tsnanh.vku.domain.ForumThread
 import dev.tsnanh.vku.domain.Post
+import timber.log.Timber
 
 const val RC_IMAGE_PICKER = 0
 const val RC_ADD_PHOTO = 1
@@ -50,6 +49,13 @@ class NewThreadFragment : Fragment() {
         binding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_new_thread, container, false)
 
+        binding.toolbar.apply {
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+            title = "Create New Thread"
+        }
+
         return binding.root
     }
 
@@ -60,9 +66,9 @@ class NewThreadFragment : Fragment() {
         binding.viewModel = viewModel
 
         pickerAdapter = ImageChooserAdapter(ImageChooserClickListener(
-            listener = {
+            listener = { pos ->
                 val newList = pickerAdapter.currentList.toMutableList()
-                newList.removeAt(it)
+                newList.removeAt(pos)
                 if (newList.isEmpty()) {
                     viewModel.onPickerHasNoImage()
                     pickerAdapter.submitList(emptyList())
@@ -70,7 +76,6 @@ class NewThreadFragment : Fragment() {
                     viewModel.onPickerHasImage()
                     pickerAdapter.submitList(newList)
                 }
-                pickerAdapter.notifyDataSetChanged()
             },
             footerClick = {
                 pickImage(RC_ADD_PHOTO)
@@ -89,13 +94,30 @@ class NewThreadFragment : Fragment() {
 
         viewModel.forums.observe(viewLifecycleOwner, Observer {
             it?.let {
-                val forumsTitle = it.map { forum ->
-                    forum.title
+                if (it.message != null) {
+                    Snackbar.make(requireView(), it.message.toString(), Snackbar.LENGTH_SHORT)
+                        .show()
+                    return@Observer
                 }
-                val arrAdapter =
-                    ArrayAdapter(requireContext(), R.layout.dropdown_menu_popup_item, forumsTitle)
+                if (it.data != null && it.data.isNotEmpty()) {
+                    val forumsTitle = it.data.map { forum ->
+                        forum.title
+                    }
+                    val arrAdapter =
+                        ArrayAdapter(
+                            requireContext(),
+                            R.layout.dropdown_menu_popup_item,
+                            forumsTitle
+                        )
 
-                binding.forum.setAdapter(arrAdapter)
+                    binding.forum.setOnItemClickListener { _, _, i, _ ->
+                        binding.forum.tag = it.data[i].id
+                        Timber.d(it.data[i].id)
+                    }
+
+
+                    binding.forum.setAdapter(arrAdapter)
+                }
             }
         })
 
@@ -106,6 +128,13 @@ class NewThreadFragment : Fragment() {
         binding.chooseImage.setOnClickListener {
             pickImage(RC_IMAGE_PICKER)
         }
+
+        viewModel.onThreadCreated.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                findNavController().navigateUp()
+                viewModel.onThreadCreated()
+            }
+        })
     }
 
     // region Pick Image
@@ -169,22 +198,33 @@ class NewThreadFragment : Fragment() {
 
     private fun createThread() {
         clearError()
-        if (binding.title.text.isNullOrBlank()
-            || binding.content.text.isNullOrBlank()
-            || binding.forum.text.isNullOrBlank()
+        if (
+            binding.title.text.isNullOrBlank() ||
+            binding.content.text.isNullOrBlank() ||
+            binding.forum.text.isNullOrBlank()
         ) {
             if (binding.title.text.isNullOrBlank()) binding.title.error = "Empty Title"
             if (binding.forum.text.isNullOrBlank()) binding.forum.error = "Choose forum please"
             if (binding.content.text.isNullOrBlank()) binding.content.error = "Empty content"
         } else {
-            val thread = ForumThread(
-                title = binding.title.text.toString()
-            )
-            val post = Post(
-                content = binding.content.text.toString()
-            )
-            viewModel.uploadThread(thread, post)
+            val thread = prepareThread()
+            val post = preparePost()
+
+            viewModel.create(thread, post)
         }
+    }
+
+    private fun prepareThread(): ForumThread {
+        return ForumThread(
+            title = binding.title.text.toString(),
+            forumId = (binding.forum.tag as String?).toString()
+        )
+    }
+
+    private fun preparePost(): Post {
+        return Post(
+            content = binding.content.text.toString()
+        )
     }
 
     private fun clearError() {

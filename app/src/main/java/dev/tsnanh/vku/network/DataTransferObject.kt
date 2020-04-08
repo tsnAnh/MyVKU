@@ -2,7 +2,7 @@ package dev.tsnanh.vku.network
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import dev.tsnanh.vku.database.*
+import dev.tsnanh.vku.database.DatabaseNews
 import dev.tsnanh.vku.domain.*
 
 @JsonClass(generateAdapter = true)
@@ -65,7 +65,11 @@ data class NetworkForum(
 data class NetworkThread(
     var id: String = "",
     var title: String,
-    var image: List<String> = emptyList(),
+    @field:Json(name = "user_display_name")
+    val userDisplayName: String = "",
+    @field:Json(name = "user_avatar")
+    var userAvatar: String = "",
+    var images: List<String> = emptyList(),
     @field:Json(name = "forum_id")
     var forumId: String = "",
     @field:Json(name = "number_of_posts")
@@ -106,6 +110,7 @@ data class NetworkUser(
 data class NetworkPost(
     var id: String = "",
     var content: String,
+    var images: List<String> = emptyList(),
     @field:Json(name = "user_id")
     var userId: String = "",
     @field:Json(name = "thread_id")
@@ -159,7 +164,6 @@ fun NetworkThreadContainer.asDomainModel(): List<dev.tsnanh.vku.domain.ForumThre
         ForumThread(
             id = it.id,
             title = it.title,
-            image = it.image,
             forumId = it.forumId,
             numberOfPosts = it.numberOfPosts,
             numberOfViews = it.numberOfViews,
@@ -167,7 +171,10 @@ fun NetworkThreadContainer.asDomainModel(): List<dev.tsnanh.vku.domain.ForumThre
             createAt = it.createAt,
             lastUpdateOn = it.lastUpdateOn,
             posts = it.posts,
-            editHistory = it.editHistory
+            editHistory = it.editHistory,
+            images = it.images,
+            userAvatar = it.userAvatar,
+            userDisplayName = it.userDisplayName
         )
     }
 }
@@ -194,6 +201,7 @@ fun NetworkPostContainer.asDomainModel(): List<Post> {
         Post(
             id = it.id,
             content = it.content,
+            images = it.images,
             userId = it.userId,
             threadId = it.threadId,
             editHistory = it.editHistory,

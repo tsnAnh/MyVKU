@@ -1,4 +1,4 @@
-package dev.tsnanh.vku.view
+package dev.tsnanh.vku.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

@@ -1,10 +1,9 @@
-package dev.tsnanh.vku.view
+package dev.tsnanh.vku.activities
 
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +16,7 @@ import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityWelcomeBinding
+import timber.log.Timber
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -119,7 +119,7 @@ class WelcomeActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         )
                         .show()
-                    Log.e(WelcomeActivity::class.simpleName, "Sign in Error: ", response.error)
+                    Timber.e("Sign in Error: ${response.error}")
                 }
             }
         }

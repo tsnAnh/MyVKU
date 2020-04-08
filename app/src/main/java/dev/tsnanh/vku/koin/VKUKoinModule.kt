@@ -24,7 +24,7 @@ val vkuModule = module {
         get<VKUDatabase>().dao
     }
 
-    single {
+    single(createdAtStart = true) {
         VKURepository(get())
     }
 }

@@ -16,4 +16,14 @@
     <string name="text_content">Nội dung</string>
     <string name="text_submit">Gửi đi</string>
     <string name="text_choose_image">Chọn ảnh</string>
+    <string name="text_add_a_photo">Thêm ảnh</string>
+    <string name="text_about">Về chúng tôi :)</string>
+    <string name="text_display">Hiển thị</string>
+    <string name="text_night_mode">Chế độ ban đêm</string>
+    <string name="text_night_mode_summary">Thay đổi chế độ hiển thị</string>
+    <string name="text_new_post">Bài viết mới</string>
+    <string name="text_post_image">Thêm Ảnh (không bắt buộc)</string>
+    <string name="text_timetable">TKB</string>
+    <string name="text_relax">Giải trí</string>
+    <string name="text_more">More</string>
 </resources>

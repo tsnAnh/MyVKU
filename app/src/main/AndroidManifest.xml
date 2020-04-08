@@ -18,9 +18,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="n"
         tools:ignore="AllowBackup">
-        <activity android:name=".view.NewsActivity" />
+        <activity android:name="dev.tsnanh.vku.activities.NewsActivity" />
         <activity
-            android:name=".view.WelcomeActivity"
+            android:name="dev.tsnanh.vku.activities.WelcomeActivity"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.MainActivity" />
+        <activity android:name="dev.tsnanh.vku.activities.MainActivity" />
     </application>
 
 </manifest>

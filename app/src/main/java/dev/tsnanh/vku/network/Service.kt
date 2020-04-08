@@ -1,11 +1,10 @@
 package dev.tsnanh.vku.network
 
-import okhttp3.MultipartBody
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 
-const val BASE_URL = "http://4a7109b2.ngrok.io"
+const val BASE_URL = "http://35.197.136.211:3000"
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create())
@@ -19,13 +18,20 @@ interface VKUService {
     @GET("forum")
     suspend fun getAllSubForums(): NetworkForumContainer
 
-    @Multipart
-    @POST("thread/create")
+    @POST("t/create")
     suspend fun createThread(
         @Header("id_token") idToken: String,
-        @Body container: NetworkCreateThreadContainer,
-        @Part images: List<MultipartBody.Part>
+        @Body container: NetworkCreateThreadContainer
     )
+
+    @GET("t/{forum_id}")
+    suspend fun getThreadsInForum(@Path("forum_id") forumId: String): NetworkThreadContainer
+
+    @GET("user/{user_id}")
+    suspend fun getUserById(@Path("user_id") userId: String): NetworkUser
+
+    @POST("user/new_user")
+    suspend fun registerNewUser(@Header("id_token") idToken: String)
 }
 
 object VKUServiceApi {

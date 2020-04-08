@@ -12,7 +12,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName "0.1.0-dev02"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,7 +43,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.2.0'
-    implementation 'androidx.fragment:fragment-ktx:1.2.3'
+    implementation 'androidx.fragment:fragment-ktx:1.2.4'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -96,6 +96,11 @@ dependencies {
     // Koin AndroidX Experimental features
     implementation "org.koin:koin-androidx-ext:2.1.5"
     //endregion
+    // region Work manager
+    def work_version = "2.3.4"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+    androidTestImplementation "androidx.work:work-testing:$work_version"
+    // endregion
     // Testing
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
@@ -103,13 +108,15 @@ dependencies {
     // Firebase Authentication
     implementation 'com.google.firebase:firebase-auth:19.3.0'
     // Material Design
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.google.android.material:material:1.2.0-alpha05'
     // Androidx Browser
     implementation 'androidx.browser:browser:1.2.0'
     // Firebase UI Auth
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
     // Flexbox Layout
     implementation 'com.google.android:flexbox:2.0.1'
+    // Timber Log
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }
 ktlint {
     android.set(true)

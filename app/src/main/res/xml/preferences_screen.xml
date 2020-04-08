@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:key="@string/preferences_key">
+
+    <PreferenceCategory android:title="@string/text_display">
+
+        <ListPreference
+            android:defaultValue="system"
+            android:dialogIcon="@drawable/ic_brightness_6_black_24dp"
+            android:entries="@array/night_mode_entries"
+            android:entryValues="@array/night_mode_values"
+            android:icon="@drawable/ic_brightness_6_black_24dp"
+            android:key="@string/night_mode_key"
+            android:summary="@string/text_night_mode_summary"
+            android:title="@string/text_night_mode" />
+    </PreferenceCategory>
+</PreferenceScreen>

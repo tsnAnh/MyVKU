@@ -23,7 +23,7 @@ class ImageChooserAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is FooterChooserViewHolder -> holder.bind(listener)
-            is ImageChooserViewHolder -> holder.bind(getItem(position), listener, position)
+            is ImageChooserViewHolder -> holder.bind(getItem(position), listener)
         }
     }
 

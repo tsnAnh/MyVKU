@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialFadeThrough
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.NewsAdapter
 import dev.tsnanh.vku.adapters.NewsClickListener
@@ -27,12 +28,20 @@ class NewsFragment : Fragment() {
     private lateinit var binding: FragmentNewsBinding
     private val customTabHelper = CustomTabHelper()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough.create(requireContext())
+        exitTransition = MaterialFadeThrough.create(requireContext())
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_news, container, false)
+
+        setHasOptionsMenu(true)
 
         return binding.root
     }
@@ -54,7 +63,8 @@ class NewsFragment : Fragment() {
                 shareClickListener = shareClick
             )
         )
-        binding.listNews.setHasFixedSize(true)
+        binding.listNews.setHasFixedSize(false)
+        binding.listNews.isNestedScrollingEnabled = true
         binding.listNews.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.listNews.observe(viewLifecycleOwner, Observer {

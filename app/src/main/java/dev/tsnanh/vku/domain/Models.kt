@@ -39,7 +39,9 @@ data class Forum(
 data class ForumThread(
     var id: String = "",
     var title: String,
-    var image: List<String> = emptyList(),
+    var userAvatar: String = "",
+    val userDisplayName: String = "",
+    var images: List<String> = emptyList(),
     var forumId: String = "",
     var numberOfPosts: Int = 1,
     var numberOfViews: Int = 0,
@@ -72,6 +74,7 @@ data class User(
 data class Post(
     var id: String = "",
     var content: String,
+    var images: List<String> = emptyList(),
     var userId: String = "",
     var threadId: String = "",
     var editHistory: List<String> = emptyList(),
@@ -82,7 +85,6 @@ fun ForumThread.asNetworkModel(): NetworkThread {
     return NetworkThread(
         id = id,
         title = title,
-        image = image,
         forumId = forumId,
         numberOfPosts = numberOfPosts,
         numberOfViews = numberOfViews,
@@ -90,7 +92,10 @@ fun ForumThread.asNetworkModel(): NetworkThread {
         createAt = createAt,
         lastUpdateOn = lastUpdateOn,
         posts = posts,
-        editHistory = editHistory
+        editHistory = editHistory,
+        userAvatar = userAvatar,
+        images = images,
+        userDisplayName = userDisplayName
     )
 }
 
@@ -98,9 +103,20 @@ fun Post.asNetworkModel(): NetworkPost {
     return NetworkPost(
         id = id,
         content = content,
+        images = images,
         userId = userId,
         threadId = threadId,
         editHistory = editHistory,
         createdAt = createdAt
     )
+}
+
+// A generic class that contains data and status about loading this data.
+sealed class Resource<T>(
+    val data: T? = null,
+    val message: String? = null
+) {
+    class Success<T>(data: T) : Resource<T>(data)
+    class Loading<T>(data: T? = null) : Resource<T>(data)
+    class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
 }

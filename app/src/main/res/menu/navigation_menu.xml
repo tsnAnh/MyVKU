@@ -10,7 +10,15 @@
         android:icon="@drawable/ic_forum"
         android:title="@string/text_forum" />
     <item
-        android:id="@+id/navigation_options"
-        android:icon="@drawable/ic_settings_applications_black_24dp"
-        android:title="@string/text_options" />
+        android:id="@+id/navigation_timetable"
+        android:icon="@drawable/ic_timetable"
+        android:title="@string/text_timetable" />
+    <item
+        android:id="@+id/navigation_relax"
+        android:icon="@drawable/ic_mood_black_24dp"
+        android:title="@string/text_relax" />
+    <item
+        android:id="@+id/navigation_more"
+        android:icon="@drawable/ic_more_black_24dp"
+        android:title="@string/text_more" />
 </menu>

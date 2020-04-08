@@ -11,8 +11,11 @@
         android:label="@string/text_vku_forum"
         tools:layout="@layout/fragment_forum">
         <action
-            android:id="@+id/action_navigation_forum_to_threadFragment"
+            android:id="@+id/action_navigation_forum_to_navigation_thread"
             app:destination="@id/navigation_thread" />
+        <action
+            android:id="@+id/action_navigation_forum_to_navigation_new_thread"
+            app:destination="@id/navigation_new_thread" />
     </fragment>
     <fragment
         android:id="@+id/navigation_news"
@@ -24,12 +27,16 @@
             app:destination="@id/activity_news" />
     </fragment>
     <fragment
-        android:id="@+id/navigation_options"
-        android:name="dev.tsnanh.vku.view.options.OptionsFragment"
-        android:label="@string/text_options" />
+        android:id="@+id/navigation_more"
+        android:name="dev.tsnanh.vku.view.more.MoreFragment"
+        android:label="@string/text_more">
+        <action
+            android:id="@+id/action_navigation_options_to_navigation_settings"
+            app:destination="@id/navigation_settings" />
+    </fragment>
     <activity
         android:id="@+id/activity_news"
-        android:name="dev.tsnanh.vku.view.NewsActivity"
+        android:name="dev.tsnanh.vku.activities.NewsActivity"
         tools:layout="@layout/activity_news">
         <argument
             android:name="url"
@@ -49,5 +56,20 @@
         <argument
             android:name="id"
             app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="dev.tsnanh.vku.view.settings.SettingsFragment"
+        android:label="@string/title_activity_settings" />
+    <fragment
+        android:id="@+id/navigation_timetable"
+        android:name="dev.tsnanh.vku.view.timetable.TimetableFragment"
+        android:label="Timetable" />
+    <fragment
+        android:id="@+id/navigation_relax"
+        android:name="dev.tsnanh.vku.view.relax.RelaxFragment"
+        android:label="Relax" />
 </navigation>

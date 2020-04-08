@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.ItemImageChooserBinding
 
+const val CLICK_TIME_INTERVAL: Long = 300
 class ImageChooserViewHolder private constructor(
     private val binding: ItemImageChooserBinding
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -22,14 +23,20 @@ class ImageChooserViewHolder private constructor(
         }
     }
 
+    private var lastClickTime = System.currentTimeMillis()
     fun bind(
         uri: Uri,
-        listener: ImageChooserClickListener,
-        position: Int
+        listener: ImageChooserClickListener
     ) {
         binding.uri = uri
-        binding.clickListener = listener
-        binding.position = position
+        binding.clearImage.setOnClickListener {
+            val now = System.currentTimeMillis()
+            if (now - lastClickTime < CLICK_TIME_INTERVAL) {
+                return@setOnClickListener
+            }
+            lastClickTime = now
+            listener.onClick(adapterPosition)
+        }
         binding.executePendingBindings()
     }
 }

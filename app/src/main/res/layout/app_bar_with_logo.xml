@@ -16,6 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:transitionGroup="false"
             app:buttonGravity="center_vertical"
             app:contentInsetStart="0dp"
             app:logo="@drawable/vku_logo"

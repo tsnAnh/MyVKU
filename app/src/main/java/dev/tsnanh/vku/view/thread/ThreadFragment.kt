@@ -71,6 +71,12 @@ class ThreadFragment : Fragment() {
                 adapter.submitList(it)
             }
         })
+
+        viewModel.forum.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                binding.forum = it
+            }
+        })
     }
 
     private fun configureList() {

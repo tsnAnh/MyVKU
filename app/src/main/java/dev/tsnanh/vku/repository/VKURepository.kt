@@ -25,6 +25,7 @@ class VKURepository(private val database: VKUDatabase) {
         }
 
     val forums = liveData(Dispatchers.IO) {
+        emit(Resource.Loading())
         withContext(Dispatchers.IO) {
             try {
                 emit(Resource.Success(VKUServiceApi.network.getAllSubForums().asDomainModel()))
@@ -42,6 +43,10 @@ class VKURepository(private val database: VKUDatabase) {
         withContext(Dispatchers.IO) {
             emit(VKUServiceApi.network.getThreadsInForum(forumId).asDomainModel())
         }
+    }
+
+    fun getForumById(forumId: String) = liveData(Dispatchers.IO) {
+        emit(VKUServiceApi.network.getForumById(forumId).asDomainModel())
     }
 
     suspend fun refreshNews() {

@@ -106,6 +106,16 @@ class NewsFragment : Fragment() {
                 viewModel.onShareButtonClicked()
             }
         })
+
+        viewModel.refreshNews.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                if (!it) binding.swipeToRefresh.isRefreshing = it
+            }
+        })
+
+        binding.swipeToRefresh.setOnRefreshListener {
+            viewModel.refreshNews()
+        }
     }
 
     private val viewClick: (News) -> Unit = {

@@ -2,20 +2,24 @@ package dev.tsnanh.vku.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.databinding.DataBindingUtil
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.lifecycleScope
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityWelcomeBinding
+import dev.tsnanh.vku.network.VKUServiceApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
@@ -28,9 +32,6 @@ class WelcomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityWelcomeBinding
     private val user = FirebaseAuth.getInstance().currentUser
-    private val sharedPreferences: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,29 +53,66 @@ class WelcomeActivity : AppCompatActivity() {
             }
 
             override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                if (user == null) {
+                if (user != null) {
+                    user.getIdToken(true).addOnSuccessListener {
+                        it.token?.let { token ->
+                            lifecycleScope.launch {
+                                val isRegistered = withContext(Dispatchers.IO) {
+                                    VKUServiceApi.network.isUserRegistered("Bearer $token")
+                                }
+                                if (isRegistered) {
+                                    start()
+                                } else {
+                                    registerUser(token)
+                                }
+                            }
+                        }
+                    }
+                } else {
                     startActivityForResult(
-                        AuthUI
-                            .getInstance()
+                        AuthUI.getInstance()
                             .createSignInIntentBuilder()
                             .setAvailableProviders(
                                 listOf(
                                     AuthUI.IdpConfig.GoogleBuilder().build(),
-                                    AuthUI.IdpConfig.AppleBuilder().build(),
-                                    AuthUI.IdpConfig.MicrosoftBuilder().build()
+                                    AuthUI.IdpConfig.MicrosoftBuilder().build(),
+                                    AuthUI.IdpConfig.AppleBuilder().build()
                                 )
                             )
-                            .setLogo(R.drawable.vku_logo)
                             .build(),
                         RC_SIGN_IN
                     )
-                } else {
-                    val intent = Intent(this@WelcomeActivity, MainActivity::class.java)
-                    startActivity(intent)
-                    this@WelcomeActivity.finish()
                 }
             }
         })
+    }
+
+    suspend fun registerUser(idToken: String) {
+        val status = withContext(Dispatchers.IO) {
+            VKUServiceApi.network.registerNewUser("Bearer $idToken")
+        }
+        if (status == "success") {
+            start()
+        } else {
+            showErrorDialog()
+        }
+    }
+
+    private fun showErrorDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Cannot sign in")
+            .setMessage("Something went wrong!")
+            .setPositiveButton("OK") { d, _ ->
+                d.dismiss()
+                this.finish()
+            }
+            .create()
+            .show()
+    }
+
+    private fun start() {
+        startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
+        this@WelcomeActivity.finish()
     }
 
     override fun onRestart() {
@@ -88,35 +126,41 @@ class WelcomeActivity : AppCompatActivity() {
         if (requestCode == RC_SIGN_IN) {
             val response = IdpResponse.fromResultIntent(data)
             if (resultCode == Activity.RESULT_OK) {
-                sharedPreferences.edit().putString("id_token", response?.idpToken).apply()
-                val intent = Intent(this@WelcomeActivity, MainActivity::class.java)
-                startActivity(intent)
-                this@WelcomeActivity.finish()
+                val user = FirebaseAuth.getInstance().currentUser
+                if (user != null) {
+                    user.getIdToken(true).addOnSuccessListener {
+                        lifecycleScope.launch {
+                            it.token?.let { it1 -> registerUser(it1) }
+                        }
+                    }
+                } else {
+                    showErrorDialog()
+                }
             } else {
                 if (response == null) {
-                    Toast
-                        .makeText(
-                            this@WelcomeActivity,
+                    Snackbar
+                        .make(
+                            binding.root,
                             "Sign in canceled!",
-                            Toast.LENGTH_SHORT
+                            Snackbar.LENGTH_LONG
                         )
                         .show()
                 } else {
                     if (response.error?.errorCode == ErrorCodes.NO_NETWORK) {
-                        Toast
-                            .makeText(
-                                this@WelcomeActivity,
+                        Snackbar
+                            .make(
+                                binding.root,
                                 "No internet connection!",
-                                Toast.LENGTH_SHORT
+                                Snackbar.LENGTH_SHORT
                             )
                             .show()
                         return
                     }
-                    Toast
-                        .makeText(
-                            this@WelcomeActivity,
+                    Snackbar
+                        .make(
+                            binding.root,
                             "Unknown Error!",
-                            Toast.LENGTH_SHORT
+                            Snackbar.LENGTH_SHORT
                         )
                         .show()
                     Timber.e("Sign in Error: ${response.error}")

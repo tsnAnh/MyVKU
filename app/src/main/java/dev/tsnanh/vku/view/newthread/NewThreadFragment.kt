@@ -23,6 +23,7 @@ import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewThreadBinding
 import dev.tsnanh.vku.domain.ForumThread
 import dev.tsnanh.vku.domain.Post
+import dev.tsnanh.vku.domain.Resource
 import timber.log.Timber
 
 const val RC_IMAGE_PICKER = 0
@@ -94,29 +95,35 @@ class NewThreadFragment : Fragment() {
 
         viewModel.forums.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if (it.message != null) {
-                    Snackbar.make(requireView(), it.message.toString(), Snackbar.LENGTH_SHORT)
-                        .show()
-                    return@Observer
-                }
-                if (it.data != null && it.data.isNotEmpty()) {
-                    val forumsTitle = it.data.map { forum ->
-                        forum.title
+                when (it) {
+                    is Resource.Loading -> {
+                        Timber.d("Loading Forum List...")
                     }
-                    val arrAdapter =
-                        ArrayAdapter(
-                            requireContext(),
-                            R.layout.dropdown_menu_popup_item,
-                            forumsTitle
-                        )
+                    is Resource.Success -> {
+                        if (it.data != null && it.data.isNotEmpty()) {
+                            val forumsTitle = it.data.map { forum ->
+                                forum.title
+                            }
+                            val arrAdapter =
+                                ArrayAdapter(
+                                    requireContext(),
+                                    R.layout.dropdown_menu_popup_item,
+                                    forumsTitle
+                                )
 
-                    binding.forum.setOnItemClickListener { _, _, i, _ ->
-                        binding.forum.tag = it.data[i].id
-                        Timber.d(it.data[i].id)
+                            binding.forum.setOnItemClickListener { _, _, i, _ ->
+                                binding.forum.tag = it.data[i].id
+                                Timber.d(it.data[i].id)
+                            }
+
+
+                            binding.forum.setAdapter(arrAdapter)
+                        }
                     }
-
-
-                    binding.forum.setAdapter(arrAdapter)
+                    is Resource.Error -> {
+                        Snackbar.make(requireView(), it.message.toString(), Snackbar.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
         })
@@ -131,6 +138,7 @@ class NewThreadFragment : Fragment() {
 
         viewModel.onThreadCreated.observe(viewLifecycleOwner, Observer {
             it?.let {
+                Timber.d("$it")
                 findNavController().navigateUp()
                 viewModel.onThreadCreated()
             }

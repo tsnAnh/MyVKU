@@ -38,5 +38,13 @@
             android:transitionGroup="true"
             app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:layout_anchor="@id/list_topics"
+            app:layout_anchorGravity="center" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

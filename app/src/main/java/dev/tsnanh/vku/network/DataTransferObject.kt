@@ -209,3 +209,35 @@ fun NetworkPostContainer.asDomainModel(): List<Post> {
         )
     }
 }
+
+fun NetworkForum.asDomainModel(): Forum {
+    return Forum(
+        id,
+        title,
+        subtitle,
+        description,
+        image,
+        numberOfThreads,
+        numberOfPosts,
+        lastUpdatedOn,
+        threads
+    )
+}
+
+fun NetworkThread.asDomainModel(): ForumThread {
+    return ForumThread(
+        id,
+        title,
+        userAvatar,
+        userDisplayName,
+        images,
+        forumId,
+        numberOfPosts,
+        numberOfViews,
+        userId,
+        createAt,
+        lastUpdateOn,
+        posts,
+        editHistory
+    )
+}

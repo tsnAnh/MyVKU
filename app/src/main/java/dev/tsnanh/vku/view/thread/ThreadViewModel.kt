@@ -9,6 +9,7 @@ class ThreadViewModel(forumId: String) : ViewModel() {
     private val repository: VKURepository by inject(VKURepository::class.java)
 
     val threads = repository.getThreadsInForum(forumId)
+    val forum = repository.getForumById(forumId)
 }
 
 class ThreadViewModelFactory(

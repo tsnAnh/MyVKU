@@ -20,6 +20,7 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ForumAdapter
 import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.FragmentForumBinding
+import dev.tsnanh.vku.domain.Resource
 
 class ForumFragment : Fragment() {
 
@@ -65,13 +66,19 @@ class ForumFragment : Fragment() {
 
         viewModel.forums.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if (it.message != null) {
-                    Snackbar.make(requireView(), it.message.toString(), Snackbar.LENGTH_LONG)
-                        .show()
-                    return@Observer
-                }
-                if (it.data != null && it.data.isNotEmpty()) {
-                    adapter.submitList(it.data)
+                when (it) {
+                    is Resource.Success -> {
+                        adapter.submitList(it.data)
+                        binding.progressBar.visibility = View.GONE
+                    }
+                    is Resource.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Resource.Error -> {
+                        Snackbar.make(requireView(), it.message.toString(), Snackbar.LENGTH_LONG)
+                            .show()
+                        binding.progressBar.visibility = View.GONE
+                    }
                 }
             }
         })

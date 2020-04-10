@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.java.KoinJavaComponent.get
 import org.koin.java.KoinJavaComponent.inject
 
 class NewsViewModel : ViewModel() {
@@ -37,9 +36,29 @@ class NewsViewModel : ViewModel() {
     val filterData: LiveData<String>
         get() = _filterData
 
+    private val _refreshNews = MutableLiveData(false)
+    val refreshNews: LiveData<Boolean>
+        get() = _refreshNews
+
+    private fun onNewsRefresh() {
+        _refreshNews.value = true
+    }
+
+    private fun onNewsRefreshed() {
+        _refreshNews.value = false
+    }
+
     init {
         viewModelScope.launch {
             refresh()
+        }
+    }
+
+    fun refreshNews() {
+        viewModelScope.launch {
+            onNewsRefresh()
+            refresh()
+            onNewsRefreshed()
         }
     }
 

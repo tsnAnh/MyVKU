@@ -1,36 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <variable
+            name="forum"
+            type="dev.tsnanh.vku.domain.Forum" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="false"
         tools:context=".view.thread.ThreadFragment">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/actionBarSize"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+            android:layout_height="192dp"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
+            app:liftOnScroll="true">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:buttonGravity="center_vertical"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:navigationIcon="@drawable/ic_navigate_before_black_24dp" />
+                app:contentScrim="@color/primaryColor"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
+                app:toolbarId="@+id/toolbar">
+
+                <ImageView
+                    android:id="@+id/app_bar_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:transitionName="@string/toolbar_image_transition_key"
+                    app:forumImage="@{ forum }" />
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/actionBarSize"
+                    app:buttonGravity="center_vertical"
+                    app:layout_collapseMode="pin"
+                    app:navigationIcon="@drawable/ic_navigate_before_black_24dp" />
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_thread"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             tools:listitem="@layout/item_thread" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -41,7 +41,6 @@ data class ForumThread(
     var title: String,
     var userAvatar: String = "",
     val userDisplayName: String = "",
-    var images: List<String> = emptyList(),
     var forumId: String = "",
     var numberOfPosts: Int = 1,
     var numberOfViews: Int = 0,
@@ -94,7 +93,6 @@ fun ForumThread.asNetworkModel(): NetworkThread {
         posts = posts,
         editHistory = editHistory,
         userAvatar = userAvatar,
-        images = images,
         userDisplayName = userDisplayName
     )
 }

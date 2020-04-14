@@ -33,7 +33,10 @@
     <string name="text_relax">Relax</string>
     <string name="text_more">More</string>
 
-    <string name="threadNameTime" translatable="false">%s - $s</string>
+    <string name="threadNameTime" translatable="false">%s - %s</string>
+    <string name="threadDetails" translatable="true">Replies: %s, Views: %s, Last Updated On: %s</string>
     <string name="text_school_reminder">School Reminder</string>
-    <string name="toolbar_image_transition_key">toolbar_image</string>
+    <string name="toolbar_image_transition_key" translatable="false">toolbar_image</string>
+    <string name="new_thread_channel_name" translatable="false">New Thread</string>
+    <string name="new_thread_channel_id" translatable="false">dev.tsnanh.vku.newthread.notification</string>
 </resources>

@@ -1,7 +1,9 @@
 package dev.tsnanh.vku.view.newthread
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -10,14 +12,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.addCallback
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dev.tsnanh.vku.R
+import dev.tsnanh.vku.activities.MainViewModel
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewThreadBinding
@@ -28,16 +35,22 @@ import timber.log.Timber
 
 const val RC_IMAGE_PICKER = 0
 const val RC_ADD_PHOTO = 1
+const val RC_PERMISSION = 100
 
 class NewThreadFragment : Fragment() {
 
-    private val viewModel: NewThreadViewModel by viewModels()
+    private lateinit var viewModel: NewThreadViewModel
     private lateinit var binding: FragmentNewThreadBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
+    private val activityViewModel: MainViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+//        enterTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.X, false)
+//        enterTransition = MaterialContainerTransform(requireContext()).apply {
+//            duration = 3000
+//        }
+//        enterTransition = MaterialFadeThrough.create(requireContext())
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigateUp()
         }
@@ -62,6 +75,7 @@ class NewThreadFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(NewThreadViewModel::class.java)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -116,7 +130,6 @@ class NewThreadFragment : Fragment() {
                                 Timber.d(it.data[i].id)
                             }
 
-
                             binding.forum.setAdapter(arrAdapter)
                         }
                     }
@@ -133,24 +146,56 @@ class NewThreadFragment : Fragment() {
         }
 
         binding.chooseImage.setOnClickListener {
-            pickImage(RC_IMAGE_PICKER)
-        }
-
-        viewModel.onThreadCreated.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                Timber.d("$it")
-                findNavController().navigateUp()
-                viewModel.onThreadCreated()
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                pickImage(RC_IMAGE_PICKER)
+            } else {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        requireActivity(),
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
+                ) {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Permission required")
+                        .setMessage("We need permission to upload your image!")
+                        .setPositiveButton("OK") { d, i ->
+                            d.dismiss()
+                        }
+                        .create().show()
+                } else {
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                        RC_PERMISSION
+                    )
+                }
             }
-        })
+        }
     }
 
     // region Pick Image
     private fun pickImage(requestCode: Int) {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val intent = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(intent, requestCode)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            RC_PERMISSION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    pickImage(RC_IMAGE_PICKER)
+                }
+                return
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -161,7 +206,6 @@ class NewThreadFragment : Fragment() {
             if (resultCode == Activity.RESULT_OK) {
                 pickerAdapter.submitList(emptyList())
                 data?.let {
-
                     if (data.clipData != null) {
                         val clipData = data.clipData!!
                         for (index in 0 until clipData.itemCount) {
@@ -218,7 +262,8 @@ class NewThreadFragment : Fragment() {
             val thread = prepareThread()
             val post = preparePost()
 
-            viewModel.create(thread, post)
+            activityViewModel.createNewThread(pickerAdapter.currentList, thread, post)
+            findNavController().navigateUp()
         }
     }
 

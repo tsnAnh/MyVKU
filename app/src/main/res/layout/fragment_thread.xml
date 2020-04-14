@@ -29,6 +29,7 @@
                 android:layout_height="match_parent"
                 app:contentScrim="@color/primaryColor"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
                 app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
                 app:toolbarId="@+id/toolbar">
 
@@ -37,10 +38,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:transitionName="@string/toolbar_image_transition_key"
+                    android:tint="#59000000"
+                    android:contentDescription="@{ forum.title }"
+                    android:transitionName="@{ forum.title }"
                     app:forumImage="@{ forum }" />
 
-                <androidx.appcompat.widget.Toolbar
+                <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/actionBarSize"

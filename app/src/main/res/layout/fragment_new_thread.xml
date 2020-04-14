@@ -15,13 +15,15 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:fitsSystemWindows="true"
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
+        android:transitionName="view"
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
             android:layout_width="match_parent"
+            android:transitionGroup="false"
             android:layout_height="@dimen/actionBarSize">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -76,7 +78,6 @@
                         android:id="@+id/forum"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:editable="false"
                         android:labelFor="@id/layout_forum"
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -193,7 +194,6 @@
             android:layout_marginBottom="16dp"
             app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
             android:layout_gravity="bottom|end"
-            android:transitionName="fab_submit"
             android:src="@drawable/ic_add_black_24dp" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

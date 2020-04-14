@@ -1,14 +1,15 @@
 package dev.tsnanh.vku.view.forum
 
-import androidx.lifecycle.*
-import dev.tsnanh.vku.database.VKUDatabase
+import android.widget.ImageView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dev.tsnanh.vku.domain.Forum
-import dev.tsnanh.vku.network.VKUServiceApi
-import dev.tsnanh.vku.network.asDomainModel
+import dev.tsnanh.vku.domain.Resource
 import dev.tsnanh.vku.repository.VKURepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 
@@ -16,17 +17,25 @@ class ForumViewModel : ViewModel() {
 
     private val repository: VKURepository by inject(VKURepository::class.java)
 
-    private val _navigateToListThread = MutableLiveData<Forum>()
-    val navigateToListThread: LiveData<Forum>
+    private val _navigateToListThread = MutableLiveData<Pair<Forum, ImageView>>()
+    val navigateToListThread: LiveData<Pair<Forum, ImageView>>
         get() = _navigateToListThread
 
-    val forums = repository.forums
+    private var _forums = repository.getAllForums()
+    val forums: LiveData<Resource<List<Forum>>>
+        get() = _forums
+
+    suspend fun refreshForums() {
+        withContext(Dispatchers.IO) {
+            _forums = repository.getAllForums()
+        }
+    }
 
     /**
      * Call when item being click
      * @param forum Forum
      */
-    fun onItemClick(forum: Forum) {
+    fun onItemClick(forum: Pair<Forum, ImageView>) {
         _navigateToListThread.value = forum
     }
 

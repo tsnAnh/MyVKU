@@ -26,4 +26,6 @@
     <string name="text_timetable">TKB</string>
     <string name="text_relax">Giải trí</string>
     <string name="text_more">More</string>
+    <string name="text_school_reminder">Nhắc giờ đi học</string>
+    <string name="threadDetails">Trả lời: %s, Lượt xem: %s, Cập nhật lần cuối: %s</string>
 </resources>

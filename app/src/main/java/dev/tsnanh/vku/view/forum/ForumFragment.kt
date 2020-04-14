@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,6 +22,7 @@ import dev.tsnanh.vku.adapters.ForumAdapter
 import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.FragmentForumBinding
 import dev.tsnanh.vku.domain.Resource
+import kotlinx.coroutines.launch
 
 class ForumFragment : Fragment() {
 
@@ -30,7 +32,7 @@ class ForumFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enterTransition = MaterialFadeThrough.create(requireContext())
-        exitTransition = MaterialFadeThrough.create(requireContext())
+//        exitTransition = Hold()
     }
 
     override fun onCreateView(
@@ -58,8 +60,8 @@ class ForumFragment : Fragment() {
             binding.listTopics.layoutManager = GridLayoutManager(requireContext(), 2)
         }
 
-        val adapter = ForumAdapter(ForumClickListener {
-            viewModel.onItemClick(it)
+        val adapter = ForumAdapter(ForumClickListener { forum, imageView ->
+            viewModel.onItemClick(Pair(forum, imageView))
         })
 
         binding.listTopics.adapter = adapter
@@ -85,8 +87,13 @@ class ForumFragment : Fragment() {
 
         viewModel.navigateToListThread.observe(viewLifecycleOwner, Observer {
             it?.let {
+                val extras = FragmentNavigatorExtras(
+                    it.second to "thread_image"
+                )
                 findNavController().navigate(
-                    ForumFragmentDirections.actionNavigationForumToNavigationThread(it.id, it.title)
+                    ForumFragmentDirections
+                        .actionNavigationForumToNavigationThread(it.first.id, it.first.title),
+                    extras
                 )
                 viewModel.onItemClicked()
             }
@@ -94,12 +101,20 @@ class ForumFragment : Fragment() {
 
         binding.fabNewThread.setOnClickListener {
             val extras = FragmentNavigatorExtras(
-                binding.fabNewThread to "fab_submit"
+                it to "view"
             )
             findNavController().navigate(
-                ForumFragmentDirections.actionNavigationForumToNavigationNewThread(),
+                R.id.navigation_new_thread,
+                null, null,
                 extras
             )
+        }
+
+        binding.swipeToRefresh.setOnRefreshListener {
+            lifecycleScope.launch {
+                viewModel.refreshForums()
+                binding.swipeToRefresh.isRefreshing = false
+            }
         }
     }
 

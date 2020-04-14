@@ -1,5 +1,7 @@
 package dev.tsnanh.vku.koin
 
+import android.app.NotificationManager
+import androidx.core.content.ContextCompat
 import androidx.room.Room
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.database.VKUDatabase
@@ -26,5 +28,11 @@ val vkuModule = module {
 
     single(createdAtStart = true) {
         VKURepository(get())
+    }
+    single {
+        ContextCompat.getSystemService(
+            androidContext(),
+            NotificationManager::class.java
+        ) as NotificationManager
     }
 }

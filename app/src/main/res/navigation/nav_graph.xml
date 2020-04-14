@@ -59,6 +59,9 @@
         <argument
             android:name="title"
             app:argType="string" />
+        <action
+            android:id="@+id/action_navigation_thread_to_navigation_replies"
+            app:destination="@id/navigation_replies" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
@@ -72,4 +75,15 @@
         android:id="@+id/navigation_relax"
         android:name="dev.tsnanh.vku.view.relax.RelaxFragment"
         android:label="Relax" />
+    <fragment
+        android:id="@+id/navigation_replies"
+        android:name="dev.tsnanh.vku.view.replies.RepliesFragment"
+        android:label="Replies">
+        <argument
+            android:name="threadId"
+            app:argType="string" />
+        <argument
+            android:name="threadTitle"
+            app:argType="string" />
+    </fragment>
 </navigation>

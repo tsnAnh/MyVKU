@@ -62,6 +62,7 @@ class ThreadFragment : Fragment() {
 
         configureList()
         val adapter = ThreadAdapter(ThreadClickListener {
+            viewModel.onNavigateToReplies(it)
             Timber.d("ThreadClickListener called: $it")
         })
         binding.listThread.adapter = adapter
@@ -75,6 +76,16 @@ class ThreadFragment : Fragment() {
         viewModel.forum.observe(viewLifecycleOwner, Observer {
             it?.let {
                 binding.forum = it
+            }
+        })
+
+        viewModel.navigateToReplies.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                findNavController().navigate(
+                    ThreadFragmentDirections
+                        .actionNavigationThreadToNavigationReplies(it.id, it.title)
+                )
+                viewModel.onNavigatedToReplies()
             }
         })
     }

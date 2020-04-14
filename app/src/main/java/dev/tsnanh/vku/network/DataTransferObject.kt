@@ -63,13 +63,13 @@ data class NetworkForum(
 
 @JsonClass(generateAdapter = true)
 data class NetworkThread(
+    @field:Json(name = "_id")
     var id: String = "",
     var title: String,
     @field:Json(name = "user_display_name")
     val userDisplayName: String = "",
     @field:Json(name = "user_avatar")
     var userAvatar: String = "",
-    var images: List<String> = emptyList(),
     @field:Json(name = "forum_id")
     var forumId: String = "",
     @field:Json(name = "number_of_posts")
@@ -89,6 +89,7 @@ data class NetworkThread(
 
 @JsonClass(generateAdapter = true)
 data class NetworkUser(
+    @field:Json(name = "_id")
     var id: String = "",
     var uid: String,
     @field:Json(name = "display_name")
@@ -108,6 +109,7 @@ data class NetworkUser(
 
 @JsonClass(generateAdapter = true)
 data class NetworkPost(
+    @field:Json(name = "_id")
     var id: String = "",
     var content: String,
     var images: List<String> = emptyList(),
@@ -172,7 +174,6 @@ fun NetworkThreadContainer.asDomainModel(): List<dev.tsnanh.vku.domain.ForumThre
             lastUpdateOn = it.lastUpdateOn,
             posts = it.posts,
             editHistory = it.editHistory,
-            images = it.images,
             userAvatar = it.userAvatar,
             userDisplayName = it.userDisplayName
         )
@@ -230,7 +231,6 @@ fun NetworkThread.asDomainModel(): ForumThread {
         title,
         userAvatar,
         userDisplayName,
-        images,
         forumId,
         numberOfPosts,
         numberOfViews,

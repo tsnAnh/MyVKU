@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.ItemThreadBinding
 import dev.tsnanh.vku.domain.ForumThread
+import dev.tsnanh.vku.utils.convertJsTimeToJavaString
 
 class ThreadViewHolder(
     private val binding: ItemThreadBinding
@@ -22,7 +23,10 @@ class ThreadViewHolder(
     }
 
     fun bind(thread: ForumThread, listener: ThreadClickListener) {
-        binding.thread = thread
+        binding.thread = thread.apply {
+            createAt = convertJsTimeToJavaString(createAt)
+            lastUpdateOn = convertJsTimeToJavaString(createAt)
+        }
         binding.listener = listener
         binding.executePendingBindings()
     }

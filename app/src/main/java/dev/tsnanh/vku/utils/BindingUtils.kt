@@ -77,7 +77,7 @@ fun ImageView.setItemThreadAvatar(thread: ForumThread) {
     Glide
         .with(this.context)
         .load(thread.userAvatar)
-        .circleCrop()
         .centerCrop()
+        .circleCrop()
         .into(this)
 }

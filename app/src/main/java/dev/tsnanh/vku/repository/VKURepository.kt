@@ -5,9 +5,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.liveData
 import dev.tsnanh.vku.database.VKUDatabase
 import dev.tsnanh.vku.database.asDomainModel
-import dev.tsnanh.vku.domain.Forum
-import dev.tsnanh.vku.domain.News
-import dev.tsnanh.vku.domain.Resource
+import dev.tsnanh.vku.domain.*
 import dev.tsnanh.vku.network.VKUServiceApi
 import dev.tsnanh.vku.network.asDatabaseModel
 import dev.tsnanh.vku.network.asDomainModel
@@ -24,7 +22,7 @@ class VKURepository(private val database: VKUDatabase) {
             it.asDomainModel()
         }
 
-    val forums = liveData(Dispatchers.IO) {
+    fun getAllForums() = liveData(Dispatchers.IO) {
         emit(Resource.Loading())
         withContext(Dispatchers.IO) {
             try {
@@ -39,9 +37,51 @@ class VKURepository(private val database: VKUDatabase) {
         }
     }
 
+    fun getReplies(threadId: String) = liveData(Dispatchers.IO) {
+        emit(Resource.Loading())
+        withContext(Dispatchers.IO) {
+            try {
+                emit(
+                    Resource.Success(
+                        VKUServiceApi.network.getRepliesInThread(threadId).asDomainModel()
+                    )
+                )
+            } catch (e: SocketTimeoutException) {
+                emit(Resource.Error("Connection Timed Out", emptyList<Post>()))
+            } catch (e2: HttpException) {
+                emit(Resource.Error("Cannot connect to server!", emptyList<Post>()))
+            } catch (t: Throwable) {
+                emit(Resource.Error("Something went wrong!", emptyList<Post>()))
+            }
+        }
+    }
+
+    fun getThreadById(threadId: String) = liveData(Dispatchers.IO) {
+        emit(Resource.Loading())
+        withContext(Dispatchers.IO) {
+            try {
+                emit(
+                    Resource.Success(
+                        VKUServiceApi.network.getThreadById(threadId).asDomainModel()
+                    )
+                )
+            } catch (e: SocketTimeoutException) {
+                emit(Resource.Error<ForumThread>("Connection Timed Out"))
+            } catch (e2: HttpException) {
+                emit(Resource.Error<ForumThread>("Cannot connect to server!"))
+            } catch (t: Throwable) {
+                emit(Resource.Error<ForumThread>("Something went wrong!"))
+            }
+        }
+    }
+
     fun getThreadsInForum(forumId: String) = liveData(Dispatchers.IO) {
         withContext(Dispatchers.IO) {
-            emit(VKUServiceApi.network.getThreadsInForum(forumId).asDomainModel())
+            try {
+                emit(VKUServiceApi.network.getThreadsInForum(forumId).asDomainModel())
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 

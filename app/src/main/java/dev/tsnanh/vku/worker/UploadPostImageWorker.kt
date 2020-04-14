@@ -6,14 +6,15 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import dev.tsnanh.vku.network.VKUServiceApi
-import dev.tsnanh.vku.utils.getRealPathFromDocumentUri
+import dev.tsnanh.vku.utils.getFilePath
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import timber.log.Timber
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
 class UploadPostImageWorker(private val context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
@@ -21,10 +22,16 @@ class UploadPostImageWorker(private val context: Context, params: WorkerParamete
     override suspend fun doWork(): Result = coroutineScope {
         val token = inputData.getString("id_token")
         val uid = inputData.getString("uid")!!
-        Timber.d(token)
         val imageUri = Uri.parse(inputData.getString("image"))
 
-        val fileImage = File(getRealPathFromDocumentUri(context, imageUri))
+        val descriptor = context.contentResolver.openFileDescriptor(imageUri, "r", null)
+        val inputStream = FileInputStream(descriptor!!.fileDescriptor)
+
+        val fileImage = File(context.cacheDir, context.contentResolver.getFilePath(imageUri))
+
+        val outputStream = FileOutputStream(fileImage)
+        inputStream.copyTo(outputStream)
+
         val requestBody = RequestBody.create(
             MediaType.parse("multipart/form-data"),
             fileImage

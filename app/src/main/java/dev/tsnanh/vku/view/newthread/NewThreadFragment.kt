@@ -86,6 +86,7 @@ class NewThreadFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
+        binding.forum.keyListener = null
         navArgs.forumId?.let {
             binding.forum.apply {
                 tag = it

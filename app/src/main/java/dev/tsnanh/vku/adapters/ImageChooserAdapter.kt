@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.adapters
 
 import android.net.Uri
@@ -5,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.adapters.viewholder.imagechooser.FooterChooserViewHolder
+import dev.tsnanh.vku.adapters.viewholder.imagechooser.ImageChooserFooterViewHolder
 import dev.tsnanh.vku.adapters.viewholder.imagechooser.ImageChooserViewHolder
 
 const val TYPE_FOOTER = 0
@@ -15,14 +19,14 @@ class ImageChooserAdapter(
     private val listener: ImageChooserClickListener
 ) : ListAdapter<Uri, RecyclerView.ViewHolder>(UriDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
-        TYPE_FOOTER -> FooterChooserViewHolder.from(parent)
+        TYPE_FOOTER -> ImageChooserFooterViewHolder.from(parent)
         TYPE_ITEM -> ImageChooserViewHolder.from(parent)
         else -> throw Exception("Invalid view holder")
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is FooterChooserViewHolder -> holder.bind(listener)
+            is ImageChooserFooterViewHolder -> holder.bind(listener)
             is ImageChooserViewHolder -> holder.bind(getItem(position), listener)
         }
     }

@@ -1,5 +1,10 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.view.thread
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -88,6 +93,23 @@ class ThreadFragment : Fragment() {
                 viewModel.onNavigatedToReplies()
             }
         })
+
+        binding.fabNew.setOnClickListener {
+            findNavController().navigate(
+                ThreadFragmentDirections
+                    .actionNavigationThreadToNavigationNewThread(navArgs.id, navArgs.title)
+            )
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            binding.listThread.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                if (scrollY <= oldScrollY) {
+                    binding.fabNew.show()
+                } else {
+                    binding.fabNew.hide()
+                }
+            }
+        }
     }
 
     private fun configureList() {

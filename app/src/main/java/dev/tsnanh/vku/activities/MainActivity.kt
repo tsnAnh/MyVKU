@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.activities
 
 import android.app.NotificationChannel
@@ -67,14 +71,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 val jsonAdapter =
                     Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
                         .adapter(ForumThread::class.java)
-                val json = workInfo.outputData.getString("thread")!!
-                val thread = jsonAdapter.fromJson(json)
-                thread?.let {
-                    manager.sendNotification(
-                        thread.title,
-                        "${thread.title} is successfully created!",
-                        this
-                    )
+                val json = workInfo.outputData.getString("thread")
+                if (json != null && json.isNotEmpty()) {
+                    val thread = jsonAdapter.fromJson(json)
+                    thread?.let {
+                        manager.sendNotification(
+                            thread.title,
+                            "${thread.title} is successfully created!",
+                            this
+                        )
+                    }
                 }
                 WorkManager.getInstance(this).pruneWork()
             }
@@ -152,7 +158,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+    override fun onSharedPreferenceChanged(
+        sharedPreferences: SharedPreferences?,
+        key: String?
+    ) {
         key?.let {
             if (key == getString(R.string.night_mode_key)) {
                 val mode = sharedPreferences?.getString(key, "system")

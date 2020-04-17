@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.network
 
 import com.squareup.moshi.Moshi
@@ -69,6 +73,12 @@ interface VKUService {
         @Path("uid") uid: String,
         @Part image: MultipartBody.Part
     ): String
+
+    @POST("/r/new")
+    suspend fun newReply(
+        @Header("Authorization") idToken: String,
+        @Body post: NetworkPost
+    ): NetworkPost
 }
 
 object VKUServiceApi {

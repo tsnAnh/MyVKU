@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2020 VKU by tsnAnh
+  -->
+
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -48,7 +51,16 @@
     <fragment
         android:id="@+id/navigation_new_thread"
         android:name="dev.tsnanh.vku.view.newthread.NewThreadFragment"
-        android:label="@string/text_new_thread" />
+        android:label="@string/text_new_thread">
+        <argument
+            android:name="forumId"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="forumTitle"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_thread"
         android:name="dev.tsnanh.vku.view.thread.ThreadFragment"
@@ -62,6 +74,9 @@
         <action
             android:id="@+id/action_navigation_thread_to_navigation_replies"
             app:destination="@id/navigation_replies" />
+        <action
+            android:id="@+id/action_navigation_thread_to_navigation_new_thread"
+            app:destination="@id/navigation_new_thread" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"

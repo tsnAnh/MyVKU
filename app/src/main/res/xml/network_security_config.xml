@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2020 VKU by tsnAnh
+  -->
+
 <network-security-config>
     <domain-config>
         <domain includeSubdomains="true">c3584294.ngrok.io</domain>

@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2020 VKU by tsnAnh
+  -->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -12,6 +15,14 @@
         <variable
             name="listener"
             type="dev.tsnanh.vku.adapters.ThreadClickListener" />
+
+        <variable
+            name="createdAt"
+            type="String" />
+
+        <variable
+            name="lastUpdatedOn"
+            type="String" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -30,7 +41,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/avatar"
+                android:id="@+id/user_avatar"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
                 android:layout_marginTop="16dp"
@@ -51,9 +62,9 @@
                 android:layout_marginEnd="16dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{ @string/threadNameTime(thread.userDisplayName, thread.createAt) }"
+                android:text="@{ @string/threadNameTime(thread.userDisplayName, createdAt) }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                app:layout_constraintEnd_toStartOf="@+id/avatar"
+                app:layout_constraintEnd_toStartOf="@+id/user_avatar"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -69,7 +80,7 @@
                 android:maxLines="2"
                 android:text="@{ thread.title }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                app:layout_constraintEnd_toStartOf="@+id/avatar"
+                app:layout_constraintEnd_toStartOf="@+id/user_avatar"
                 app:layout_constraintStart_toStartOf="@+id/name_and_time"
                 app:layout_constraintTop_toBottomOf="@+id/name_and_time"
                 tools:text="Huhuhuhu" />
@@ -83,7 +94,7 @@
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{ @string/threadDetails(thread.numberOfPosts, thread.numberOfViews, thread.lastUpdateOn) }"
+                android:text="@{ @string/threadDetails(thread.numberOfPosts, thread.numberOfViews, lastUpdatedOn) }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

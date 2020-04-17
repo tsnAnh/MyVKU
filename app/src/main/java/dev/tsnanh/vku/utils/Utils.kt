@@ -1,13 +1,22 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.utils
 
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.OpenableColumns
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
+fun convertTimestampToDateString(timestamp: Long): String {
+    val date = Date(timestamp)
+    val formatter = SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault())
 
-fun convertJsTimeToJavaString(jsTime: String) =
-    jsTime.substring(0, 19).replace("T", " ")
+    return formatter.format(date)
+}
 
 fun ContentResolver.getFilePath(uri: Uri): String {
     var name = ""

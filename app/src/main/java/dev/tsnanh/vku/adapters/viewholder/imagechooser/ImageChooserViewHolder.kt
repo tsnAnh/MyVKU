@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.adapters.viewholder.imagechooser
 
 import android.net.Uri

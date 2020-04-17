@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.activities
 
 import android.app.Application
@@ -26,6 +30,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val createThreadWorkerLiveData =
         workManager.getWorkInfosByTagLiveData(TAG_NEW_THREAD)
+
     /* unused
     fun create(thread: ForumThread, post: Post) {
         val container = NetworkCreateThreadContainer(thread.asNetworkModel(), post.asNetworkModel())

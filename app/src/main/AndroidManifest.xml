@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2020 VKU by tsnAnh
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.tsnanh.vku">
@@ -8,21 +11,19 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:allowBackup="true"
+        android:name=".VKUApplication"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".VKUApplication"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="n"
-        tools:ignore="AllowBackup">
+        tools:targetApi="n">
         <activity android:name="dev.tsnanh.vku.activities.NewsActivity" />
         <activity
             android:name="dev.tsnanh.vku.activities.WelcomeActivity"
-            android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +31,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="dev.tsnanh.vku.activities.MainActivity" />
+        <activity
+            android:name="dev.tsnanh.vku.activities.MainActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

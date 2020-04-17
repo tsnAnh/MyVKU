@@ -1,8 +1,15 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "org.jlleitschuh.gradle.ktlint-idea"
+apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'koin'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -12,7 +19,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "0.1.0-dev04"
+        versionName "0.1.0-dev06"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -123,6 +130,3 @@ ktlint {
     android.set(true)
     outputColorName.set("RED")
 }
-apply plugin: "androidx.navigation.safeargs.kotlin"
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'koin'

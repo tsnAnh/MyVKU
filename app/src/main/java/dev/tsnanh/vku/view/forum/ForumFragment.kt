@@ -1,6 +1,11 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.view.forum
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -104,8 +109,8 @@ class ForumFragment : Fragment() {
                 it to "view"
             )
             findNavController().navigate(
-                R.id.navigation_new_thread,
-                null, null,
+                ForumFragmentDirections
+                    .actionNavigationForumToNavigationNewThread(null, null),
                 extras
             )
         }
@@ -114,6 +119,16 @@ class ForumFragment : Fragment() {
             lifecycleScope.launch {
                 viewModel.refreshForums()
                 binding.swipeToRefresh.isRefreshing = false
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            binding.listTopics.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                if (scrollY <= oldScrollY) {
+                    binding.fabNewThread.show()
+                } else {
+                    binding.fabNewThread.hide()
+                }
             }
         }
     }

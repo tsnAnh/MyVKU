@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.view.newthread
 
 import android.Manifest
@@ -17,9 +21,10 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -39,7 +44,7 @@ const val RC_PERMISSION = 100
 
 class NewThreadFragment : Fragment() {
 
-    private lateinit var viewModel: NewThreadViewModel
+    private val viewModel: NewThreadViewModel by viewModels()
     private lateinit var binding: FragmentNewThreadBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
     private val activityViewModel: MainViewModel by activityViewModels()
@@ -75,10 +80,19 @@ class NewThreadFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(NewThreadViewModel::class.java)
+
+        val navArgs: NewThreadFragmentArgs by navArgs()
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+
+        navArgs.forumId?.let {
+            binding.forum.apply {
+                tag = it
+                setText(navArgs.forumTitle)
+                binding.layoutForum.isEnabled = false
+            }
+        }
 
         pickerAdapter = ImageChooserAdapter(ImageChooserClickListener(
             listener = { pos ->
@@ -161,7 +175,7 @@ class NewThreadFragment : Fragment() {
                     MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Permission required")
                         .setMessage("We need permission to upload your image!")
-                        .setPositiveButton("OK") { d, i ->
+                        .setPositiveButton("OK") { d, _ ->
                             d.dismiss()
                         }
                         .create().show()
@@ -193,9 +207,9 @@ class NewThreadFragment : Fragment() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     pickImage(RC_IMAGE_PICKER)
                 }
-                return
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -269,14 +283,14 @@ class NewThreadFragment : Fragment() {
 
     private fun prepareThread(): ForumThread {
         return ForumThread(
-            title = binding.title.text.toString(),
+            title = binding.title.text.toString().trim(),
             forumId = (binding.forum.tag as String?).toString()
         )
     }
 
     private fun preparePost(): Post {
         return Post(
-            content = binding.content.text.toString()
+            content = binding.content.text.toString().trim()
         )
     }
 

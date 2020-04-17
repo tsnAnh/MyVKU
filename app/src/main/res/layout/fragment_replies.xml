@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2020 VKU by tsnAnh
+  -->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -19,7 +22,6 @@
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_app_bar"
-            app:layout_behavior="com.google.android.material.bottomappbar.BottomAppBar$Behavior"
             style="@style/Widget.MaterialComponents.BottomAppBar.PrimarySurface"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,6 +29,7 @@
             app:fabAlignmentMode="center"
             app:fabAnimationMode="scale"
             app:hideOnScroll="true"
+            app:layout_behavior="com.google.android.material.bottomappbar.BottomAppBar$Behavior"
             app:navigationIcon="@drawable/ic_navigate_before_black_24dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -35,6 +38,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
+            android:text="@string/text_reply"
             android:src="@drawable/ic_create_black_24dp"
             app:layout_anchor="@id/bottom_app_bar" />
 

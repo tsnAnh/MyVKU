@@ -1,3 +1,7 @@
+<!--
+  ~ Copyright (c) 2020 VKU by tsnAnh
+  -->
+
 <resources>
     <!-- Dark Mode Preference -->
     <string-array name="night_mode_entries">

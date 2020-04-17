@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.adapters.viewholder
 
 import android.view.LayoutInflater
@@ -6,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.ItemThreadBinding
 import dev.tsnanh.vku.domain.ForumThread
-import dev.tsnanh.vku.utils.convertJsTimeToJavaString
+import dev.tsnanh.vku.utils.convertTimestampToDateString
+import timber.log.Timber
 
 class ThreadViewHolder(
     private val binding: ItemThreadBinding
@@ -24,8 +29,12 @@ class ThreadViewHolder(
 
     fun bind(thread: ForumThread, listener: ThreadClickListener) {
         binding.thread = thread.apply {
-            createAt = convertJsTimeToJavaString(createAt)
-            lastUpdateOn = convertJsTimeToJavaString(createAt)
+            binding.createdAt = convertTimestampToDateString(createdAt)
+            binding.lastUpdatedOn = convertTimestampToDateString(lastUpdatedOn)
+            Timber.d(binding.createdAt)
+            Timber.d(binding.lastUpdatedOn)
+            Timber.d("$createdAt")
+            Timber.d("$lastUpdatedOn")
         }
         binding.listener = listener
         binding.executePendingBindings()

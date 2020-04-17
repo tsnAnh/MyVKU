@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.network
 
 import com.squareup.moshi.Json
@@ -79,9 +83,9 @@ data class NetworkThread(
     @field:Json(name = "user_id")
     var userId: String = "",
     @field:Json(name = "created_at")
-    var createAt: String = "",
-    @field:Json(name = "last_update_on")
-    var lastUpdateOn: String = "",
+    var createdAt: Long = 0L,
+    @field:Json(name = "last_updated_on")
+    var lastUpdatedOn: Long = 0L,
     var posts: List<String> = emptyList(),
     @field:Json(name = "edit_history")
     var editHistory: List<String> = emptyList()
@@ -115,12 +119,18 @@ data class NetworkPost(
     var images: List<String> = emptyList(),
     @field:Json(name = "user_id")
     var userId: String = "",
+    @field:Json(name = "user_display_name")
+    var userDisplayName: String = "",
+    @field:Json(name = "user_avatar")
+    var userAvatar: String = "",
     @field:Json(name = "thread_id")
     var threadId: String = "",
+    @field:Json(name = "thread_title")
+    var threadTitle: String = "",
     @field:Json(name = "edit_history")
     var editHistory: List<String> = emptyList(),
     @field:Json(name = "created_at")
-    var createdAt: String = ""
+    var createdAt: Long = 0L
 )
 
 fun NetworkNewsContainer.asDomainModel(): List<News> {
@@ -170,8 +180,8 @@ fun NetworkThreadContainer.asDomainModel(): List<dev.tsnanh.vku.domain.ForumThre
             numberOfPosts = it.numberOfPosts,
             numberOfViews = it.numberOfViews,
             userId = it.userId,
-            createAt = it.createAt,
-            lastUpdateOn = it.lastUpdateOn,
+            createdAt = it.createdAt,
+            lastUpdatedOn = it.lastUpdatedOn,
             posts = it.posts,
             editHistory = it.editHistory,
             userAvatar = it.userAvatar,
@@ -206,7 +216,10 @@ fun NetworkPostContainer.asDomainModel(): List<Post> {
             userId = it.userId,
             threadId = it.threadId,
             editHistory = it.editHistory,
-            createdAt = it.createdAt
+            createdAt = it.createdAt,
+            userDisplayName = it.userDisplayName,
+            userAvatar = it.userAvatar,
+            threadTitle = it.threadTitle
         )
     }
 }
@@ -235,8 +248,8 @@ fun NetworkThread.asDomainModel(): ForumThread {
         numberOfPosts,
         numberOfViews,
         userId,
-        createAt,
-        lastUpdateOn,
+        createdAt,
+        lastUpdatedOn,
         posts,
         editHistory
     )

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.activities
 
 import android.app.Activity
@@ -53,6 +57,7 @@ class WelcomeActivity : AppCompatActivity() {
             }
 
             override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                binding.progressBar.animate().alpha(1F).setDuration(200).start()
                 if (user != null) {
                     user.getIdToken(true).addOnSuccessListener {
                         it.token?.let { token ->

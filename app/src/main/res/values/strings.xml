@@ -1,3 +1,7 @@
+<!--
+  ~ Copyright (c) 2020 VKU by tsnAnh
+  -->
+
 <resources>
     <string name="app_name" translatable="false">VKU</string>
     <string name="text_forum">Forum</string>
@@ -39,4 +43,7 @@
     <string name="toolbar_image_transition_key" translatable="false">toolbar_image</string>
     <string name="new_thread_channel_name" translatable="false">New Thread</string>
     <string name="new_thread_channel_id" translatable="false">dev.tsnanh.vku.newthread.notification</string>
+    <string name="text_reply">Reply</string>
+    <string name="text_new_reply">New Reply</string>
+    <string name="text_cancel">Cancel</string>
 </resources>

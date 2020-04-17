@@ -1,14 +1,16 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.view.newthread
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dev.tsnanh.vku.repository.VKURepository
 import org.koin.java.KoinJavaComponent.inject
 
-class NewThreadViewModel(private val state: SavedStateHandle) :
-    ViewModel() {
+class NewThreadViewModel : ViewModel() {
     private val repository by inject(VKURepository::class.java)
 
     val forums = repository.getAllForums()

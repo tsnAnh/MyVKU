@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.worker
 
 import android.content.Context
@@ -24,7 +28,8 @@ class UploadPostImageWorker(private val context: Context, params: WorkerParamete
         val uid = inputData.getString("uid")!!
         val imageUri = Uri.parse(inputData.getString("image"))
 
-        val descriptor = context.contentResolver.openFileDescriptor(imageUri, "r", null)
+        val descriptor =
+            context.contentResolver.openFileDescriptor(imageUri, "r", null)
         val inputStream = FileInputStream(descriptor!!.fileDescriptor)
 
         val fileImage = File(context.cacheDir, context.contentResolver.getFilePath(imageUri))
@@ -36,7 +41,8 @@ class UploadPostImageWorker(private val context: Context, params: WorkerParamete
             MediaType.parse("multipart/form-data"),
             fileImage
         )
-        val filePart = MultipartBody.Part.createFormData("image", fileImage.name, requestBody)
+        val filePart =
+            MultipartBody.Part.createFormData("image", fileImage.name, requestBody)
         // Upload image
         val imageURL = async {
             VKUServiceApi.network.uploadImage("Bearer $token", uid, filePart)

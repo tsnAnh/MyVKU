@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.repository
 
 import androidx.lifecycle.LiveData
@@ -33,6 +37,7 @@ class VKURepository(private val database: VKUDatabase) {
                 emit(Resource.Error("Cannot connect to server!", emptyList<Forum>()))
             } catch (t: Throwable) {
                 emit(Resource.Error("Something went wrong!", emptyList<Forum>()))
+                Timber.d(t)
             }
         }
     }

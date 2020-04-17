@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 VKU by tsnAnh
+ */
+
 package dev.tsnanh.vku.domain
 
 import dev.tsnanh.vku.network.NetworkPost
@@ -45,8 +49,8 @@ data class ForumThread(
     var numberOfPosts: Int = 1,
     var numberOfViews: Int = 0,
     var userId: String = "",
-    var createAt: String = "",
-    var lastUpdateOn: String = "",
+    var createdAt: Long = 0L,
+    var lastUpdatedOn: Long = 0L,
     var posts: List<String> = emptyList(),
     var editHistory: List<String> = emptyList()
 )
@@ -75,9 +79,12 @@ data class Post(
     var content: String,
     var images: List<String> = emptyList(),
     var userId: String = "",
+    var userAvatar: String = "",
     var threadId: String = "",
+    var threadTitle: String = "",
     var editHistory: List<String> = emptyList(),
-    var createdAt: String = ""
+    var createdAt: Long = 0L,
+    val userDisplayName: String = ""
 )
 
 fun ForumThread.asNetworkModel(): NetworkThread {
@@ -88,8 +95,8 @@ fun ForumThread.asNetworkModel(): NetworkThread {
         numberOfPosts = numberOfPosts,
         numberOfViews = numberOfViews,
         userId = userId,
-        createAt = createAt,
-        lastUpdateOn = lastUpdateOn,
+        createdAt = createdAt,
+        lastUpdatedOn = lastUpdatedOn,
         posts = posts,
         editHistory = editHistory,
         userAvatar = userAvatar,
@@ -105,7 +112,10 @@ fun Post.asNetworkModel(): NetworkPost {
         userId = userId,
         threadId = threadId,
         editHistory = editHistory,
-        createdAt = createdAt
+        createdAt = createdAt,
+        threadTitle = threadTitle,
+        userAvatar = userAvatar,
+        userDisplayName = userDisplayName
     )
 }
 

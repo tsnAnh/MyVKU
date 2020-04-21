@@ -17,8 +17,8 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -29,16 +29,19 @@ import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewReplyBinding
 import dev.tsnanh.vku.domain.Post
+import dev.tsnanh.vku.domain.Resource
 import dev.tsnanh.vku.view.newthread.RC_ADD_PHOTO
 import dev.tsnanh.vku.view.newthread.RC_IMAGE_PICKER
 import dev.tsnanh.vku.view.newthread.RC_PERMISSION
+import timber.log.Timber
 
 class NewReplyFragment(
     private val threadId: String,
-    private val threadTitle: String
+    private val threadTitle: String,
+    private val quotedPostId: String = ""
 ) : BottomSheetDialogFragment() {
 
-    private val viewModel: NewReplyViewModel by viewModels()
+    private lateinit var viewModel: NewReplyViewModel
     private lateinit var binding: FragmentNewReplyBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
     private val sharedPreferences by lazy {
@@ -57,6 +60,9 @@ class NewReplyFragment(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        val factory = NewThreadViewModelFactory(quotedPostId, requireActivity().application)
+        viewModel = ViewModelProvider(this, factory).get(NewReplyViewModel::class.java)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -81,6 +87,37 @@ class NewReplyFragment(
         binding.listImageUpload.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.listImageUpload.adapter = pickerAdapter
+
+        viewModel.quotedPost.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                Timber.d("${it.data}")
+                when (it) {
+                    is Resource.Loading -> {
+                        binding.materialCardView.visibility = View.VISIBLE
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.layoutPost.visibility = View.INVISIBLE
+                    }
+                    is Resource.Error -> {
+                        // handle error
+                        if (it.message == "empty")
+                            binding.materialCardView.visibility = View.GONE
+                        else
+                            Snackbar
+                                .make(
+                                    requireView(),
+                                    "${it.message}",
+                                    Snackbar.LENGTH_LONG
+                                )
+                                .show()
+                    }
+                    is Resource.Success -> {
+                        binding.post = it.data
+                        binding.progressBar.visibility = View.GONE
+                        binding.layoutPost.visibility = View.VISIBLE
+                    }
+                }
+            }
+        })
 
         viewModel.pickerHasImage.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -136,7 +173,8 @@ class NewReplyFragment(
                 val post = Post(
                     content = binding.content.text.toString().trim(),
                     threadTitle = threadTitle,
-                    threadId = threadId
+                    threadId = threadId,
+                    quoted = if (quotedPostId.isNotBlank()) quotedPostId else ""
                 )
 
                 viewModel.newReply(post, pickerAdapter.currentList)

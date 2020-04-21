@@ -4,18 +4,44 @@
 
 package dev.tsnanh.vku.view.thread
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import dev.tsnanh.vku.domain.ForumThread
+import dev.tsnanh.vku.domain.Resource
+import dev.tsnanh.vku.network.VKUServiceApi
+import dev.tsnanh.vku.network.asDomainModel
 import dev.tsnanh.vku.repository.VKURepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
 
-class ThreadViewModel(forumId: String) : ViewModel() {
+class ThreadViewModel(private val forumId: String) : ViewModel() {
     private val repository: VKURepository by inject(VKURepository::class.java)
 
-    val threads = repository.getThreadsInForum(forumId)
+    private var _threads = MutableLiveData<Resource<List<ForumThread>>>()
+    val threads: LiveData<Resource<List<ForumThread>>>
+        get() = _threads
+
+    init {
+        refreshThreads()
+    }
+
+    fun refreshThreads() = viewModelScope.launch(Dispatchers.IO) {
+        _threads.postValue(Resource.Loading())
+        _threads.postValue(
+            try {
+                Resource.Success(VKUServiceApi.network.getThreadsInForum(forumId).asDomainModel())
+            } catch (e: SocketTimeoutException) {
+                Resource.Error<List<ForumThread>>("Connection Timed Out")
+            } catch (e2: HttpException) {
+                Resource.Error<List<ForumThread>>("Cannot connect to server!")
+            } catch (t: Throwable) {
+                Resource.Error<List<ForumThread>>("Something went wrong!")
+            }
+        )
+    }
+
     val forum = repository.getForumById(forumId)
 
     private val _navigateToReplies = MutableLiveData<ForumThread>()

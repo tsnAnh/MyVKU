@@ -5,6 +5,7 @@
 package dev.tsnanh.vku.utils
 
 import android.app.Activity
+import android.content.Context
 import android.net.Uri
 import android.util.DisplayMetrics
 import android.view.View
@@ -12,16 +13,27 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.flexbox.FlexboxLayout
 import com.google.firebase.auth.FirebaseUser
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.Forum
 import dev.tsnanh.vku.domain.ForumThread
 import dev.tsnanh.vku.domain.Post
+import dev.tsnanh.vku.view.replies.RepliesFragmentDirections
 import timber.log.Timber
+
+fun progressBar(context: Context) = CircularProgressDrawable(context).apply {
+    setColorSchemeColors(ContextCompat.getColor(context, R.color.secondaryColor))
+    strokeWidth = 4F
+    centerRadius = 20F
+}
 
 @BindingAdapter("categoryNews")
 fun TextView.setCategory(category: String?) {
@@ -41,6 +53,7 @@ fun ImageView.setAvatar(user: FirebaseUser?) {
         Glide
             .with(this.context)
             .load(user.photoUrl)
+            .placeholder(progressBar(this.context))
             .circleCrop()
             .into(this)
     }
@@ -52,6 +65,7 @@ fun ImageView.setForumImage(forum: Forum?) {
         Glide
             .with(this.context)
             .load(forum.image)
+            .placeholder(progressBar(this.context))
             .into(this)
     }
 }
@@ -62,6 +76,7 @@ fun ImageView.setChooserImage(uri: Uri?) {
         Glide
             .with(this.context)
             .load(it)
+            .placeholder(progressBar(this.context))
             .into(this)
     }
 }
@@ -87,6 +102,7 @@ fun ImageView.setItemThreadAvatar(thread: ForumThread) {
     Glide
         .with(this.context)
         .load(thread.userAvatar)
+        .placeholder(progressBar(this.context))
         .centerCrop()
         .circleCrop()
         .into(this)
@@ -98,6 +114,7 @@ fun ImageView.setPostAvatar(post: Post?) {
         Glide
             .with(this.context)
             .load(post.userAvatar)
+            .placeholder(progressBar(this.context))
             .centerCrop()
             .circleCrop()
             .into(this)
@@ -106,10 +123,19 @@ fun ImageView.setPostAvatar(post: Post?) {
 
 @BindingAdapter("postImages")
 fun FlexboxLayout.setImages(post: Post?) {
+    this.removeAllViews()
     post?.let {
         val imageCount = it.images.size
-        it.images.forEach { image ->
+        it.images.mapIndexed { i, image ->
             val imageView = AppCompatImageView(this.context)
+            imageView.setOnClickListener {
+                this.findNavController().navigate(
+                    RepliesFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
+                        post.images.toTypedArray(),
+                        i
+                    )
+                )
+            }
             if (imageCount > 2) imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             val metrics = DisplayMetrics()
             (this.context as Activity).windowManager
@@ -132,9 +158,24 @@ fun FlexboxLayout.setImages(post: Post?) {
             Glide
                 .with(imageView)
                 .load("http://34.87.13.195:3000/$image")
+                .placeholder(progressBar(this.context))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
-            Timber.d("http://34.87.13.195:3000/$image")
+
             this.addView(imageView, params)
         }
+    }
+}
+
+@BindingAdapter("image")
+fun ImageView.setImageByURL(url: String?) {
+    url?.let {
+        Timber.d("http://34.87.13.195:3000/$url")
+        Glide
+            .with(this.context)
+            .load("http://34.87.13.195:3000/$url")
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .placeholder(progressBar(this.context))
+            .into(this)
     }
 }

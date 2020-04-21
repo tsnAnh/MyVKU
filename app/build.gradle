@@ -19,7 +19,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "0.1.0-dev06-HOTFIX"
+        versionName "0.1.0-dev07"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -56,7 +56,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
-    implementation 'androidx.preference:preference:1.1.0'
+    implementation 'androidx.preference:preference:1.1.1'
     // endregion
     // region Lifecycle Library
     def lifecycle_version = "2.2.0"
@@ -66,9 +66,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     // endregion
     // region Navigation Component
-    def nav_version = "2.2.1"
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    def nav_version = "2.3.0-alpha05"
+    api "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    api "androidx.navigation:navigation-ui-ktx:$nav_version"
+    api "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     // endregion
     // region Room Database Library
     def room_version = "2.2.5"
@@ -116,7 +117,7 @@ dependencies {
     // Firebase Authentication
     implementation 'com.google.firebase:firebase-auth:19.3.0'
     // Material Design
-    implementation 'com.google.android.material:material:1.2.0-alpha05'
+    implementation 'com.google.android.material:material:1.2.0-alpha06'
     // Androidx Browser
     implementation 'androidx.browser:browser:1.2.0'
     // Firebase UI Auth
@@ -125,6 +126,8 @@ dependencies {
     implementation 'com.google.android:flexbox:2.0.1'
     // Timber Log
     implementation 'com.jakewharton.timber:timber:4.7.1'
+    // ViewPager2
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
 }
 ktlint {
     android.set(true)

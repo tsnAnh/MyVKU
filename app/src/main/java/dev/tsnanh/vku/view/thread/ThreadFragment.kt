@@ -17,10 +17,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ThreadAdapter
 import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.FragmentThreadBinding
+import dev.tsnanh.vku.domain.Resource
 import timber.log.Timber
 
 class ThreadFragment : Fragment() {
@@ -74,7 +76,19 @@ class ThreadFragment : Fragment() {
 
         viewModel.threads.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.submitList(it)
+                when (it) {
+                    is Resource.Success -> {
+                        adapter.submitList(it.data)
+                        binding.progressBar.visibility = View.GONE
+                    }
+                    is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is Resource.Error -> {
+                        Snackbar
+                            .make(requireView(), "${it.message}", Snackbar.LENGTH_LONG)
+                            .show()
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
             }
         })
 
@@ -115,5 +129,10 @@ class ThreadFragment : Fragment() {
     private fun configureList() {
         binding.listThread.setHasFixedSize(true)
         binding.listThread.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    override fun onStart() {
+        viewModel.refreshThreads()
+        super.onStart()
     }
 }

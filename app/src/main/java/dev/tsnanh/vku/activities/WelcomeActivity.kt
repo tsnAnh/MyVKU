@@ -68,7 +68,7 @@ class WelcomeActivity : AppCompatActivity() {
                                 if (isRegistered) {
                                     start()
                                 } else {
-                                    registerUser(token)
+                                    showErrorDialog()
                                 }
                             }
                         }
@@ -92,7 +92,7 @@ class WelcomeActivity : AppCompatActivity() {
         })
     }
 
-    suspend fun registerUser(idToken: String) {
+    private suspend fun registerUser(idToken: String) {
         val status = withContext(Dispatchers.IO) {
             VKUServiceApi.network.registerNewUser("Bearer $idToken")
         }

@@ -84,7 +84,9 @@ data class Post(
     var threadTitle: String = "",
     var editHistory: List<String> = emptyList(),
     var createdAt: Long = 0L,
-    val userDisplayName: String = ""
+    var userDisplayName: String = "",
+    var quoted: String = "",
+    var quotedPost: Post? = null
 )
 
 fun ForumThread.asNetworkModel(): NetworkThread {
@@ -115,7 +117,9 @@ fun Post.asNetworkModel(): NetworkPost {
         createdAt = createdAt,
         threadTitle = threadTitle,
         userAvatar = userAvatar,
-        userDisplayName = userDisplayName
+        userDisplayName = userDisplayName,
+        quoted = quoted,
+        quotedPost = quotedPost?.asNetworkModel()
     )
 }
 

@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkManager
 import com.squareup.moshi.Moshi
@@ -28,12 +29,16 @@ import dev.tsnanh.vku.databinding.FragmentRepliesBinding
 import dev.tsnanh.vku.network.NetworkPost
 import dev.tsnanh.vku.utils.sendNotification
 import dev.tsnanh.vku.view.replies.newreply.NewReplyFragment
+import dev.tsnanh.vku.worker.POST
 import timber.log.Timber
+
+const val POST_TAG = "create_post"
 
 class RepliesFragment : Fragment() {
 
     private lateinit var binding: FragmentRepliesBinding
     private lateinit var viewModel: RepliesViewModel
+    private val navArgs: RepliesFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +64,6 @@ class RepliesFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val navArgs: RepliesFragmentArgs by navArgs()
         Timber.d(navArgs.threadId)
         binding.lifecycleOwner = viewLifecycleOwner
         viewModel = ViewModelProvider(
@@ -67,8 +71,13 @@ class RepliesFragment : Fragment() {
             RepliesViewModelFactory(navArgs.threadId, requireActivity().application)
         ).get(RepliesViewModel::class.java)
 
-        binding.listReplies.setHasFixedSize(true)
-        binding.listReplies.layoutManager = LinearLayoutManager(requireContext())
+        val swipeController = SwipeController()
+        val itemTouchHelper = ItemTouchHelper(swipeController)
+        binding.listReplies.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(requireContext())
+            itemTouchHelper.attachToRecyclerView(this)
+        }
 
         val adapter = RepliesAdapter()
         binding.listReplies.adapter = adapter
@@ -89,7 +98,7 @@ class RepliesFragment : Fragment() {
                 val jsonAdapter =
                     Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
                         .adapter(NetworkPost::class.java)
-                val json = workInfo.outputData.getString("thread")
+                val json = workInfo.outputData.getString(POST)
                 if (json != null && json.isNotEmpty()) {
                     val post = jsonAdapter.fromJson(json)
                     post?.let {
@@ -98,7 +107,7 @@ class RepliesFragment : Fragment() {
                             .sendNotification(
                                 post.content,
                                 "${post.content} is successfully created!",
-                                requireContext()
+                                requireContext().applicationContext
                             )
                     }
                 }
@@ -108,12 +117,15 @@ class RepliesFragment : Fragment() {
         })
 
         binding.fabReply.setOnClickListener {
-            val sheet = NewReplyFragment(navArgs.threadId, navArgs.threadTitle)
-            sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
-            sheet.show(childFragmentManager, TAG_BOTTOM_SHEET)
+            openNewReplyDialog()
         }
     }
 
+    fun openNewReplyDialog(quotedPostId: String = "") {
+        val sheet = NewReplyFragment(navArgs.threadId, navArgs.threadTitle, quotedPostId)
+        sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogStyle)
+        sheet.show(childFragmentManager, TAG_BOTTOM_SHEET)
+    }
 }
 
 private const val TAG_BOTTOM_SHEET = "new_reply"

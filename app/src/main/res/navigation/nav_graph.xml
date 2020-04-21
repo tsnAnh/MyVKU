@@ -100,5 +100,19 @@
         <argument
             android:name="threadTitle"
             app:argType="string" />
+        <action
+            android:id="@+id/action_navigation_replies_to_navigation_image_viewer"
+            app:destination="@id/navigation_image_viewer" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_image_viewer"
+        android:name="dev.tsnanh.vku.view.imageviewer.ImageViewerFragment"
+        android:label="ImageViewerFragment">
+        <argument
+            android:name="urls"
+            app:argType="string[]" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
     </fragment>
 </navigation>

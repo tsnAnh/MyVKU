@@ -79,6 +79,9 @@ interface VKUService {
         @Header("Authorization") idToken: String,
         @Body post: NetworkPost
     ): NetworkPost
+
+    @GET("/r/get/{id}")
+    suspend fun getReplyById(@Path("id") id: String): NetworkPost
 }
 
 object VKUServiceApi {

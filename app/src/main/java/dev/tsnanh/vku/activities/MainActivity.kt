@@ -7,6 +7,7 @@ package dev.tsnanh.vku.activities
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -15,20 +16,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
-import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.google.android.material.snackbar.Snackbar
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
-import dev.tsnanh.vku.domain.ForumThread
-import dev.tsnanh.vku.utils.sendNotification
+import dev.tsnanh.vku.view.newthread.RC_PERMISSION
 import org.koin.java.KoinJavaComponent.inject
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
@@ -60,31 +57,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         createChannelNewThread(
             getString(R.string.new_thread_channel_id), getString(R.string.new_thread_channel_name)
         )
-
-        viewModel.createThreadWorkerLiveData.observe(this, Observer {
-            if (it.isNullOrEmpty()) {
-                return@Observer
-            }
-            val workInfo = it[0]
-
-            if (workInfo.state.isFinished) {
-                val jsonAdapter =
-                    Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-                        .adapter(ForumThread::class.java)
-                val json = workInfo.outputData.getString("thread")
-                if (json != null && json.isNotEmpty()) {
-                    val thread = jsonAdapter.fromJson(json)
-                    thread?.let {
-                        manager.sendNotification(
-                            thread.title,
-                            "${thread.title} is successfully created!",
-                            this
-                        )
-                    }
-                }
-                WorkManager.getInstance(this).pruneWork()
-            }
-        })
     }
 
     private fun createChannelNewThread(channelId: String, channelName: String) {
@@ -102,6 +74,22 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
             manager.createNotificationChannel(notificationChannel)
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            RC_PERMISSION -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Snackbar
+                        .make(binding.root, "Permission Granted", Snackbar.LENGTH_LONG).show()
+                }
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -144,6 +132,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             R.id.navigation_replies -> {
                 toggleBottomNav(false)
             }
+            R.id.navigation_image_viewer -> toggleBottomNav(false)
             else -> {
                 toggleBottomNav(true)
             }

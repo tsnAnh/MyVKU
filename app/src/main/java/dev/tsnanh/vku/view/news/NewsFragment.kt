@@ -36,8 +36,8 @@ class NewsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition = MaterialFadeThrough.create(requireContext())
-        exitTransition = MaterialFadeThrough.create(requireContext())
+        enterTransition = MaterialFadeThrough.create()
+        exitTransition = MaterialFadeThrough.create()
     }
 
     override fun onCreateView(

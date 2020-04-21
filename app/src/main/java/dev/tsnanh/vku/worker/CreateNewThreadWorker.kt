@@ -20,35 +20,44 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+const val THREAD = "thread"
+
 class CreateNewThreadWorker(context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result = coroutineScope {
-        Timber.d(inputData.toString())
+        setProgress(workDataOf(WorkProgress.Progress to 0))
 
         val token = inputData.getStringArray("id_token")?.get(0)
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val jsonAdapter =
             moshi.adapter(NetworkCreateThreadContainer::class.java)
 
+        setProgress(workDataOf(WorkProgress.Progress to 20))
+
         val jsonContainer = inputData.getStringArray("container")?.get(0)
         val container = withContext(Dispatchers.IO) {
             jsonAdapter.fromJson(jsonContainer!!)
         }
 
-        val listImageURL = inputData.getStringArray("imageURL")
+        setProgress(workDataOf(WorkProgress.Progress to 40))
+
+        val listImageURL = inputData.getStringArray(IMAGE_URL)
         if (listImageURL != null && listImageURL.isNotEmpty()) {
             container?.post?.images = listImageURL.toList()
         }
         Timber.d(container.toString())
+        setProgress(workDataOf(WorkProgress.Progress to 60))
 
         val deferredThread = async {
             VKUServiceApi.network.createThread("Bearer $token", container!!).asDomainModel()
         }
+        setProgress(workDataOf(WorkProgress.Progress to 80))
         val threadJsonAdapter = moshi.adapter(ForumThread::class.java)
         val threadJson = threadJsonAdapter.toJson(deferredThread.await())
 
         Timber.d("CCC $threadJson")
-        Result.success(workDataOf("thread" to threadJson))
+        setProgress(workDataOf(WorkProgress.Progress to 100))
+        Result.success(workDataOf(THREAD to threadJson))
     }
 }

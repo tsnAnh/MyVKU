@@ -4,16 +4,23 @@
 
 package dev.tsnanh.vku.view.newthread
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.work.WorkManager
 import dev.tsnanh.vku.repository.VKURepository
 import org.koin.java.KoinJavaComponent.inject
 
-class NewThreadViewModel : ViewModel() {
+const val TAG_NEW_THREAD = "dev.tsnanh.newthread"
+
+class NewThreadViewModel(application: Application) : AndroidViewModel(application) {
     private val repository by inject(VKURepository::class.java)
 
     val forums = repository.getAllForums()
+
+    val createThreadWorkerLiveData =
+        WorkManager.getInstance(getApplication()).getWorkInfosByTagLiveData(TAG_NEW_THREAD)
 
     private val _pickerHasImage = MutableLiveData(false)
     val pickerHasImage: LiveData<Boolean>

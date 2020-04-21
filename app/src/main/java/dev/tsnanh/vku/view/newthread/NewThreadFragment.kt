@@ -6,6 +6,8 @@ package dev.tsnanh.vku.view.newthread
 
 import android.Manifest
 import android.app.Activity
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -26,16 +28,23 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.activities.MainViewModel
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewThreadBinding
+import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
 import dev.tsnanh.vku.domain.ForumThread
 import dev.tsnanh.vku.domain.Post
 import dev.tsnanh.vku.domain.Resource
+import dev.tsnanh.vku.utils.sendNotification
+import dev.tsnanh.vku.worker.THREAD
+import dev.tsnanh.vku.worker.WorkProgress
 import timber.log.Timber
 
 const val RC_IMAGE_PICKER = 0
@@ -48,6 +57,17 @@ class NewThreadFragment : Fragment() {
     private lateinit var binding: FragmentNewThreadBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
     private val activityViewModel: MainViewModel by activityViewModels()
+
+    private lateinit var progressBarLayoutBinding: ProgressDialogLayoutBinding
+    private val progressDialog by lazy {
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(
+                progressBarLayoutBinding.root
+            )
+            .setTitle("Creating your thread...")
+            .setCancelable(false)
+            .create()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +94,8 @@ class NewThreadFragment : Fragment() {
             }
             title = "Create New Thread"
         }
+        progressBarLayoutBinding =
+            ProgressDialogLayoutBinding.inflate(LayoutInflater.from(requireContext()))
 
         return binding.root
     }
@@ -119,6 +141,43 @@ class NewThreadFragment : Fragment() {
         viewModel.pickerHasImage.observe(viewLifecycleOwner, Observer {
             it?.let {
                 binding.pickerHasImage = it
+            }
+        })
+
+        viewModel.createThreadWorkerLiveData.observe(viewLifecycleOwner, Observer {
+            if (it.isNullOrEmpty()) {
+                return@Observer
+            }
+
+            val workInfo = it[0]
+
+            if (progressDialog.isShowing) {
+                progressBarLayoutBinding.progress.progress =
+                    workInfo.progress.getInt(WorkProgress.Progress, 0)
+            } else {
+                progressDialog.show()
+            }
+
+            if (workInfo.state.isFinished) {
+                progressDialog.dismiss()
+                val jsonAdapter =
+                    Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+                        .adapter(ForumThread::class.java)
+                val json = workInfo.outputData.getString(THREAD)
+                if (json != null && json.isNotEmpty()) {
+                    val thread = jsonAdapter.fromJson(json)
+                    thread?.let {
+                        (requireContext()
+                            .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                            .sendNotification(
+                                thread.title,
+                                "${thread.title} is successfully created!",
+                                requireContext()
+                            )
+                    }
+                }
+                WorkManager.getInstance(requireContext()).pruneWork()
+                findNavController().navigateUp()
             }
         })
 
@@ -177,6 +236,14 @@ class NewThreadFragment : Fragment() {
                         .setTitle("Permission required")
                         .setMessage("We need permission to upload your image!")
                         .setPositiveButton("OK") { d, _ ->
+                            ActivityCompat.requestPermissions(
+                                requireActivity(),
+                                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                                RC_PERMISSION
+                            )
+                            d.dismiss()
+                        }
+                        .setNegativeButton("CANCEL") { d, _ ->
                             d.dismiss()
                         }
                         .create().show()
@@ -192,25 +259,10 @@ class NewThreadFragment : Fragment() {
     }
 
     // region Pick Image
-    private fun pickImage(requestCode: Int) {
+    fun pickImage(requestCode: Int) {
         val intent = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         startActivityForResult(intent, requestCode)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            RC_PERMISSION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    pickImage(RC_IMAGE_PICKER)
-                }
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -278,7 +330,6 @@ class NewThreadFragment : Fragment() {
             val post = preparePost()
 
             activityViewModel.createNewThread(pickerAdapter.currentList, thread, post)
-            findNavController().navigateUp()
         }
     }
 

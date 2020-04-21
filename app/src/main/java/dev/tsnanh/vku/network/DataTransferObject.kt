@@ -130,7 +130,10 @@ data class NetworkPost(
     @field:Json(name = "edit_history")
     var editHistory: List<String> = emptyList(),
     @field:Json(name = "created_at")
-    var createdAt: Long = 0L
+    var createdAt: Long = 0L,
+    var quoted: String = "",
+    @field:Json(name = "quoted_post")
+    var quotedPost: NetworkPost? = null
 )
 
 fun NetworkNewsContainer.asDomainModel(): List<News> {
@@ -171,7 +174,7 @@ fun NetworkForumContainer.asDomainModel(): List<Forum> {
     }
 }
 
-fun NetworkThreadContainer.asDomainModel(): List<dev.tsnanh.vku.domain.ForumThread> {
+fun NetworkThreadContainer.asDomainModel(): List<ForumThread> {
     return threads.map {
         ForumThread(
             id = it.id,
@@ -219,7 +222,9 @@ fun NetworkPostContainer.asDomainModel(): List<Post> {
             createdAt = it.createdAt,
             userDisplayName = it.userDisplayName,
             userAvatar = it.userAvatar,
-            threadTitle = it.threadTitle
+            threadTitle = it.threadTitle,
+            quoted = it.quoted,
+            quotedPost = it.quotedPost?.asDomainModel()
         )
     }
 }
@@ -252,5 +257,22 @@ fun NetworkThread.asDomainModel(): ForumThread {
         lastUpdatedOn,
         posts,
         editHistory
+    )
+}
+
+fun NetworkPost.asDomainModel(): Post {
+    return Post(
+        id,
+        content,
+        images,
+        userId,
+        userAvatar,
+        threadId,
+        threadTitle,
+        editHistory,
+        createdAt,
+        userDisplayName,
+        quoted,
+        quotedPost?.asDomainModel()
     )
 }

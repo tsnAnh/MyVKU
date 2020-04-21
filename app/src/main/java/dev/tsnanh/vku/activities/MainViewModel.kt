@@ -16,20 +16,16 @@ import dev.tsnanh.vku.domain.Post
 import dev.tsnanh.vku.domain.asNetworkModel
 import dev.tsnanh.vku.network.NetworkCreateThreadContainer
 import dev.tsnanh.vku.utils.sendNotificationWithProgress
+import dev.tsnanh.vku.view.newthread.TAG_NEW_THREAD
 import dev.tsnanh.vku.worker.CreateNewThreadWorker
 import dev.tsnanh.vku.worker.UploadPostImageWorker
 import org.koin.java.KoinJavaComponent.inject
-
-const val TAG_NEW_THREAD = "dev.tsnanh.newthread"
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val workManager = WorkManager.getInstance(application)
     private val firebaseUser = FirebaseAuth.getInstance().currentUser
 
     private val notificationManager by inject(NotificationManager::class.java)
-
-    val createThreadWorkerLiveData =
-        workManager.getWorkInfosByTagLiveData(TAG_NEW_THREAD)
 
     /* unused
     fun create(thread: ForumThread, post: Post) {

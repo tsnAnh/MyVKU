@@ -6,20 +6,30 @@ package dev.tsnanh.vku.view.replies.newreply
 
 import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import androidx.work.*
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.tsnanh.vku.domain.Post
+import dev.tsnanh.vku.domain.Resource
 import dev.tsnanh.vku.domain.asNetworkModel
 import dev.tsnanh.vku.network.NetworkPost
+import dev.tsnanh.vku.repository.VKURepository
+import dev.tsnanh.vku.view.replies.POST_TAG
 import dev.tsnanh.vku.worker.CreateNewPostWorker
 import dev.tsnanh.vku.worker.UploadPostImageWorker
+import org.koin.java.KoinJavaComponent.inject
 
-class NewReplyViewModel(application: Application) : AndroidViewModel(application) {
+class NewReplyViewModel(quotedPostId: String, application: Application) :
+    AndroidViewModel(application) {
+
+    private val repo by inject(VKURepository::class.java)
+    val quotedPost = if (quotedPostId.isNotEmpty()) {
+        repo.getReplyById(quotedPostId)
+    } else {
+        MutableLiveData(Resource.Error<Post>("empty"))
+    }
 
     private val _pickerHasImage = MutableLiveData(false)
     val pickerHasImage: LiveData<Boolean>
@@ -56,7 +66,7 @@ class NewReplyViewModel(application: Application) : AndroidViewModel(application
                 val createNewReply = OneTimeWorkRequestBuilder<CreateNewPostWorker>()
                     .setConstraints(constraint)
                     .setInputMerger(ArrayCreatingInputMerger::class.java)
-                    .addTag("create_post")
+                    .addTag(POST_TAG)
                     .setInputData(
                         workDataOf(
                             "id_token" to token,
@@ -87,5 +97,18 @@ class NewReplyViewModel(application: Application) : AndroidViewModel(application
                 _navigateBack.value = true
             }
         }
+    }
+}
+
+class NewThreadViewModelFactory(
+    private val quotedPostId: String,
+    private val application: Application
+) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(NewReplyViewModel::class.java)) {
+            return NewReplyViewModel(quotedPostId, application) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel")
     }
 }

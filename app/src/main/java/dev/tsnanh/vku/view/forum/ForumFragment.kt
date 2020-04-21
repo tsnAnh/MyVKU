@@ -36,7 +36,7 @@ class ForumFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition = MaterialFadeThrough.create(requireContext())
+        enterTransition = MaterialFadeThrough.create()
 //        exitTransition = Hold()
     }
 

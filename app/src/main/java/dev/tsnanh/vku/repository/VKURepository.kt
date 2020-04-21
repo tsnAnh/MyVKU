@@ -42,6 +42,7 @@ class VKURepository(private val database: VKUDatabase) {
         }
     }
 
+    @SuppressWarnings("UNUSED")
     fun getReplies(threadId: String) = liveData(Dispatchers.IO) {
         emit(Resource.Loading())
         withContext(Dispatchers.IO) {
@@ -104,6 +105,19 @@ class VKURepository(private val database: VKUDatabase) {
             } catch (t: Throwable) {
                 Timber.e(t)
             }
+        }
+    }
+
+    fun getReplyById(quotedPostId: String) = liveData(Dispatchers.IO) {
+        emit(Resource.Loading<Post>())
+        try {
+            emit(Resource.Success(VKUServiceApi.network.getReplyById(quotedPostId).asDomainModel()))
+        } catch (e: SocketTimeoutException) {
+            emit(Resource.Error<Post>("Connection Timed Out", null))
+        } catch (e2: HttpException) {
+            emit(Resource.Error<Post>("Cannot connect to server!", null))
+        } catch (t: Throwable) {
+            emit(Resource.Error<Post>("Something went wrong!", null))
         }
     }
 }

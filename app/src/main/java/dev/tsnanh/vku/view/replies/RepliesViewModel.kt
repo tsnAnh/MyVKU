@@ -33,7 +33,7 @@ class RepliesViewModel(
     }
 
     val createPostWorkerLiveData =
-        WorkManager.getInstance(getApplication()).getWorkInfosByTagLiveData("create_post")
+        WorkManager.getInstance(getApplication()).getWorkInfosByTagLiveData(POST_TAG)
 
     private suspend fun refreshReplies() {
         withContext(Dispatchers.IO) {

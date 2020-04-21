@@ -19,23 +19,37 @@ import okhttp3.RequestBody
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.util.*
+
+internal const val IMAGE_URL = "imageURL"
 
 class UploadPostImageWorker(private val context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result = coroutineScope {
+        setProgress(workDataOf(WorkProgress.Progress to 0))
         val token = inputData.getString("id_token")
         val uid = inputData.getString("uid")!!
         val imageUri = Uri.parse(inputData.getString("image"))
+
+        setProgress(workDataOf(WorkProgress.Progress to 20))
 
         val descriptor =
             context.contentResolver.openFileDescriptor(imageUri, "r", null)
         val inputStream = FileInputStream(descriptor!!.fileDescriptor)
 
-        val fileImage = File(context.cacheDir, context.contentResolver.getFilePath(imageUri))
+        val fileImage = File(
+            context.cacheDir,
+            "${UUID.randomUUID().toString()
+                .substring(0, 8)} - ${context.contentResolver.getFilePath(imageUri)}"
+        )
+
+        setProgress(workDataOf(WorkProgress.Progress to 40))
 
         val outputStream = FileOutputStream(fileImage)
         inputStream.copyTo(outputStream)
+
+        setProgress(workDataOf(WorkProgress.Progress to 60))
 
         val requestBody = RequestBody.create(
             MediaType.parse("multipart/form-data"),
@@ -44,10 +58,13 @@ class UploadPostImageWorker(private val context: Context, params: WorkerParamete
         val filePart =
             MultipartBody.Part.createFormData("image", fileImage.name, requestBody)
         // Upload image
+        setProgress(workDataOf(WorkProgress.Progress to 80))
         val imageURL = async {
             VKUServiceApi.network.uploadImage("Bearer $token", uid, filePart)
         }
 
-        Result.success(workDataOf("imageURL" to imageURL.await()))
+        setProgress(workDataOf(WorkProgress.Progress to 100))
+
+        Result.success(workDataOf(IMAGE_URL to imageURL.await()))
     }
 }

@@ -30,11 +30,9 @@ class RepliesAdapter : ListAdapter<Post, RecyclerView.ViewHolder>(ReplyDiffUtil(
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            0 -> TYPE_FIRST
-            else -> TYPE_REPLIES
-        }
+    override fun getItemViewType(position: Int) = when (position) {
+        0 -> TYPE_FIRST
+        else -> TYPE_REPLIES
     }
 }
 

@@ -29,8 +29,8 @@ class ThreadViewHolder(
 
     fun bind(thread: ForumThread, listener: ThreadClickListener) {
         binding.thread = thread.apply {
-            binding.createdAt = convertTimestampToDateString(createdAt)
-            binding.lastUpdatedOn = convertTimestampToDateString(lastUpdatedOn)
+            binding.createdAt = createdAt.convertTimestampToDateString()
+            binding.lastUpdatedOn = lastUpdatedOn.convertTimestampToDateString()
             Timber.d(binding.createdAt)
             Timber.d(binding.lastUpdatedOn)
             Timber.d("$createdAt")

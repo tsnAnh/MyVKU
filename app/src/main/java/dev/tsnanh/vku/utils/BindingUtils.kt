@@ -136,30 +136,18 @@ fun FlexboxLayout.setImages(post: Post?) {
         val transitionName = this.context.getString(R.string.image_transition_name)
         it.images.mapIndexed { i, image ->
             val imageView = AppCompatImageView(this.context)
-            imageView.transitionName = transitionName
-            imageView.setOnClickListener {
-                val extras =
-                    FragmentNavigatorExtras(imageView to transitionName)
-                this.findNavController().navigate(
-                    RepliesFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
-                        post.images.toTypedArray(),
-                        i
-                    ),
-                    extras
-                )
-            }
-            if (imageCount > 2) imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             val metrics = DisplayMetrics()
             (this.context as Activity).windowManager
                 .defaultDisplay
                 .getMetrics(metrics)
             val params = FlexboxLayout.LayoutParams(
                 when (imageCount) {
-                    1, 2 -> FlexboxLayout.LayoutParams.MATCH_PARENT
+                    1, 2 -> metrics.widthPixels / imageCount
                     else -> metrics.widthPixels / 3
                 },
                 when (imageCount) {
-                    1, 2 -> FlexboxLayout.LayoutParams.WRAP_CONTENT
+                    1, 2 -> metrics.widthPixels / imageCount
                     else -> metrics.widthPixels / 3
                 }
             )
@@ -173,7 +161,18 @@ fun FlexboxLayout.setImages(post: Post?) {
                 .placeholder(progressBar(this.context))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
-
+            imageView.transitionName = transitionName
+            imageView.setOnClickListener {
+                val extras =
+                    FragmentNavigatorExtras(imageView to transitionName)
+                this.findNavController().navigate(
+                    RepliesFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
+                        post.images.toTypedArray(),
+                        i
+                    ),
+                    extras
+                )
+            }
             this.addView(imageView, params)
         }
     }

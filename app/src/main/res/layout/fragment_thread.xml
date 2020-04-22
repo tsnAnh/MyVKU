@@ -16,7 +16,9 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
         android:fitsSystemWindows="false"
+        android:transitionName="thread"
         tools:context=".view.thread.ThreadFragment">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -30,9 +32,9 @@
                 android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
                 app:contentScrim="@color/primaryColor"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-                android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
                 app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
                 app:toolbarId="@+id/toolbar">
 
@@ -40,10 +42,9 @@
                     android:id="@+id/app_bar_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:contentDescription="@{ forum.title }"
                     android:scaleType="centerCrop"
                     android:tint="#59000000"
-                    android:contentDescription="@{ forum.title }"
-                    android:transitionName="@{ forum.title }"
                     app:forumImage="@{ forum }" />
 
                 <com.google.android.material.appbar.MaterialToolbar
@@ -71,6 +72,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_add_black_24dp"
+            android:transitionName="view"
             app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior" />
 
         <ProgressBar

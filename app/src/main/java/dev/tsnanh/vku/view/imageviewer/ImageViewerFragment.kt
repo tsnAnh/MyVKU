@@ -41,6 +41,7 @@ class ImageViewerFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigateUp()
         }
@@ -67,7 +68,7 @@ class ImageViewerFragment : Fragment() {
 
         binding.viewPager2.apply {
             setAdapter(adapter)
-            currentItem = navArgs.position
+            setCurrentItem(navArgs.position, false)
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageScrollStateChanged(state: Int) {
                     when (state) {

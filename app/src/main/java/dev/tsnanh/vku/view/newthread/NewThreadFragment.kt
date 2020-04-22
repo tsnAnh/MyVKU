@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialContainerTransform
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.tsnanh.vku.R
@@ -72,9 +73,7 @@ class NewThreadFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        enterTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.X, false)
-//        enterTransition = MaterialContainerTransform(requireContext()).apply {
-//            duration = 3000
-//        }
+        sharedElementEnterTransition = MaterialContainerTransform()
 //        enterTransition = MaterialFadeThrough.create(requireContext())
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigateUp()

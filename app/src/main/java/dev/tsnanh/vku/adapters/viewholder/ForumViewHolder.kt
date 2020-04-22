@@ -29,7 +29,7 @@ class ForumViewHolder private constructor(
     ) {
         binding.forum = forum
         binding.card.setOnClickListener {
-            listener.onClick(forum, binding.threadImage)
+            listener.onClick(forum, binding.card)
         }
         binding.executePendingBindings()
     }

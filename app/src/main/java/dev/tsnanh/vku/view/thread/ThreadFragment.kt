@@ -14,10 +14,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.Hold
+import com.google.android.material.transition.MaterialContainerTransform
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ThreadAdapter
 import dev.tsnanh.vku.adapters.ThreadClickListener
@@ -32,6 +35,10 @@ class ThreadFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementReturnTransition = MaterialContainerTransform()
+        exitTransition = Hold()
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigateUp()
@@ -68,9 +75,9 @@ class ThreadFragment : Fragment() {
         ).get(ThreadViewModel::class.java)
 
         configureList()
-        val adapter = ThreadAdapter(ThreadClickListener {
-            viewModel.onNavigateToReplies(it)
-            Timber.d("ThreadClickListener called: $it")
+        val adapter = ThreadAdapter(ThreadClickListener { thread, cardView ->
+            viewModel.onNavigateToReplies(thread, cardView)
+            Timber.d("ThreadClickListener called: $thread")
         })
         binding.listThread.adapter = adapter
 
@@ -100,18 +107,26 @@ class ThreadFragment : Fragment() {
 
         viewModel.navigateToReplies.observe(viewLifecycleOwner, Observer {
             it?.let {
+                val extras = FragmentNavigatorExtras(
+                    it.second to "replies"
+                )
                 findNavController().navigate(
                     ThreadFragmentDirections
-                        .actionNavigationThreadToNavigationReplies(it.id, it.title)
+                        .actionNavigationThreadToNavigationReplies(it.first.id, it.first.title),
+                    extras
                 )
                 viewModel.onNavigatedToReplies()
             }
         })
 
         binding.fabNew.setOnClickListener {
+            val extras = FragmentNavigatorExtras(
+                binding.fabNew to "view"
+            )
             findNavController().navigate(
                 ThreadFragmentDirections
-                    .actionNavigationThreadToNavigationNewThread(navArgs.id, navArgs.title)
+                    .actionNavigationThreadToNavigationNewThread(navArgs.id, navArgs.title),
+                extras
             )
         }
 

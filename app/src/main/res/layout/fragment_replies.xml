@@ -13,6 +13,8 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
+        android:transitionName="replies"
         tools:context=".view.replies.RepliesFragment">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -40,8 +42,8 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            android:text="@string/text_reply"
             android:src="@drawable/ic_create_black_24dp"
+            android:text="@string/text_reply"
             app:layout_anchor="@id/bottom_app_bar" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

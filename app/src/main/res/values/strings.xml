@@ -47,4 +47,6 @@
     <string name="text_new_reply">New Reply</string>
     <string name="text_cancel">Cancel</string>
     <string name="text_upvote">Upvote</string>
+
+    <string name="image_transition_name" translatable="false">image</string>
 </resources>

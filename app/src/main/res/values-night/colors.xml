@@ -5,4 +5,5 @@
 <resources>
     <color name="primaryDarkColor">#000</color>
     <color name="accountPlaceholder">#121212</color>
+    <color name="background">#FF121212</color>
 </resources>

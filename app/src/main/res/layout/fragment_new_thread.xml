@@ -18,32 +18,33 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
-        android:transitionName="view"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:background="@color/background"
+        android:transitionName="view">
 
         <com.google.android.material.appbar.AppBarLayout
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
             android:layout_width="match_parent"
+            android:layout_height="@dimen/actionBarSize"
             android:transitionGroup="false"
-            android:layout_height="@dimen/actionBarSize">
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:buttonGravity="center_vertical"
-                app:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
                 app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:navigationIcon="@drawable/ic_navigate_before_black_24dp" />
+                app:navigationIcon="@drawable/ic_navigate_before_black_24dp"
+                app:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -202,10 +203,10 @@
             android:id="@+id/fab_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
-            android:layout_gravity="bottom|end"
-            android:src="@drawable/ic_add_black_24dp" />
+            android:src="@drawable/ic_add_black_24dp"
+            app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

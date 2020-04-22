@@ -12,6 +12,7 @@ import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.ItemImageChooserBinding
 
 const val CLICK_TIME_INTERVAL: Long = 300
+
 class ImageChooserViewHolder private constructor(
     private val binding: ItemImageChooserBinding
 ) : RecyclerView.ViewHolder(binding.root) {

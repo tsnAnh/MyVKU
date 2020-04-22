@@ -16,6 +16,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
@@ -53,6 +54,7 @@ fun ImageView.setAvatar(user: FirebaseUser?) {
         Glide
             .with(this.context)
             .load(user.photoUrl)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(progressBar(this.context))
             .circleCrop()
             .into(this)
@@ -65,6 +67,8 @@ fun ImageView.setForumImage(forum: Forum?) {
         Glide
             .with(this.context)
             .load(forum.image)
+            .dontTransform()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(progressBar(this.context))
             .into(this)
     }
@@ -76,6 +80,7 @@ fun ImageView.setChooserImage(uri: Uri?) {
         Glide
             .with(this.context)
             .load(it)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(progressBar(this.context))
             .into(this)
     }
@@ -103,6 +108,7 @@ fun ImageView.setItemThreadAvatar(thread: ForumThread) {
         .with(this.context)
         .load(thread.userAvatar)
         .placeholder(progressBar(this.context))
+        .diskCacheStrategy(DiskCacheStrategy.ALL)
         .centerCrop()
         .circleCrop()
         .into(this)
@@ -115,6 +121,7 @@ fun ImageView.setPostAvatar(post: Post?) {
             .with(this.context)
             .load(post.userAvatar)
             .placeholder(progressBar(this.context))
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()
             .circleCrop()
             .into(this)
@@ -126,14 +133,19 @@ fun FlexboxLayout.setImages(post: Post?) {
     this.removeAllViews()
     post?.let {
         val imageCount = it.images.size
+        val transitionName = this.context.getString(R.string.image_transition_name)
         it.images.mapIndexed { i, image ->
             val imageView = AppCompatImageView(this.context)
+            imageView.transitionName = transitionName
             imageView.setOnClickListener {
+                val extras =
+                    FragmentNavigatorExtras(imageView to transitionName)
                 this.findNavController().navigate(
                     RepliesFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
                         post.images.toTypedArray(),
                         i
-                    )
+                    ),
+                    extras
                 )
             }
             if (imageCount > 2) imageView.scaleType = ImageView.ScaleType.CENTER_CROP

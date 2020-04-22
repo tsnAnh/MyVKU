@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialFadeThrough
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ForumAdapter
@@ -37,7 +38,7 @@ class ForumFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enterTransition = MaterialFadeThrough.create()
-//        exitTransition = Hold()
+        exitTransition = Hold()
     }
 
     override fun onCreateView(
@@ -93,7 +94,7 @@ class ForumFragment : Fragment() {
         viewModel.navigateToListThread.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val extras = FragmentNavigatorExtras(
-                    it.second to "thread_image"
+                    it.second to "thread"
                 )
                 findNavController().navigate(
                     ForumFragmentDirections
@@ -106,7 +107,7 @@ class ForumFragment : Fragment() {
 
         binding.fabNewThread.setOnClickListener {
             val extras = FragmentNavigatorExtras(
-                it to "view"
+                binding.fabNewThread to "view"
             )
             findNavController().navigate(
                 ForumFragmentDirections
@@ -131,6 +132,11 @@ class ForumFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.fabNewThread.show()
     }
 
 }

@@ -4,9 +4,11 @@
 
 package dev.tsnanh.vku.adapters
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.google.android.material.card.MaterialCardView
 import dev.tsnanh.vku.adapters.viewholder.ThreadViewHolder
 import dev.tsnanh.vku.domain.ForumThread
 
@@ -21,8 +23,9 @@ class ThreadAdapter(
     }
 }
 
-class ThreadClickListener(val clickListener: (ForumThread) -> Unit) {
-    fun onClick(thread: ForumThread) = clickListener(thread)
+class ThreadClickListener(val clickListener: (ForumThread, MaterialCardView) -> Unit) {
+    fun onClick(thread: ForumThread, cardView: View) =
+        clickListener(thread, cardView as MaterialCardView)
 }
 
 class ThreadDiffUtil : DiffUtil.ItemCallback<ForumThread>() {

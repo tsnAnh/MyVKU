@@ -21,6 +21,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkManager
+import com.google.android.material.transition.MaterialContainerTransform
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.tsnanh.vku.R
@@ -42,6 +43,9 @@ class RepliesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementReturnTransition = MaterialContainerTransform()
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigateUp()

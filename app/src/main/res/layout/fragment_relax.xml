@@ -23,8 +23,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="24sp"
-                android:text="Chưa có ý tưởng nên ở đây để tạm là relax cho có màu =))" />
+                android:text="Chưa có ý tưởng nên ở đây để tạm là relax cho có màu =))"
+                android:textSize="24sp" />
         </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

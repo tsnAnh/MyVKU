@@ -5,6 +5,7 @@
 package dev.tsnanh.vku.view.thread
 
 import androidx.lifecycle.*
+import com.google.android.material.card.MaterialCardView
 import dev.tsnanh.vku.domain.ForumThread
 import dev.tsnanh.vku.domain.Resource
 import dev.tsnanh.vku.network.VKUServiceApi
@@ -44,12 +45,12 @@ class ThreadViewModel(private val forumId: String) : ViewModel() {
 
     val forum = repository.getForumById(forumId)
 
-    private val _navigateToReplies = MutableLiveData<ForumThread>()
-    val navigateToReplies: LiveData<ForumThread>
+    private val _navigateToReplies = MutableLiveData<Pair<ForumThread, MaterialCardView>>()
+    val navigateToReplies: LiveData<Pair<ForumThread, MaterialCardView>>
         get() = _navigateToReplies
 
-    fun onNavigateToReplies(thread: ForumThread) {
-        _navigateToReplies.value = thread
+    fun onNavigateToReplies(thread: ForumThread, cardView: MaterialCardView) {
+        _navigateToReplies.value = thread to cardView
     }
 
     fun onNavigatedToReplies() {

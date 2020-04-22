@@ -5,9 +5,9 @@
 package dev.tsnanh.vku.adapters
 
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.google.android.material.card.MaterialCardView
 import dev.tsnanh.vku.adapters.viewholder.ForumViewHolder
 import dev.tsnanh.vku.domain.Forum
 
@@ -21,8 +21,8 @@ class ForumAdapter(
     }
 }
 
-class ForumClickListener(val clickListener: (Forum, ImageView) -> Unit) {
-    fun onClick(forum: Forum, imageView: ImageView) = clickListener(forum, imageView)
+class ForumClickListener(val clickListener: (Forum, MaterialCardView) -> Unit) {
+    fun onClick(forum: Forum, imageView: MaterialCardView) = clickListener(forum, imageView)
 }
 
 class ForumDiffUtil : DiffUtil.ItemCallback<Forum>() {

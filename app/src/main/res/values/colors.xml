@@ -15,4 +15,5 @@
     <color name="bluePrimary">#0336ff</color>
     <color name="black_overlay">#66000000</color>
     <color name="accountPlaceholder">@color/primaryLightColor</color>
+    <color name="background">#FFFFFFFF</color>
 </resources>

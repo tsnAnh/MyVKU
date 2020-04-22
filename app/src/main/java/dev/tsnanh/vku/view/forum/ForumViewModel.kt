@@ -4,11 +4,11 @@
 
 package dev.tsnanh.vku.view.forum
 
-import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.card.MaterialCardView
 import dev.tsnanh.vku.domain.Forum
 import dev.tsnanh.vku.domain.Resource
 import dev.tsnanh.vku.repository.VKURepository
@@ -21,8 +21,8 @@ class ForumViewModel : ViewModel() {
 
     private val repository: VKURepository by inject(VKURepository::class.java)
 
-    private val _navigateToListThread = MutableLiveData<Pair<Forum, ImageView>>()
-    val navigateToListThread: LiveData<Pair<Forum, ImageView>>
+    private val _navigateToListThread = MutableLiveData<Pair<Forum, MaterialCardView>>()
+    val navigateToListThread: LiveData<Pair<Forum, MaterialCardView>>
         get() = _navigateToListThread
 
     private var _forums = repository.getAllForums()
@@ -39,7 +39,7 @@ class ForumViewModel : ViewModel() {
      * Call when item being click
      * @param forum Forum
      */
-    fun onItemClick(forum: Pair<Forum, ImageView>) {
+    fun onItemClick(forum: Pair<Forum, MaterialCardView>) {
         _navigateToListThread.value = forum
     }
 

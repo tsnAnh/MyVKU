@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -22,10 +23,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
-import dev.tsnanh.vku.view.newthread.RC_PERMISSION
+import dev.tsnanh.vku.view.createnewthread.RC_PERMISSION
+import dev.tsnanh.vku.viewmodels.MainViewModel
 import org.koin.java.KoinJavaComponent.inject
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
@@ -83,9 +84,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     ) {
         when (requestCode) {
             RC_PERMISSION -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    Snackbar
-                        .make(binding.root, "Permission Granted", Snackbar.LENGTH_LONG).show()
+                if ((grantResults.isNotEmpty() && grantResults[0] ==
+                            PackageManager.PERMISSION_GRANTED)
+                ) {
+                    Toast
+                        .makeText(this, "Permission Granted", Toast.LENGTH_LONG).show()
                 }
             }
         }

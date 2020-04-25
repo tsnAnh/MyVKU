@@ -14,11 +14,11 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/layout_thread"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
         android:fitsSystemWindows="false"
-        android:transitionName="thread"
         tools:context=".view.thread.ThreadFragment">
 
         <com.google.android.material.appbar.AppBarLayout

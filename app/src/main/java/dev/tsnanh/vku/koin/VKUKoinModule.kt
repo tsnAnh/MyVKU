@@ -31,7 +31,7 @@ val vkuModule = module {
     }
 
     single(createdAtStart = true) {
-        VKURepository(get())
+        VKURepository()
     }
     single {
         ContextCompat.getSystemService(

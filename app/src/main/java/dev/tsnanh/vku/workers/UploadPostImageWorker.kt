@@ -2,7 +2,7 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.worker
+package dev.tsnanh.vku.workers
 
 import android.content.Context
 import android.net.Uri
@@ -27,12 +27,12 @@ class UploadPostImageWorker(private val context: Context, params: WorkerParamete
     CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result = coroutineScope {
-        setProgress(workDataOf(WorkProgress.Progress to 0))
+        setProgress(workDataOf(WorkUtil.Progress to 0))
         val token = inputData.getString("id_token")
         val uid = inputData.getString("uid")!!
         val imageUri = Uri.parse(inputData.getString("image"))
 
-        setProgress(workDataOf(WorkProgress.Progress to 20))
+        setProgress(workDataOf(WorkUtil.Progress to 20))
 
         val descriptor =
             context.contentResolver.openFileDescriptor(imageUri, "r", null)
@@ -44,12 +44,12 @@ class UploadPostImageWorker(private val context: Context, params: WorkerParamete
                 .substring(0, 8)} - ${context.contentResolver.getFilePath(imageUri)}"
         )
 
-        setProgress(workDataOf(WorkProgress.Progress to 40))
+        setProgress(workDataOf(WorkUtil.Progress to 40))
 
         val outputStream = FileOutputStream(fileImage)
         inputStream.copyTo(outputStream)
 
-        setProgress(workDataOf(WorkProgress.Progress to 60))
+        setProgress(workDataOf(WorkUtil.Progress to 60))
 
         val requestBody = RequestBody.create(
             MediaType.parse("multipart/form-data"),
@@ -58,12 +58,12 @@ class UploadPostImageWorker(private val context: Context, params: WorkerParamete
         val filePart =
             MultipartBody.Part.createFormData("image", fileImage.name, requestBody)
         // Upload image
-        setProgress(workDataOf(WorkProgress.Progress to 80))
+        setProgress(workDataOf(WorkUtil.Progress to 80))
         val imageURL = async {
             VKUServiceApi.network.uploadImage("Bearer $token", uid, filePart)
         }
 
-        setProgress(workDataOf(WorkProgress.Progress to 100))
+        setProgress(workDataOf(WorkUtil.Progress to 100))
 
         Result.success(workDataOf(IMAGE_URL to imageURL.await()))
     }

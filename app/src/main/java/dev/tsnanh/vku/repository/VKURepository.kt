@@ -15,12 +15,13 @@ import dev.tsnanh.vku.network.asDatabaseModel
 import dev.tsnanh.vku.network.asDomainModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.koin.java.KoinJavaComponent.inject
 import retrofit2.HttpException
 import timber.log.Timber
 import java.net.SocketTimeoutException
 
-class VKURepository(private val database: VKUDatabase) {
-
+class VKURepository {
+    private val database: VKUDatabase by inject(VKUDatabase::class.java)
     val news: LiveData<List<News>> =
         Transformations.map(database.dao.getAllNews()) {
             it.asDomainModel()

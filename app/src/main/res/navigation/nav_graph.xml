@@ -50,7 +50,7 @@
     </activity>
     <fragment
         android:id="@+id/navigation_new_thread"
-        android:name="dev.tsnanh.vku.view.newthread.NewThreadFragment"
+        android:name="dev.tsnanh.vku.view.createnewthread.NewThreadFragment"
         android:label="@string/text_new_thread">
         <argument
             android:name="forumId"

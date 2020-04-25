@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.transition.MaterialFadeThrough
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.FragmentTimetableBinding
+import dev.tsnanh.vku.viewmodels.TimetableViewModel
 
 class TimetableFragment : Fragment() {
 

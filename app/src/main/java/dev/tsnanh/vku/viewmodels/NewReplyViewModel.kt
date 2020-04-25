@@ -2,7 +2,7 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.view.replies.newreply
+package dev.tsnanh.vku.viewmodels
 
 import android.app.Application
 import android.net.Uri
@@ -17,8 +17,8 @@ import dev.tsnanh.vku.domain.asNetworkModel
 import dev.tsnanh.vku.network.NetworkPost
 import dev.tsnanh.vku.repository.VKURepository
 import dev.tsnanh.vku.view.replies.POST_TAG
-import dev.tsnanh.vku.worker.CreateNewPostWorker
-import dev.tsnanh.vku.worker.UploadPostImageWorker
+import dev.tsnanh.vku.workers.CreateNewPostWorker
+import dev.tsnanh.vku.workers.UploadPostImageWorker
 import org.koin.java.KoinJavaComponent.inject
 
 class NewReplyViewModel(quotedPostId: String, application: Application) :
@@ -107,7 +107,10 @@ class NewThreadViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewReplyViewModel::class.java)) {
-            return NewReplyViewModel(quotedPostId, application) as T
+            return NewReplyViewModel(
+                quotedPostId,
+                application
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel")
     }

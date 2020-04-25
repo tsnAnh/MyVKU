@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.transition.MaterialFadeThrough
 import dev.tsnanh.vku.R
+import dev.tsnanh.vku.viewmodels.RelaxViewModel
 
 class RelaxFragment : Fragment() {
 

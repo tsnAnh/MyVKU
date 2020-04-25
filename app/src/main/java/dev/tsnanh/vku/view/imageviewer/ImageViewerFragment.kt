@@ -29,6 +29,7 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageViewerPagerAdapter
 import dev.tsnanh.vku.databinding.FragmentImageViewerBinding
 import dev.tsnanh.vku.network.BASE_URL
+import dev.tsnanh.vku.viewmodels.ImageViewerViewModel
 import timber.log.Timber
 
 private const val RC_PERMISSION = 1000

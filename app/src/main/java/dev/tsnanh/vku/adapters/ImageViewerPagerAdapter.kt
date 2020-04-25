@@ -6,7 +6,7 @@ package dev.tsnanh.vku.adapters
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.adapters.viewholder.ImageViewerViewHolder
+import dev.tsnanh.vku.adapters.viewholders.ImageViewerViewHolder
 
 class ImageViewerPagerAdapter(
     private val listImage: Array<String>

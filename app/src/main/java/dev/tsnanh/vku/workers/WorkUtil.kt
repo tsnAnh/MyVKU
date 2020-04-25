@@ -2,8 +2,8 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.worker
+package dev.tsnanh.vku.workers
 
-object WorkProgress {
+object WorkUtil {
     const val Progress = "progress"
 }

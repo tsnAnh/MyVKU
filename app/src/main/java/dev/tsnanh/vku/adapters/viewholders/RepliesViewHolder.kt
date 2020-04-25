@@ -2,15 +2,15 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.adapters.viewholder
+package dev.tsnanh.vku.adapters.viewholders
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.databinding.ItemFirstReplyBinding
 import dev.tsnanh.vku.databinding.ItemNormalReplyBinding
+import dev.tsnanh.vku.databinding.ItemPostBinding
 import dev.tsnanh.vku.domain.Post
 import dev.tsnanh.vku.utils.convertTimestampToDateString
 import timber.log.Timber
@@ -19,15 +19,15 @@ sealed class RepliesViewHolder<T : ViewDataBinding>(
     binding: T
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    class FirstReplyViewHolder private constructor(
-        private val binding: ItemFirstReplyBinding
-    ) : RepliesViewHolder<ItemFirstReplyBinding>(binding) {
+    class PostViewHolder private constructor(
+        private val binding: ItemPostBinding
+    ) : RepliesViewHolder<ItemPostBinding>(binding) {
         companion object {
-            fun from(parent: ViewGroup): FirstReplyViewHolder {
+            fun from(parent: ViewGroup): PostViewHolder {
                 val inflater = LayoutInflater.from(parent.context)
                 val binding =
-                    ItemFirstReplyBinding.inflate(inflater, parent, false)
-                return FirstReplyViewHolder(binding)
+                    ItemPostBinding.inflate(inflater, parent, false)
+                return PostViewHolder(binding)
             }
         }
 

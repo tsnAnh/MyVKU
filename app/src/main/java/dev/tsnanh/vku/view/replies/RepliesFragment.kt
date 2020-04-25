@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.squareup.moshi.Moshi
@@ -29,8 +30,10 @@ import dev.tsnanh.vku.adapters.RepliesAdapter
 import dev.tsnanh.vku.databinding.FragmentRepliesBinding
 import dev.tsnanh.vku.network.NetworkPost
 import dev.tsnanh.vku.utils.sendNotification
-import dev.tsnanh.vku.view.replies.newreply.NewReplyFragment
-import dev.tsnanh.vku.worker.POST
+import dev.tsnanh.vku.view.replies.createnewreply.NewReplyFragment
+import dev.tsnanh.vku.viewmodels.RepliesViewModel
+import dev.tsnanh.vku.viewmodels.RepliesViewModelFactory
+import dev.tsnanh.vku.workers.POST
 import timber.log.Timber
 
 const val POST_TAG = "create_post"
@@ -59,6 +62,7 @@ class RepliesFragment : Fragment() {
         binding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_replies, container, false)
 
+        setHasOptionsMenu(true)
         binding.bottomAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -70,9 +74,14 @@ class RepliesFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         Timber.d(navArgs.threadId)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.layout.transitionName = navArgs.threadId
         viewModel = ViewModelProvider(
             this,
-            RepliesViewModelFactory(navArgs.threadId, requireActivity().application)
+            RepliesViewModelFactory(
+                navArgs.threadId,
+                requireActivity().application
+            )
         ).get(RepliesViewModel::class.java)
 
         val swipeController = SwipeController()
@@ -85,10 +94,39 @@ class RepliesFragment : Fragment() {
 
         val adapter = RepliesAdapter()
         binding.listReplies.adapter = adapter
+        binding.listReplies.adapter?.registerAdapterDataObserver(object :
+            RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
+            }
+
+            override fun onChanged() {
+                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
+            }
+
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
+            }
+
+            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
+            }
+
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
+            }
+
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
+            }
+        })
 
         viewModel.replies.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
+
+                // Scroll to top
+                binding.listReplies.scrollToPosition(0)
             }
         })
 
@@ -113,6 +151,7 @@ class RepliesFragment : Fragment() {
                                 "${post.content} is successfully created!",
                                 requireContext().applicationContext
                             )
+
                     }
                 }
                 WorkManager.getInstance(requireContext()).pruneWork()

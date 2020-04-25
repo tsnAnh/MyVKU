@@ -26,6 +26,8 @@ import dev.tsnanh.vku.adapters.ThreadAdapter
 import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.FragmentThreadBinding
 import dev.tsnanh.vku.domain.Resource
+import dev.tsnanh.vku.viewmodels.ThreadViewModel
+import dev.tsnanh.vku.viewmodels.ThreadViewModelFactory
 import timber.log.Timber
 
 class ThreadFragment : Fragment() {
@@ -68,6 +70,7 @@ class ThreadFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val navArgs: ThreadFragmentArgs by navArgs()
+        binding.layoutThread.transitionName = navArgs.id
 
         viewModel = ViewModelProvider(
             this,
@@ -108,7 +111,7 @@ class ThreadFragment : Fragment() {
         viewModel.navigateToReplies.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val extras = FragmentNavigatorExtras(
-                    it.second to "replies"
+                    it.second to it.first.id
                 )
                 findNavController().navigate(
                     ThreadFragmentDirections

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.adapters.viewholder
+package dev.tsnanh.vku.adapters.viewholders
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.view.thread
+package dev.tsnanh.vku.viewmodels
 
 import androidx.lifecycle.*
 import com.google.android.material.card.MaterialCardView

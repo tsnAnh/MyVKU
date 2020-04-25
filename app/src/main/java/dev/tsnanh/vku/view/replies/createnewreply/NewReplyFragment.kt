@@ -2,7 +2,7 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.view.replies.newreply
+package dev.tsnanh.vku.view.replies.createnewreply
 
 import android.Manifest
 import android.app.Activity
@@ -30,9 +30,11 @@ import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewReplyBinding
 import dev.tsnanh.vku.domain.Post
 import dev.tsnanh.vku.domain.Resource
-import dev.tsnanh.vku.view.newthread.RC_ADD_PHOTO
-import dev.tsnanh.vku.view.newthread.RC_IMAGE_PICKER
-import dev.tsnanh.vku.view.newthread.RC_PERMISSION
+import dev.tsnanh.vku.view.createnewthread.RC_ADD_PHOTO
+import dev.tsnanh.vku.view.createnewthread.RC_IMAGE_PICKER
+import dev.tsnanh.vku.view.createnewthread.RC_PERMISSION
+import dev.tsnanh.vku.viewmodels.NewReplyViewModel
+import dev.tsnanh.vku.viewmodels.NewThreadViewModelFactory
 import timber.log.Timber
 
 class NewReplyFragment(
@@ -61,7 +63,10 @@ class NewReplyFragment(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val factory = NewThreadViewModelFactory(quotedPostId, requireActivity().application)
+        val factory = NewThreadViewModelFactory(
+            quotedPostId,
+            requireActivity().application
+        )
         viewModel = ViewModelProvider(this, factory).get(NewReplyViewModel::class.java)
 
         binding.lifecycleOwner = viewLifecycleOwner

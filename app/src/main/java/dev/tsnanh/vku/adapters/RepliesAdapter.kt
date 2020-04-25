@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.adapters.viewholder.RepliesViewHolder
+import dev.tsnanh.vku.adapters.viewholders.RepliesViewHolder
 import dev.tsnanh.vku.domain.Post
 
 const val TYPE_FIRST = 0
@@ -19,13 +19,13 @@ class RepliesAdapter : ListAdapter<Post, RecyclerView.ViewHolder>(ReplyDiffUtil(
         parent: ViewGroup,
         viewType: Int
     ): RecyclerView.ViewHolder = when (viewType) {
-        TYPE_FIRST -> RepliesViewHolder.FirstReplyViewHolder.from(parent)
+        TYPE_FIRST -> RepliesViewHolder.PostViewHolder.from(parent)
         else -> RepliesViewHolder.NormalReplyViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is RepliesViewHolder.FirstReplyViewHolder -> holder.bind(getItem(position))
+            is RepliesViewHolder.PostViewHolder -> holder.bind(getItem(position))
             is RepliesViewHolder.NormalReplyViewHolder -> holder.bind(getItem(position))
         }
     }

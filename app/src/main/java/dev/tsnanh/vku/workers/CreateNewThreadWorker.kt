@@ -2,7 +2,7 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.worker
+package dev.tsnanh.vku.workers
 
 import android.content.Context
 import androidx.work.CoroutineWorker
@@ -26,38 +26,38 @@ class CreateNewThreadWorker(context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result = coroutineScope {
-        setProgress(workDataOf(WorkProgress.Progress to 0))
+        setProgress(workDataOf(WorkUtil.Progress to 0))
 
         val token = inputData.getStringArray("id_token")?.get(0)
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val jsonAdapter =
             moshi.adapter(NetworkCreateThreadContainer::class.java)
 
-        setProgress(workDataOf(WorkProgress.Progress to 20))
+        setProgress(workDataOf(WorkUtil.Progress to 20))
 
         val jsonContainer = inputData.getStringArray("container")?.get(0)
         val container = withContext(Dispatchers.IO) {
             jsonAdapter.fromJson(jsonContainer!!)
         }
 
-        setProgress(workDataOf(WorkProgress.Progress to 40))
+        setProgress(workDataOf(WorkUtil.Progress to 40))
 
         val listImageURL = inputData.getStringArray(IMAGE_URL)
         if (listImageURL != null && listImageURL.isNotEmpty()) {
             container?.post?.images = listImageURL.toList()
         }
         Timber.d(container.toString())
-        setProgress(workDataOf(WorkProgress.Progress to 60))
+        setProgress(workDataOf(WorkUtil.Progress to 60))
 
         val deferredThread = async {
             VKUServiceApi.network.createThread("Bearer $token", container!!).asDomainModel()
         }
-        setProgress(workDataOf(WorkProgress.Progress to 80))
+        setProgress(workDataOf(WorkUtil.Progress to 80))
         val threadJsonAdapter = moshi.adapter(ForumThread::class.java)
         val threadJson = threadJsonAdapter.toJson(deferredThread.await())
 
         Timber.d("CCC $threadJson")
-        setProgress(workDataOf(WorkProgress.Progress to 100))
+        setProgress(workDataOf(WorkUtil.Progress to 100))
         Result.success(workDataOf(THREAD to threadJson))
     }
 }

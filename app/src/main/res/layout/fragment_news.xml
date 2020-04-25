@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="dev.tsnanh.vku.view.news.NewsViewModel" />
+            type="dev.tsnanh.vku.viewmodels.NewsViewModel" />
     </data>
 
     <com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout

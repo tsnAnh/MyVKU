@@ -28,6 +28,7 @@ import dev.tsnanh.vku.adapters.ForumAdapter
 import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.FragmentForumBinding
 import dev.tsnanh.vku.domain.Resource
+import dev.tsnanh.vku.viewmodels.ForumViewModel
 import kotlinx.coroutines.launch
 
 class ForumFragment : Fragment() {
@@ -55,6 +56,8 @@ class ForumFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        binding.lifecycleOwner = viewLifecycleOwner
 
         binding.listTopics.setHasFixedSize(true)
         val rotation =
@@ -94,7 +97,7 @@ class ForumFragment : Fragment() {
         viewModel.navigateToListThread.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val extras = FragmentNavigatorExtras(
-                    it.second to "thread"
+                    it.second to it.first.id
                 )
                 findNavController().navigate(
                     ForumFragmentDirections

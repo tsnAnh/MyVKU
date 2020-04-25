@@ -26,6 +26,7 @@ import dev.tsnanh.vku.adapters.NewsClickListener
 import dev.tsnanh.vku.databinding.FragmentNewsBinding
 import dev.tsnanh.vku.domain.News
 import dev.tsnanh.vku.utils.CustomTabHelper
+import dev.tsnanh.vku.viewmodels.NewsViewModel
 import kotlinx.coroutines.launch
 
 class NewsFragment : Fragment() {

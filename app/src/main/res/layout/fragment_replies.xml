@@ -6,15 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-    </data>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
-        android:transitionName="replies"
         tools:context=".view.replies.RepliesFragment">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -22,7 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="16dp" />
+            android:paddingBottom="16dp"
+            tools:listitem="@layout/item_normal_reply" />
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_app_bar"
@@ -34,6 +31,7 @@
             app:fabAnimationMode="scale"
             app:hideOnScroll="true"
             app:layout_behavior="com.google.android.material.bottomappbar.BottomAppBar$Behavior"
+            app:menu="@menu/replies_menu"
             app:navigationIcon="@drawable/ic_navigate_before_black_24dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

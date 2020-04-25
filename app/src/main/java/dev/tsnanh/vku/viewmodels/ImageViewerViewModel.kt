@@ -2,10 +2,10 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.view.timetable
+package dev.tsnanh.vku.viewmodels
 
 import androidx.lifecycle.ViewModel
 
-class TimetableViewModel : ViewModel() {
+class ImageViewerViewModel : ViewModel() {
     // TODO: Implement the ViewModel
 }

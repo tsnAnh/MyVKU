@@ -124,7 +124,7 @@ fun Post.asNetworkModel(): NetworkPost {
 }
 
 // A generic class that contains data and status about loading this data.
-sealed class Resource<T>(
+sealed class Resource<out T>(
     val data: T? = null,
     val message: String? = null
 ) {

@@ -49,4 +49,7 @@
     <string name="text_upvote">Upvote</string>
 
     <string name="image_transition_name" translatable="false">image</string>
+    <string name="text_bug_report">Bug Report</string>
+    <string name="text_archive">Archive</string>
+    <string name="text_report">Report</string>
 </resources>

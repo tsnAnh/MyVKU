@@ -2,7 +2,7 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.view.replies
+package dev.tsnanh.vku.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
@@ -11,6 +11,7 @@ import dev.tsnanh.vku.domain.Post
 import dev.tsnanh.vku.network.VKUServiceApi
 import dev.tsnanh.vku.network.asDomainModel
 import dev.tsnanh.vku.repository.VKURepository
+import dev.tsnanh.vku.view.replies.POST_TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,7 +54,10 @@ class RepliesViewModelFactory(private val threadId: String, private val applicat
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(RepliesViewModel::class.java)) {
-            return RepliesViewModel(threadId, application) as T
+            return RepliesViewModel(
+                threadId,
+                application
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel")
     }

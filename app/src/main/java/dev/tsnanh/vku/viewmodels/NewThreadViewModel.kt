@@ -2,7 +2,7 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.view.newthread
+package dev.tsnanh.vku.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

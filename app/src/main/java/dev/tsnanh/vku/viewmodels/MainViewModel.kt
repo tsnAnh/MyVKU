@@ -2,7 +2,7 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.activities
+package dev.tsnanh.vku.viewmodels
 
 import android.app.Application
 import android.app.NotificationManager
@@ -16,9 +16,8 @@ import dev.tsnanh.vku.domain.Post
 import dev.tsnanh.vku.domain.asNetworkModel
 import dev.tsnanh.vku.network.NetworkCreateThreadContainer
 import dev.tsnanh.vku.utils.sendNotificationWithProgress
-import dev.tsnanh.vku.view.newthread.TAG_NEW_THREAD
-import dev.tsnanh.vku.worker.CreateNewThreadWorker
-import dev.tsnanh.vku.worker.UploadPostImageWorker
+import dev.tsnanh.vku.workers.CreateNewThreadWorker
+import dev.tsnanh.vku.workers.UploadPostImageWorker
 import org.koin.java.KoinJavaComponent.inject
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {

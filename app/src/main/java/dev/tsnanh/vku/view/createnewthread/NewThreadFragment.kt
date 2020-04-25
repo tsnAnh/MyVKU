@@ -2,7 +2,7 @@
  * Copyright (c) 2020 VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.view.newthread
+package dev.tsnanh.vku.view.createnewthread
 
 import android.Manifest
 import android.app.Activity
@@ -35,7 +35,6 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.activities.MainViewModel
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewThreadBinding
@@ -44,8 +43,10 @@ import dev.tsnanh.vku.domain.ForumThread
 import dev.tsnanh.vku.domain.Post
 import dev.tsnanh.vku.domain.Resource
 import dev.tsnanh.vku.utils.sendNotification
-import dev.tsnanh.vku.worker.THREAD
-import dev.tsnanh.vku.worker.WorkProgress
+import dev.tsnanh.vku.viewmodels.MainViewModel
+import dev.tsnanh.vku.viewmodels.NewThreadViewModel
+import dev.tsnanh.vku.workers.THREAD
+import dev.tsnanh.vku.workers.WorkUtil
 import timber.log.Timber
 
 const val RC_IMAGE_PICKER = 0
@@ -72,9 +73,10 @@ class NewThreadFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enterTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.X, false)
+
         sharedElementEnterTransition = MaterialContainerTransform()
-//        enterTransition = MaterialFadeThrough.create(requireContext())
+        sharedElementReturnTransition = MaterialContainerTransform()
+
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigateUp()
         }
@@ -152,7 +154,7 @@ class NewThreadFragment : Fragment() {
 
             if (progressDialog.isShowing) {
                 progressBarLayoutBinding.progress.progress =
-                    workInfo.progress.getInt(WorkProgress.Progress, 0)
+                    workInfo.progress.getInt(WorkUtil.Progress, 0)
             } else {
                 progressDialog.show()
             }
@@ -258,7 +260,7 @@ class NewThreadFragment : Fragment() {
     }
 
     // region Pick Image
-    fun pickImage(requestCode: Int) {
+    private fun pickImage(requestCode: Int) {
         val intent = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         startActivityForResult(intent, requestCode)

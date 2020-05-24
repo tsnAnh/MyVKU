@@ -1,9 +1,9 @@
 <!--
-  ~ Copyright (c) 2020 VKU by tsnAnh
+  ~ Copyright (c) 2020 My VKU by tsnAnh
   -->
 
 <resources>
-    <string name="app_name" translatable="false">VKU</string>
+    <string name="app_name" translatable="false">My VKU</string>
     <string name="text_forum">Forum</string>
     <string name="vku_image" translatable="false">VKU Image</string>
     <string name="text_confession" translatable="false">Confession</string>
@@ -34,7 +34,6 @@
     <string name="text_new_post">New Post</string>
     <string name="text_post_image">Post Image (optional)</string>
     <string name="text_timetable">Timetable</string>
-    <string name="text_relax">Relax</string>
     <string name="text_more">More</string>
 
     <string name="threadNameTime" translatable="false">%s - %s</string>
@@ -46,10 +45,10 @@
     <string name="text_reply">Reply</string>
     <string name="text_new_reply">New Reply</string>
     <string name="text_cancel">Cancel</string>
-    <string name="text_upvote">Upvote</string>
 
     <string name="image_transition_name" translatable="false">image</string>
     <string name="text_bug_report">Bug Report</string>
     <string name="text_archive">Archive</string>
     <string name="text_report">Report</string>
+    <string name="text_my_class">My Class</string>
 </resources>

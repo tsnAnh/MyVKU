@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) 2020 VKU by tsnAnh
+  ~ Copyright (c) 2020 My VKU by tsnAnh
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -95,7 +96,8 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/list_news"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/item_news" />
                 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             </LinearLayout>

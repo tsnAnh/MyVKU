@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.koin
@@ -13,7 +13,12 @@ import dev.tsnanh.vku.repository.VKURepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
+/**
+ * Dependency Injection module for Koin
+ * @author tsnAnh
+ */
 val vkuModule = module {
+    // Room SQLite
     single {
         synchronized(androidContext()) {
             Room
@@ -26,13 +31,17 @@ val vkuModule = module {
         }
     }
 
+    // DAO
     single {
         get<VKUDatabase>().dao
     }
 
+    // Repository
     single(createdAtStart = true) {
         VKURepository()
     }
+
+    // Notification Manager
     single {
         ContextCompat.getSystemService(
             androidContext(),

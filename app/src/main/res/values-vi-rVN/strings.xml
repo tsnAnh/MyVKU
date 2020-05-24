@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) 2020 VKU by tsnAnh
+  ~ Copyright (c) 2020 My VKU by tsnAnh
   -->
 
 <resources>
@@ -27,8 +27,13 @@
     <string name="text_new_post">Bài viết mới</string>
     <string name="text_post_image">Thêm Ảnh (không bắt buộc)</string>
     <string name="text_timetable">TKB</string>
-    <string name="text_relax">Giải trí</string>
     <string name="text_more">More</string>
     <string name="text_school_reminder">Nhắc giờ đi học</string>
     <string name="threadDetails">Trả lời: %s, Lượt xem: %s, Cập nhật lần cuối: %s</string>
+    <string name="text_report">Báo cáo</string>
+    <string name="text_archive">Lưu trữ</string>
+    <string name="text_bug_report">Báo lỗi</string>
+    <string name="text_cancel">Hủy bỏ</string>
+    <string name="text_new_reply">Câu trả lời mới</string>
+    <string name="text_reply">Trả lời</string>
 </resources>

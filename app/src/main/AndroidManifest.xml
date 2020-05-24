@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) 2020 VKU by tsnAnh
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020 My VKU by tsnAnh
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,9 +23,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
-        <activity android:name="dev.tsnanh.vku.activities.NewsActivity" />
+
+        <activity android:name=".activities.NewsActivity" />
         <activity
-            android:name="dev.tsnanh.vku.activities.WelcomeActivity"
+            android:name=".activities.WelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="dev.tsnanh.vku.activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:windowSoftInputMode="adjustResize" />
     </application>
 

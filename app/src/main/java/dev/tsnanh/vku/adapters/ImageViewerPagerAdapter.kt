@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.adapters
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.adapters.viewholders.ImageViewerViewHolder
+import dev.tsnanh.vku.viewholders.ImageViewerViewHolder
 
 class ImageViewerPagerAdapter(
     private val listImage: Array<String>

@@ -1,11 +1,10 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.domain
 
-import dev.tsnanh.vku.network.NetworkPost
-import dev.tsnanh.vku.network.NetworkThread
+import dev.tsnanh.vku.network.*
 
 /**
  * Models.kt
@@ -68,7 +67,9 @@ data class User(
     var providerId: String,
     var numberOfThreads: String,
     var threads: List<String>,
-    var posts: List<String>
+    var posts: List<String>,
+    var notifications: String,
+    var role: Int = UserRole.STUDENT.value
 )
 
 /**
@@ -87,6 +88,66 @@ data class Post(
     var userDisplayName: String = "",
     var quoted: String = "",
     var quotedPost: Post? = null
+)
+
+data class Notification(
+    val id: String,
+    val user_id: String,
+    val notification_objects: List<String>,
+    val hasNewNotification: Boolean
+)
+
+data class NotificationObject(
+    val id: String,
+    val notification_id: String,
+    val mObject: Any,
+    val notificationChanges: List<String>,
+    val status: Boolean
+)
+
+data class NotificationChange(
+    val id: String,
+    val notificationObjectId: String,
+    val verb: String,
+    val actor: String
+)
+
+data class Classroom(
+    val id: String,
+    val classname: String,
+    val students: List<String>,
+    val numberOfStudents: Int,
+    val homeroomTeacher: String
+)
+
+data class ClassPost(
+    val id: String,
+    val classId: String,
+    val userId: String,
+    val likes: Int,
+    val numberOfComments: Int,
+    val numberOfShares: Int,
+    val isAnnouncement: Boolean,
+    val pinned: Boolean,
+    val content: String,
+    val images: List<String>,
+    val createdAt: Long,
+    val lastUpdatedOn: Long,
+    val comments: List<String>,
+    val editHistory: List<String>
+)
+
+data class Comment(
+    val id: String,
+    val userId: String,
+    val classPostId: String,
+    val userDisplayName: String,
+    val userAvatar: String,
+    val editHistory: List<String>,
+    val content: String,
+    val images: List<String>,
+    val createdAt: String,
+    val lastUpdatedOn: String
 )
 
 fun ForumThread.asNetworkModel(): NetworkThread {
@@ -123,6 +184,64 @@ fun Post.asNetworkModel(): NetworkPost {
     )
 }
 
+fun Notification.asNetworkModel(): NetworkNotification {
+    return NetworkNotification(
+        id, user_id, notification_objects, hasNewNotification
+    )
+}
+
+fun NotificationObject.asNetworkModel(): NetworkNotificationObject {
+    return NetworkNotificationObject(
+        id, notification_id, mObject, notificationChanges, status
+    )
+}
+
+fun NotificationChange.asNetworkModel(): NetworkNotificationChange {
+    return NetworkNotificationChange(
+        id, notificationObjectId, verb, actor
+    )
+}
+
+fun Classroom.asNetworkModel(): NetworkClassroom {
+    return NetworkClassroom(
+        id, classname, students, numberOfStudents, homeroomTeacher
+    )
+}
+
+fun ClassPost.asNetworkModel(): NetworkClassPost {
+    return NetworkClassPost(
+        id,
+        classId,
+        userId,
+        likes,
+        numberOfComments,
+        numberOfShares,
+        isAnnouncement,
+        pinned,
+        content,
+        images,
+        createdAt,
+        lastUpdatedOn,
+        comments,
+        editHistory
+    )
+}
+
+fun Comment.asNetworkModel(): NetworkComment {
+    return NetworkComment(
+        id,
+        userId,
+        classPostId,
+        userDisplayName,
+        userAvatar,
+        editHistory,
+        content,
+        images,
+        createdAt,
+        lastUpdatedOn
+    )
+}
+
 // A generic class that contains data and status about loading this data.
 sealed class Resource<out T>(
     val data: T? = null,
@@ -131,4 +250,11 @@ sealed class Resource<out T>(
     class Success<T>(data: T) : Resource<T>(data)
     class Loading<T>(data: T? = null) : Resource<T>(data)
     class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
+}
+
+enum class UserRole(val value: Int) {
+    STUDENT(0),
+    TEACHER(1),
+    HOMEROOM_TEACHER(2),
+    ADMIN(100)
 }

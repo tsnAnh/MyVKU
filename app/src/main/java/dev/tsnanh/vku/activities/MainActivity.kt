@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.activities
@@ -25,8 +25,8 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
-import dev.tsnanh.vku.view.createnewthread.RC_PERMISSION
 import dev.tsnanh.vku.viewmodels.MainViewModel
+import dev.tsnanh.vku.views.createnewthread.RC_PERMISSION
 import org.koin.java.KoinJavaComponent.inject
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
@@ -41,11 +41,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // DataBinding initialization
         binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_main
         )
 
+        // Navigation Component things
         navController = findNavController(R.id.fragment)
         navController.addOnDestinationChangedListener(this)
         binding.bottomNavView.setupWithNavController(navController)
@@ -83,6 +85,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         grantResults: IntArray
     ) {
         when (requestCode) {
+            // Read external permission callback
             RC_PERMISSION -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] ==
                             PackageManager.PERMISSION_GRANTED)
@@ -95,6 +98,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    // Bottom Navigation View callback
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.navigation_forum -> navController.navigate(
@@ -106,8 +110,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             R.id.navigation_more -> navController.navigate(
                 R.id.navigation_more
             )
-            R.id.navigation_relax -> navController.navigate(
-                R.id.navigation_relax
+            R.id.navigation_my_class -> navController.navigate(
+                R.id.navigation_my_class
             )
             R.id.navigation_timetable -> navController.navigate(
                 R.id.navigation_timetable
@@ -142,6 +146,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
+    /**
+     * Call from fragment to hide bottom nav
+     */
     private fun toggleBottomNav(visible: Boolean) {
         binding.bottomNavView.visibility = if (visible) {
             View.VISIBLE

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.activities
@@ -26,10 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
+// Sign In request code
 const val RC_SIGN_IN = 100
 
 class WelcomeActivity : AppCompatActivity() {
@@ -39,10 +36,12 @@ class WelcomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // hide status bar and toolbar
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome)
 
+        // motion layout callback
         binding.motionLayout.setTransitionListener(object : MotionLayout.TransitionListener {
             override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
 
@@ -63,17 +62,23 @@ class WelcomeActivity : AppCompatActivity() {
                         it.token?.let { token ->
                             lifecycleScope.launch {
                                 val isRegistered = withContext(Dispatchers.IO) {
-                                    VKUServiceApi.network.isUserRegistered("Bearer $token")
+                                    try {
+                                        VKUServiceApi.network.isUserRegistered("Bearer $token")
+                                    } catch (e: Exception) {
+                                        false
+                                    }
                                 }
                                 if (isRegistered) {
                                     start()
                                 } else {
+                                    FirebaseAuth.getInstance().signOut()
                                     showErrorDialog()
                                 }
                             }
                         }
                     }
                 } else {
+                    // login using Firebase UI
                     startActivityForResult(
                         AuthUI.getInstance()
                             .createSignInIntentBuilder()
@@ -92,6 +97,7 @@ class WelcomeActivity : AppCompatActivity() {
         })
     }
 
+    // register user on server
     private suspend fun registerUser(idToken: String) {
         val status = withContext(Dispatchers.IO) {
             VKUServiceApi.network.registerNewUser("Bearer $idToken")
@@ -106,7 +112,7 @@ class WelcomeActivity : AppCompatActivity() {
     private fun showErrorDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Cannot sign in")
-            .setMessage("Something went wrong!")
+            .setMessage("Something went wrong! Try again.")
             .setPositiveButton("OK") { d, _ ->
                 d.dismiss()
                 this.finish()
@@ -115,6 +121,7 @@ class WelcomeActivity : AppCompatActivity() {
             .show()
     }
 
+    // start MainActivity
     private fun start() {
         startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
         this@WelcomeActivity.finish()

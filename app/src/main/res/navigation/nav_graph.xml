@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) 2020 VKU by tsnAnh
+  ~ Copyright (c) 2020 My VKU by tsnAnh
   -->
 
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/navigation_forum"
-        android:name="dev.tsnanh.vku.view.forum.ForumFragment"
+        android:name="dev.tsnanh.vku.views.forum.ForumFragment"
         android:label="@string/text_vku_forum"
         tools:layout="@layout/fragment_forum">
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_news"
-        android:name="dev.tsnanh.vku.view.news.NewsFragment"
+        android:name="dev.tsnanh.vku.views.news.NewsFragment"
         android:label="@string/text_news"
         tools:layout="@layout/fragment_news">
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_more"
-        android:name="dev.tsnanh.vku.view.more.MoreFragment"
+        android:name="dev.tsnanh.vku.views.more.MoreFragment"
         android:label="@string/text_more">
         <action
             android:id="@+id/action_navigation_options_to_navigation_settings"
@@ -50,7 +50,7 @@
     </activity>
     <fragment
         android:id="@+id/navigation_new_thread"
-        android:name="dev.tsnanh.vku.view.createnewthread.NewThreadFragment"
+        android:name="dev.tsnanh.vku.views.createnewthread.NewThreadFragment"
         android:label="@string/text_new_thread">
         <argument
             android:name="forumId"
@@ -63,7 +63,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_thread"
-        android:name="dev.tsnanh.vku.view.thread.ThreadFragment"
+        android:name="dev.tsnanh.vku.views.thread.ThreadFragment"
         android:label="ThreadFragment">
         <argument
             android:name="id"
@@ -80,19 +80,19 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="dev.tsnanh.vku.view.settings.SettingsFragment"
+        android:name="dev.tsnanh.vku.views.settings.SettingsFragment"
         android:label="@string/title_activity_settings" />
     <fragment
         android:id="@+id/navigation_timetable"
-        android:name="dev.tsnanh.vku.view.timetable.TimetableFragment"
+        android:name="dev.tsnanh.vku.views.timetable.TimetableFragment"
         android:label="Timetable" />
     <fragment
-        android:id="@+id/navigation_relax"
-        android:name="dev.tsnanh.vku.view.relax.RelaxFragment"
-        android:label="Relax" />
+        android:id="@+id/navigation_my_class"
+        android:name="dev.tsnanh.vku.views.myclass.MyClassFragment"
+        android:label="@string/text_my_class" />
     <fragment
         android:id="@+id/navigation_replies"
-        android:name="dev.tsnanh.vku.view.replies.RepliesFragment"
+        android:name="dev.tsnanh.vku.views.replies.RepliesFragment"
         android:label="Replies">
         <argument
             android:name="threadId"
@@ -106,7 +106,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_image_viewer"
-        android:name="dev.tsnanh.vku.view.imageviewer.ImageViewerFragment"
+        android:name="dev.tsnanh.vku.views.imageviewer.ImageViewerFragment"
         android:label="ImageViewerFragment">
         <argument
             android:name="urls"

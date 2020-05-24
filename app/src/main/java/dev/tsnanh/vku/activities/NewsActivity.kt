@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.activities
@@ -11,6 +11,9 @@ import androidx.navigation.navArgs
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityNewsBinding
 
+/**
+ * An Activity with webview for display news when user's device doesn't have browser
+ */
 class NewsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNewsBinding
@@ -21,6 +24,7 @@ class NewsActivity : AppCompatActivity() {
 
         val navArgs: NewsActivityArgs by navArgs()
 
+        // load content
         binding.webView.apply {
             loadUrl("http://daotao.sict.udn.vn" + navArgs.url)
             setTitle(navArgs.title)

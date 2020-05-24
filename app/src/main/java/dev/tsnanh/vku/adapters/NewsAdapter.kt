@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.adapters
@@ -7,8 +7,8 @@ package dev.tsnanh.vku.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import dev.tsnanh.vku.adapters.viewholders.NewsViewHolder
 import dev.tsnanh.vku.domain.News
+import dev.tsnanh.vku.viewholders.NewsViewHolder
 
 class NewsAdapter(
     private val clickListener: NewsClickListener

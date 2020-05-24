@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.adapters
@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.adapters.viewholders.imagechooser.ImageChooserFooterViewHolder
-import dev.tsnanh.vku.adapters.viewholders.imagechooser.ImageChooserViewHolder
+import dev.tsnanh.vku.viewholders.imagechooser.ImageChooserFooterViewHolder
+import dev.tsnanh.vku.viewholders.imagechooser.ImageChooserViewHolder
 
 const val TYPE_FOOTER = 0
 const val TYPE_ITEM = 1

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.viewmodels
@@ -16,7 +16,7 @@ import dev.tsnanh.vku.domain.Resource
 import dev.tsnanh.vku.domain.asNetworkModel
 import dev.tsnanh.vku.network.NetworkPost
 import dev.tsnanh.vku.repository.VKURepository
-import dev.tsnanh.vku.view.replies.POST_TAG
+import dev.tsnanh.vku.views.replies.POST_TAG
 import dev.tsnanh.vku.workers.CreateNewPostWorker
 import dev.tsnanh.vku.workers.UploadPostImageWorker
 import org.koin.java.KoinJavaComponent.inject

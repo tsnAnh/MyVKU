@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.network
@@ -8,6 +8,10 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import dev.tsnanh.vku.database.DatabaseNews
 import dev.tsnanh.vku.domain.*
+
+/**
+ * All Data class for object mapping
+ */
 
 @JsonClass(generateAdapter = true)
 data class NetworkNewsContainer(
@@ -38,6 +42,21 @@ data class NetworkPostContainer(
 data class NetworkCreateThreadContainer(
     val thread: NetworkThread,
     val post: NetworkPost
+)
+
+@JsonClass(generateAdapter = true)
+data class NetworkClassroomContainer(
+    val classrooms: List<NetworkClassroom>
+)
+
+@JsonClass(generateAdapter = true)
+data class NetworkClassPostContainer(
+    val classPosts: List<NetworkClassPost>
+)
+
+@JsonClass(generateAdapter = true)
+data class NetworkCommentContainer(
+    val comments: List<NetworkComment>
 )
 
 @JsonClass(generateAdapter = true)
@@ -108,7 +127,9 @@ data class NetworkUser(
     @field:Json(name = "number_of_threads")
     var numberOfThreads: String,
     var threads: List<String>,
-    var posts: List<String>
+    var posts: List<String>,
+    var notifications: String,
+    var role: Int = UserRole.STUDENT.value
 )
 
 @JsonClass(generateAdapter = true)
@@ -135,6 +156,101 @@ data class NetworkPost(
     @field:Json(name = "quoted_post")
     var quotedPost: NetworkPost? = null
 )
+
+
+data class NetworkNotification(
+    @field:Json(name = "_id")
+    val id: String,
+    val user_id: String,
+    @field:Json(name = "notification_objects")
+    val notificationObjects: List<String>,
+    @field:Json(name = "has_new_notification")
+    val hasNewNotification: Boolean
+)
+
+data class NetworkNotificationObject(
+    @field:Json(name = "_id")
+    val id: String,
+    @field:Json(name = "notification_id")
+    val notificationId: String,
+    @field:Json(name = "object")
+    val mObject: Any,
+    @field:Json(name = "notification_changes")
+    val notificationChanges: List<String>,
+    val status: Boolean
+)
+
+data class NetworkNotificationChange(
+    @field:Json(name = "_id")
+    val id: String,
+    @field:Json(name = "notification_object_id")
+    val notificationObjectId: String,
+    val verb: String,
+    val actor: String
+)
+
+
+data class NetworkClassroom(
+    @field:Json(name = "_id")
+    val id: String,
+    val classname: String,
+    val students: List<String>,
+    @field:Json(name = "numberOfStudents")
+    val numberOfStudents: Int,
+    @field:Json(name = "homeroom_teacher")
+    val homeroomTeacher: String
+)
+
+data class NetworkClassPost(
+    @field:Json(name = "_id")
+    val id: String,
+    @field:Json(name = "class_id")
+    val classId: String,
+    @field:Json(name = "user_id")
+    val userId: String,
+    val likes: Int,
+    @field:Json(name = "number_of_comments")
+    val numberOfComments: Int,
+    @field:Json(name = "number_of_shares")
+    val numberOfShares: Int,
+    @field:Json(name = "is_announcement")
+    val isAnnouncement: Boolean,
+    val pinned: Boolean,
+    val content: String,
+    val images: List<String>,
+    @field:Json(name = "created_at")
+    val createdAt: Long,
+    @field:Json(name = "last_updated_on")
+    val lastUpdatedOn: Long,
+    val comments: List<String>,
+    @field:Json(name = "edit_history")
+    val editHistory: List<String>
+)
+
+data class NetworkComment(
+    @field:Json(name = "_id")
+    val id: String,
+    @field:Json(name = "user_id")
+    val userId: String,
+    @field:Json(name = "class_post_id")
+    val classPostId: String,
+    @field:Json(name = "user_display_name")
+    val userDisplayName: String,
+    @field:Json(name = "user_avatar")
+    val userAvatar: String,
+    @field:Json(name = "edit_history")
+    val editHistory: List<String>,
+    val content: String,
+    val images: List<String>,
+    @field:Json(name = "created_at")
+    val createdAt: String,
+    @field:Json(name = "last_updated_on")
+    val lastUpdatedOn: String
+)
+
+/**
+ * Mapping function to domain object
+ */
 
 fun NetworkNewsContainer.asDomainModel(): List<News> {
     return news.map {
@@ -205,7 +321,8 @@ fun NetworkUserContainer.asDomainModel(): List<User> {
             providerId = it.providerId,
             numberOfThreads = it.numberOfThreads,
             threads = it.threads,
-            posts = it.posts
+            posts = it.posts,
+            notifications = it.notifications
         )
     }
 }
@@ -225,6 +342,56 @@ fun NetworkPostContainer.asDomainModel(): List<Post> {
             threadTitle = it.threadTitle,
             quoted = it.quoted,
             quotedPost = it.quotedPost?.asDomainModel()
+        )
+    }
+}
+
+fun NetworkClassroomContainer.asDomainModel(): List<Classroom> {
+    return classrooms.map {
+        Classroom(
+            id = it.id,
+            classname = it.classname,
+            students = it.students,
+            numberOfStudents = it.numberOfStudents,
+            homeroomTeacher = it.homeroomTeacher
+        )
+    }
+}
+
+fun NetworkClassPostContainer.asDomainModel(): List<ClassPost> {
+    return classPosts.map {
+        ClassPost(
+            id = it.id,
+            classId = it.classId,
+            userId = it.userId,
+            likes = it.likes,
+            numberOfComments = it.numberOfComments,
+            numberOfShares = it.numberOfShares,
+            isAnnouncement = it.isAnnouncement,
+            content = it.content,
+            images = it.images,
+            createdAt = it.createdAt,
+            lastUpdatedOn = it.lastUpdatedOn,
+            comments = it.comments,
+            editHistory = it.editHistory,
+            pinned = it.pinned
+        )
+    }
+}
+
+fun NetworkCommentContainer.asDomainModel(): List<Comment> {
+    return comments.map {
+        Comment(
+            id = it.id,
+            userId = it.userId,
+            classPostId = it.classPostId,
+            userDisplayName = it.userDisplayName,
+            userAvatar = it.userAvatar,
+            editHistory = it.editHistory,
+            content = it.content,
+            images = it.images,
+            createdAt = it.createdAt,
+            lastUpdatedOn = it.lastUpdatedOn
         )
     }
 }
@@ -276,3 +443,55 @@ fun NetworkPost.asDomainModel(): Post {
         quotedPost?.asDomainModel()
     )
 }
+
+fun NetworkNotification.asDomainModel(): Notification {
+    return Notification(
+        id, user_id, notificationObjects, hasNewNotification
+    )
+}
+
+fun NetworkNotificationObject.asDomainModel(): NotificationObject {
+    return NotificationObject(
+        id, notificationId, mObject, notificationChanges, status
+    )
+}
+
+fun NetworkNotificationChange.asDomainModel(): NotificationChange {
+    return NotificationChange(
+        id, notificationObjectId, verb, actor
+    )
+}
+
+fun NetworkClassroom.asDomainModel() = Classroom(
+    id, classname, students, numberOfStudents, homeroomTeacher
+)
+
+fun NetworkClassPost.asDomainModel() = ClassPost(
+    id,
+    classId,
+    userId,
+    likes,
+    numberOfComments,
+    numberOfShares,
+    isAnnouncement,
+    pinned,
+    content,
+    images,
+    createdAt,
+    lastUpdatedOn,
+    comments,
+    editHistory
+)
+
+fun NetworkComment.asDomainModel() = Comment(
+    id,
+    userId,
+    classPostId,
+    userDisplayName,
+    userAvatar,
+    editHistory,
+    content,
+    images,
+    createdAt,
+    lastUpdatedOn
+)

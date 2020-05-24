@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.network
@@ -14,7 +14,7 @@ import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 // Google Cloud VM Instance Server
-const val BASE_URL = "http://34.87.13.195:3000"
+const val BASE_URL = "http://d39baa4d.ngrok.io"
 
 private val client = OkHttpClient.Builder()
     .connectTimeout(60, TimeUnit.SECONDS)
@@ -33,10 +33,10 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface VKUService {
-    @GET("news")
+    @GET("n")
     suspend fun getLatestNews(): NetworkNewsContainer
 
-    @GET("forum")
+    @GET("f")
     suspend fun getAllSubForums(): NetworkForumContainer
 
     @POST("t/create")
@@ -48,39 +48,39 @@ interface VKUService {
     @GET("t/{forum_id}")
     suspend fun getThreadsInForum(@Path("forum_id") forumId: String): NetworkThreadContainer
 
-    @GET("user/get/{user_id}")
+    @GET("u/get/{user_id}")
     suspend fun getUserProfileByUid(@Path("user_id") userId: String): NetworkUser
 
-    @POST("user/new_user")
+    @POST("u/new_user")
     suspend fun registerNewUser(@Header("Authorization") idToken: String): String
 
-    @GET("forum/get/{forum_id}")
+    @GET("f/get/{forum_id}")
     suspend fun getForumById(@Path("forum_id") forumId: String): NetworkForum
 
-    @GET("user/is_user_registered")
+    @GET("u/is_user_registered")
     suspend fun isUserRegistered(@Header("Authorization") idToken: String): Boolean
 
-    @GET("r/{thread_id}")
+    @GET("p/{thread_id}")
     suspend fun getRepliesInThread(@Path("thread_id") threadId: String): NetworkPostContainer
 
     @GET("t/get/{thread_id}")
     suspend fun getThreadById(@Path("thread_id") threadId: String): NetworkThread
 
     @Multipart
-    @POST("/r/upload/{uid}")
+    @POST("/p/upload/{uid}")
     suspend fun uploadImage(
         @Header("Authorization") idToken: String,
         @Path("uid") uid: String,
         @Part image: MultipartBody.Part
     ): String
 
-    @POST("/r/new")
+    @POST("/p/new")
     suspend fun newReply(
         @Header("Authorization") idToken: String,
         @Body post: NetworkPost
     ): NetworkPost
 
-    @GET("/r/get/{id}")
+    @GET("/p/get/{id}")
     suspend fun getReplyById(@Path("id") id: String): NetworkPost
 }
 

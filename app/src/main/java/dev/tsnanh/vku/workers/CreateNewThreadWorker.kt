@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.workers
@@ -18,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 const val THREAD = "thread"
 
@@ -46,7 +45,6 @@ class CreateNewThreadWorker(context: Context, params: WorkerParameters) :
         if (listImageURL != null && listImageURL.isNotEmpty()) {
             container?.post?.images = listImageURL.toList()
         }
-        Timber.d(container.toString())
         setProgress(workDataOf(WorkUtil.Progress to 60))
 
         val deferredThread = async {
@@ -56,7 +54,6 @@ class CreateNewThreadWorker(context: Context, params: WorkerParameters) :
         val threadJsonAdapter = moshi.adapter(ForumThread::class.java)
         val threadJson = threadJsonAdapter.toJson(deferredThread.await())
 
-        Timber.d("CCC $threadJson")
         setProgress(workDataOf(WorkUtil.Progress to 100))
         Result.success(workDataOf(THREAD to threadJson))
     }

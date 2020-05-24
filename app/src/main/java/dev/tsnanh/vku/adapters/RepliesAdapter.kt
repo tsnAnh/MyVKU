@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.adapters
@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.adapters.viewholders.RepliesViewHolder
 import dev.tsnanh.vku.domain.Post
+import dev.tsnanh.vku.viewholders.RepliesViewHolder
 
 const val TYPE_FIRST = 0
 const val TYPE_REPLIES = 1

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.adapters
@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.google.android.material.card.MaterialCardView
-import dev.tsnanh.vku.adapters.viewholders.ThreadViewHolder
 import dev.tsnanh.vku.domain.ForumThread
+import dev.tsnanh.vku.viewholders.ThreadViewHolder
 
 class ThreadAdapter(
     private val listener: ThreadClickListener

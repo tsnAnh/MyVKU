@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.utils
@@ -24,10 +24,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.flexbox.FlexboxLayout
 import com.google.firebase.auth.FirebaseUser
 import dev.tsnanh.vku.R
+import dev.tsnanh.vku.domain.ClassPost
 import dev.tsnanh.vku.domain.Forum
 import dev.tsnanh.vku.domain.ForumThread
 import dev.tsnanh.vku.domain.Post
-import dev.tsnanh.vku.view.replies.RepliesFragmentDirections
+import dev.tsnanh.vku.views.replies.RepliesFragmentDirections
 import timber.log.Timber
 
 fun progressBar(context: Context) = CircularProgressDrawable(context).apply {
@@ -188,5 +189,55 @@ fun ImageView.setImageByURL(url: String?) {
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(progressBar(this.context))
             .into(this)
+    }
+}
+
+@BindingAdapter("imageClassPost")
+fun FlexboxLayout.setImageClassPost(classPost: ClassPost?) {
+    this.removeAllViews()
+    classPost?.let {
+        val imageCount = it.images.size
+        val transitionName = this.context.getString(R.string.image_transition_name)
+        it.images.mapIndexed { i, image ->
+            val imageView = AppCompatImageView(this.context)
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            val metrics = DisplayMetrics()
+            (this.context as Activity).windowManager
+                .defaultDisplay
+                .getMetrics(metrics)
+            val params = FlexboxLayout.LayoutParams(
+                when (imageCount) {
+                    1, 2 -> metrics.widthPixels / imageCount
+                    else -> metrics.widthPixels / 3
+                },
+                when (imageCount) {
+                    1, 2 -> metrics.widthPixels / imageCount
+                    else -> metrics.widthPixels / 3
+                }
+            )
+//            params.flexBasisPercent = 30F
+            params.order = 1
+            params.flexShrink = 1F
+            imageView.layoutParams = params
+            Glide
+                .with(imageView)
+                .load("http://34.87.13.195:3000/$image")
+                .placeholder(progressBar(this.context))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView)
+            imageView.transitionName = transitionName
+            imageView.setOnClickListener {
+                val extras =
+                    FragmentNavigatorExtras(imageView to transitionName)
+                this.findNavController().navigate(
+                    RepliesFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
+                        classPost.images.toTypedArray(),
+                        i
+                    ),
+                    extras
+                )
+            }
+            this.addView(imageView, params)
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 VKU by tsnAnh
+ * Copyright (c) 2020 My VKU by tsnAnh
  */
 
 package dev.tsnanh.vku.viewmodels
@@ -11,7 +11,7 @@ import dev.tsnanh.vku.domain.Post
 import dev.tsnanh.vku.network.VKUServiceApi
 import dev.tsnanh.vku.network.asDomainModel
 import dev.tsnanh.vku.repository.VKURepository
-import dev.tsnanh.vku.view.replies.POST_TAG
+import dev.tsnanh.vku.views.replies.POST_TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

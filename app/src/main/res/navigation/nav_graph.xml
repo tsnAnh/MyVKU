@@ -34,8 +34,8 @@
         android:name="dev.tsnanh.vku.views.more.MoreFragment"
         android:label="@string/text_more">
         <action
-            android:id="@+id/action_navigation_options_to_navigation_settings"
-            app:destination="@id/navigation_settings" />
+            android:id="@+id/activity_settings"
+            app:destination="@id/activity_settings" />
     </fragment>
     <activity
         android:id="@+id/activity_news"
@@ -79,10 +79,6 @@
             app:destination="@id/navigation_new_thread" />
     </fragment>
     <fragment
-        android:id="@+id/navigation_settings"
-        android:name="dev.tsnanh.vku.views.settings.SettingsFragment"
-        android:label="@string/title_activity_settings" />
-    <fragment
         android:id="@+id/navigation_timetable"
         android:name="dev.tsnanh.vku.views.timetable.TimetableFragment"
         android:label="Timetable" />
@@ -115,4 +111,8 @@
             android:name="position"
             app:argType="integer" />
     </fragment>
+    <activity
+        android:id="@+id/activity_settings"
+        android:name="dev.tsnanh.vku.activities.SettingsActivity"
+        android:label="@string/title_activity_settings" />
 </navigation>

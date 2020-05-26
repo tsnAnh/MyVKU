@@ -25,13 +25,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/imageView"
                 android:layout_width="48dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 app:imageClassPost="@{classPost}"
+                app:alignContent="space_between"
+                app:alignItems="stretch"
+                app:flexDirection="row"
+                app:flexWrap="wrap"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

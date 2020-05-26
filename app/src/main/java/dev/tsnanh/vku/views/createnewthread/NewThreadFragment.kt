@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -74,8 +75,12 @@ class NewThreadFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
-        sharedElementReturnTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            pathMotion = MaterialArcMotion()
+        }
+        sharedElementReturnTransition = MaterialContainerTransform().apply {
+            pathMotion = MaterialArcMotion()
+        }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigateUp()
@@ -173,6 +178,8 @@ class NewThreadFragment : Fragment() {
                             .sendNotification(
                                 thread.title,
                                 "${thread.title} is successfully created!",
+                                thread.id,
+                                thread.title,
                                 requireContext()
                             )
                     }

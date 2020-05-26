@@ -19,7 +19,6 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -46,9 +45,6 @@ class NewReplyFragment(
     private lateinit var viewModel: NewReplyViewModel
     private lateinit var binding: FragmentNewReplyBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
-    private val sharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(requireContext())
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

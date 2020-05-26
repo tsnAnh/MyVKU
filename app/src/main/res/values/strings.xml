@@ -51,4 +51,6 @@
     <string name="text_archive">Archive</string>
     <string name="text_report">Report</string>
     <string name="text_my_class">My Class</string>
+
+    <!-- Preference Titles -->
 </resources>

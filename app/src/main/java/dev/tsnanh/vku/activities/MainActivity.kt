@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
@@ -25,7 +24,6 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
-import dev.tsnanh.vku.viewmodels.MainViewModel
 import dev.tsnanh.vku.views.createnewthread.RC_PERMISSION
 import org.koin.java.KoinJavaComponent.inject
 
@@ -35,7 +33,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var preferences: SharedPreferences
-    private val viewModel: MainViewModel by viewModels()
 
     private val manager by inject(NotificationManager::class.java)
 

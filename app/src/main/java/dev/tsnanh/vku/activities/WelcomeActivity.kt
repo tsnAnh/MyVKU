@@ -9,7 +9,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.firebase.ui.auth.AuthUI
@@ -41,60 +40,44 @@ class WelcomeActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome)
 
-        // motion layout callback
-        binding.motionLayout.setTransitionListener(object : MotionLayout.TransitionListener {
-            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
 
-            }
-
-            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
-
-            }
-
-            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
-
-            }
-
-            override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                binding.progressBar.animate().alpha(1F).setDuration(200).start()
-                if (user != null) {
-                    user.getIdToken(true).addOnSuccessListener {
-                        it.token?.let { token ->
-                            lifecycleScope.launch {
-                                val isRegistered = withContext(Dispatchers.IO) {
-                                    try {
-                                        VKUServiceApi.network.isUserRegistered("Bearer $token")
-                                    } catch (e: Exception) {
-                                        false
-                                    }
-                                }
-                                if (isRegistered) {
-                                    start()
-                                } else {
-                                    FirebaseAuth.getInstance().signOut()
-                                    showErrorDialog()
-                                }
+        binding.progressBar.animate().alpha(1F).setDuration(200).start()
+        if (user != null) {
+            user.getIdToken(true).addOnSuccessListener {
+                it.token?.let { token ->
+                    lifecycleScope.launch {
+                        val isRegistered = withContext(Dispatchers.IO) {
+                            try {
+                                VKUServiceApi.network.isUserRegistered("Bearer $token")
+                            } catch (e: Exception) {
+                                false
                             }
                         }
+                        if (isRegistered) {
+                            start()
+                        } else {
+                            FirebaseAuth.getInstance().signOut()
+                            showErrorDialog()
+                        }
                     }
-                } else {
-                    // login using Firebase UI
-                    startActivityForResult(
-                        AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(
-                                listOf(
-                                    AuthUI.IdpConfig.GoogleBuilder().build(),
-                                    AuthUI.IdpConfig.MicrosoftBuilder().build(),
-                                    AuthUI.IdpConfig.AppleBuilder().build()
-                                )
-                            )
-                            .build(),
-                        RC_SIGN_IN
-                    )
                 }
             }
-        })
+        } else {
+            // login using Firebase UI
+            startActivityForResult(
+                AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(
+                        listOf(
+                            AuthUI.IdpConfig.GoogleBuilder().build(),
+                            AuthUI.IdpConfig.MicrosoftBuilder().build(),
+                            AuthUI.IdpConfig.AppleBuilder().build()
+                        )
+                    )
+                    .build(),
+                RC_SIGN_IN
+            )
+        }
     }
 
     // register user on server
@@ -125,11 +108,6 @@ class WelcomeActivity : AppCompatActivity() {
     private fun start() {
         startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
         this@WelcomeActivity.finish()
-    }
-
-    override fun onRestart() {
-        binding.motionLayout.transitionToEnd()
-        super.onRestart()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -13,19 +13,31 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
+/**
+ * Base URL
+ */
 // Google Cloud VM Instance Server
-const val BASE_URL = "http://d39baa4d.ngrok.io"
+const val BASE_URL = "http://34.87.151.214:3000/"
 
+/**
+ * OkHttp client
+ */
 private val client = OkHttpClient.Builder()
     .connectTimeout(60, TimeUnit.SECONDS)
     .readTimeout(60, TimeUnit.SECONDS)
     .writeTimeout(60, TimeUnit.SECONDS)
     .build()
 
+/**
+ * Moshi JSON converter
+ */
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
 
+/**
+ * Retrofit client
+ */
 private val retrofit = Retrofit.Builder()
     .client(client)
     .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -84,6 +96,9 @@ interface VKUService {
     suspend fun getReplyById(@Path("id") id: String): NetworkPost
 }
 
+/**
+ * VKUServiceApi Singleton Object
+ */
 object VKUServiceApi {
     val network: VKUService by lazy {
         retrofit.create(VKUService::class.java)

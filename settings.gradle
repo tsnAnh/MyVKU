@@ -4,3 +4,12 @@
 
 rootProject.name='VKU'
 include ':app'
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+  settingsDir,
+  '../../AndroidStudioProjects/timetable_flutter_module/.android/include_flutter.groovy'
+))
+setBinding(new Binding([gradle: this]))
+
+include ':timetable_flutter_module'
+project(':timetable_flutter_module').projectDir = new File('../../AndroidStudioProjects/timetable_flutter_module')

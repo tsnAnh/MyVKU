@@ -10,12 +10,10 @@
 
     </data>
 
-    <androidx.constraintlayout.motion.widget.MotionLayout
-        android:id="@+id/motion_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:applyMotionScene="true"
-        app:layoutDescription="@xml/welcome"
         tools:context=".activities.WelcomeActivity">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -32,12 +30,12 @@
         <ProgressBar
             android:id="@+id/progress_bar"
             style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:indeterminate="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/vku_image"
             app:layout_constraintStart_toStartOf="@+id/vku_image"
             app:layout_constraintTop_toBottomOf="@+id/vku_image" />
-    </androidx.constraintlayout.motion.widget.MotionLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -23,6 +23,7 @@
             app:buttonGravity="center_vertical"
             app:contentInsetStart="0dp"
             app:logo="@drawable/vku_logo"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:menu="@menu/menu_news" />
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 </com.google.android.material.appbar.AppBarLayout>

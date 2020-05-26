@@ -4,8 +4,6 @@
 
 package dev.tsnanh.vku.views.replies
 
-import android.app.NotificationManager
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,17 +21,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkManager
 import com.google.android.material.transition.MaterialContainerTransform
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.RepliesAdapter
 import dev.tsnanh.vku.databinding.FragmentRepliesBinding
-import dev.tsnanh.vku.network.NetworkPost
-import dev.tsnanh.vku.utils.sendNotification
 import dev.tsnanh.vku.viewmodels.RepliesViewModel
 import dev.tsnanh.vku.viewmodels.RepliesViewModelFactory
 import dev.tsnanh.vku.views.replies.createnewreply.NewReplyFragment
-import dev.tsnanh.vku.workers.POST
 import timber.log.Timber
 
 const val POST_TAG = "create_post"
@@ -134,29 +127,8 @@ class RepliesFragment : Fragment() {
             if (it.isNullOrEmpty()) {
                 return@Observer
             }
-            val workInfo = it[0]
-
-            if (workInfo.state.isFinished) {
-                val jsonAdapter =
-                    Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-                        .adapter(NetworkPost::class.java)
-                val json = workInfo.outputData.getString(POST)
-                if (json != null && json.isNotEmpty()) {
-                    val post = jsonAdapter.fromJson(json)
-                    post?.let {
-                        (requireContext()
-                            .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                            .sendNotification(
-                                post.content,
-                                "${post.content} is successfully created!",
-                                requireContext().applicationContext
-                            )
-
-                    }
-                }
-                WorkManager.getInstance(requireContext()).pruneWork()
-                viewModel.refresh()
-            }
+            WorkManager.getInstance(requireContext()).pruneWork()
+            viewModel.refresh()
         })
 
         binding.fabReply.setOnClickListener {

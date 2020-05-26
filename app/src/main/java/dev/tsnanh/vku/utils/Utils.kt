@@ -11,6 +11,11 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Convert Javascript timestamp to Java DateTime
+ * @param timestamp Long
+ * @return datetime String
+ */
 fun Long.convertTimestampToDateString(): String {
     val date = Date(this)
     val formatter = SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault())
@@ -18,6 +23,11 @@ fun Long.convertTimestampToDateString(): String {
     return formatter.format(date)
 }
 
+/**
+ * Get file path from ContentResolver
+ * @param uri Uri
+ * @return fileName String
+ */
 fun ContentResolver.getFilePath(uri: Uri): String {
     var name = ""
 

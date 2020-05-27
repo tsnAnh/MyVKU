@@ -150,6 +150,16 @@ data class Comment(
     val lastUpdatedOn: String
 )
 
+data class Subject(
+    val id: String,
+    val subjectName: String,
+    val lecturer: String,
+    val week: String,
+    val room: String,
+    val lesson: String,
+    val dayOfWeek: String
+)
+
 fun ForumThread.asNetworkModel(): NetworkThread {
     return NetworkThread(
         id = id,

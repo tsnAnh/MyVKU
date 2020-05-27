@@ -127,6 +127,28 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         app:drawableTint="@color/primaryColor" />
                 </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{ () -> viewModel.onSignOut() }"
+                    app:cardCornerRadius="4dp">
+
+                    <TextView
+                        android:id="@+id/sign_out"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/ic_exit_to_app_black_24dp"
+                        android:padding="16dp"
+                        android:text="@string/text_sign_out"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                        app:drawableTint="@color/primaryColor" />
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

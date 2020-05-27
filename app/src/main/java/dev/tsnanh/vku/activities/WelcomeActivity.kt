@@ -40,9 +40,10 @@ class WelcomeActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome)
 
-
-        binding.progressBar.animate().alpha(1F).setDuration(200).start()
         if (user != null) {
+            binding.signinButton.visibility = View.INVISIBLE
+            binding.progressBar.visibility = View.VISIBLE
+
             user.getIdToken(true).addOnSuccessListener {
                 it.token?.let { token ->
                     lifecycleScope.launch {
@@ -64,19 +65,24 @@ class WelcomeActivity : AppCompatActivity() {
             }
         } else {
             // login using Firebase UI
-            startActivityForResult(
-                AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setAvailableProviders(
-                        listOf(
-                            AuthUI.IdpConfig.GoogleBuilder().build(),
-                            AuthUI.IdpConfig.MicrosoftBuilder().build(),
-                            AuthUI.IdpConfig.AppleBuilder().build()
+            binding.signinButton.visibility = View.VISIBLE
+            binding.progressBar.animate().alpha(1F).setDuration(1000).start()
+
+            binding.signinButton.setOnClickListener {
+                startActivityForResult(
+                    AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(
+                            listOf(
+                                AuthUI.IdpConfig.GoogleBuilder().build(),
+                                AuthUI.IdpConfig.MicrosoftBuilder().build(),
+                                AuthUI.IdpConfig.AppleBuilder().build()
+                            )
                         )
-                    )
-                    .build(),
-                RC_SIGN_IN
-            )
+                        .build(),
+                    RC_SIGN_IN
+                )
+            }
         }
     }
 

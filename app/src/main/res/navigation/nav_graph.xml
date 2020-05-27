@@ -36,6 +36,12 @@
         <action
             android:id="@+id/activity_settings"
             app:destination="@id/activity_settings" />
+        <action
+            android:id="@+id/action_navigation_more_to_navigation_welcome"
+            app:destination="@id/navigation_welcome"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/nav_graph.xml"
+            app:popUpToInclusive="true" />
     </fragment>
     <activity
         android:id="@+id/activity_news"
@@ -115,4 +121,8 @@
         android:id="@+id/activity_settings"
         android:name="dev.tsnanh.vku.activities.SettingsActivity"
         android:label="@string/title_activity_settings" />
+    <activity
+        android:id="@+id/navigation_welcome"
+        android:name="dev.tsnanh.vku.activities.WelcomeActivity"
+        android:label="WelcomeActivity" />
 </navigation>

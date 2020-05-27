@@ -4,6 +4,8 @@
 
 <resources>
     <string name="app_name" translatable="false">My VKU</string>
+    <string name="app_version" translatable="false">0.1.1-dev01</string>
+
     <string name="text_forum">Forum</string>
     <string name="vku_image" translatable="false">VKU Image</string>
     <string name="text_confession" translatable="false">Confession</string>
@@ -51,6 +53,17 @@
     <string name="text_archive">Archive</string>
     <string name="text_report">Report</string>
     <string name="text_my_class">My Class</string>
+    <string name="text_set_alarm">Set Alarm</string>
+    <string name="text_attendance">Attendance</string>
+    <string name="text_monday">Monday</string>
+    <string name="text_tuesday">Tuesday</string>
+    <string name="text_wednesday">Wednesday</string>
+    <string name="text_thursday">Thursday</string>
+    <string name="text_friday">Friday</string>
+    <string name="text_saturday">Saturday</string>
+    <string name="text_sunday">Sunday</string>
+    <string name="text_sign_in_with_google">Sign In With Google</string>
+    <string name="text_sign_out">Sign Out</string>
 
     <!-- Preference Titles -->
 </resources>

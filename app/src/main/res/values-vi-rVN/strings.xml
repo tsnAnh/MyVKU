@@ -37,4 +37,13 @@
     <string name="text_new_reply">Câu trả lời mới</string>
     <string name="text_reply">Trả lời</string>
     <string name="text_my_class">Lớp tuii</string>
+    <string name="text_set_alarm">Đặt báo thức</string>
+    <string name="text_attendance">Điểm danh</string>
+    <string name="text_monday">Thứ Hai</string>
+    <string name="text_tuesday">Thứ Ba</string>
+    <string name="text_wednesday">Thứ Tư</string>
+    <string name="text_thursday">Thứ Năm</string>
+    <string name="text_friday">Thứ Sáu</string>
+    <string name="text_saturday">Thứ Bảy</string>
+    <string name="text_sunday">Chủ Nhật</string>
 </resources>

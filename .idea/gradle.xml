@@ -9,8 +9,6 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$USER_HOME$/AndroidStudioProjects/timetable_flutter_module" />
-            <option value="$USER_HOME$/AndroidStudioProjects/timetable_flutter_module/.android/Flutter" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
           </set>

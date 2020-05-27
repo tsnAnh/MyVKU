@@ -64,12 +64,6 @@ class NewsFragment : Fragment() {
                 shareClickListener = shareClick
             )
         )
-        val filterAdapter = NewsAdapter(
-            NewsClickListener(
-                viewClickListener = viewClick,
-                shareClickListener = shareClick
-            )
-        )
         binding.listNews.apply {
             setHasFixedSize(false)
             isNestedScrollingEnabled = true
@@ -89,17 +83,9 @@ class NewsFragment : Fragment() {
             }
         })
 
-        viewModel.isFiltered.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                binding.listNews.adapter = filterAdapter
-            } else {
-                binding.listNews.adapter = adapter
-            }
-        })
-
         viewModel.filterData.observe(viewLifecycleOwner, Observer {
             it?.let {
-                filterAdapter.submitList(adapter.currentList.filter { news ->
+                adapter.submitList(viewModel.listNewsLocal?.filter { news ->
                     news.category == it
                 })
             }

@@ -23,6 +23,7 @@ class NewsViewModel : ViewModel() {
     private val repository: VKURepository by inject(VKURepository::class.java)
 
     val listNews = repository.news
+    var listNewsLocal: List<News>? = null
 
     private val _navigateToView = MutableLiveData<News>()
     val navigateToView: LiveData<News>
@@ -31,10 +32,6 @@ class NewsViewModel : ViewModel() {
     private val _shareAction = MutableLiveData<News>()
     val shareAction: LiveData<News>
         get() = _shareAction
-
-    private val _isFiltered = MutableLiveData<Boolean>()
-    val isFiltered: LiveData<Boolean>
-        get() = _isFiltered
 
     private val _filterData = MutableLiveData<String>()
     val filterData: LiveData<String>
@@ -71,11 +68,14 @@ class NewsViewModel : ViewModel() {
     fun onChipClick(category: View) {
         val chip = category as Chip
         if (chip.isChecked) {
-            // Switch to filter adapter
-            _isFiltered.value = true
-            _filterData.value = chip.tag.toString()
+            listNewsLocal = listNews.value
+            _filterData.value = chip.tag as String
         } else {
-            _isFiltered.value = false
+            _filterData.value = null
+            viewModelScope.launch {
+                refresh()
+            }
+            listNewsLocal = listNews.value
         }
     }
 

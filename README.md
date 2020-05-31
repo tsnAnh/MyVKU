@@ -11,10 +11,10 @@ git clone https://github.com/tsnanh/VKU.git
 and open project folder using Android Studio.
 
 ## Screenshot
-* [Screenshot 1](./screenshots/screenshot_1.jpg)
-* [Screenshot 2](./screenshots/screenshot_2.jpg)
-* [Screenshot 3](./screenshots/screenshot_3.jpg)
-* [Screenshot 4](./screenshots/screenshot_4.jpg)
+* [Screenshot 1](https://github.com/tsnanh/VKU/tree/master/screenshots/screenshot_1.jpg)
+* [Screenshot 2](https://github.com/tsnanh/VKU/tree/master/screenshots/screenshot_2.jpg)
+* [Screenshot 3](https://github.com/tsnanh/VKU/tree/master/screenshots/screenshot_3.jpg)
+* [Screenshot 4](https://github.com/tsnanh/VKU/tree/master/screenshots/screenshot_4.jpg)
 ## Libraries Used
 * Google's Android Library
   * [AndroidX Browser](https://developer.chrome.com/multidevice/android/customtabs)

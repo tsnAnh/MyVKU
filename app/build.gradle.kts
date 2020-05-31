@@ -22,7 +22,7 @@ android {
         minSdkVersion(AndroidSdk.min)
         targetSdkVersion(AndroidSdk.target)
         versionCode = 1
-        versionName = "0.1.1-dev00"
+        versionName = "0.1.1-dev03"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

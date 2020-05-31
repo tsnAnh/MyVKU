@@ -35,7 +35,9 @@ data class NetworkUserContainer(
 
 @JsonClass(generateAdapter = true)
 data class NetworkPostContainer(
-    val posts: List<NetworkPost>
+    val posts: List<NetworkPost>,
+    val totalPages: Int,
+    val currentPage: Int
 )
 
 @JsonClass(generateAdapter = true)
@@ -327,7 +329,7 @@ fun NetworkUserContainer.asDomainModel(): List<User> {
     }
 }
 
-fun NetworkPostContainer.asDomainModel(): List<Post> {
+fun NetworkPostContainer.getDomainPosts(): List<Post> {
     return posts.map {
         Post(
             id = it.id,
@@ -344,6 +346,14 @@ fun NetworkPostContainer.asDomainModel(): List<Post> {
             quotedPost = it.quotedPost?.asDomainModel()
         )
     }
+}
+
+fun NetworkPostContainer.asDomainModel(): PostContainer {
+    return PostContainer(
+        posts.map { it.asDomainModel() },
+        totalPages,
+        currentPage
+    )
 }
 
 fun NetworkClassroomContainer.asDomainModel(): List<Classroom> {

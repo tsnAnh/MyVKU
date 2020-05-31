@@ -7,7 +7,7 @@ package dev.tsnanh.vku.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import androidx.work.WorkManager
-import dev.tsnanh.vku.domain.Post
+import dev.tsnanh.vku.domain.PostContainer
 import dev.tsnanh.vku.network.VKUServiceApi
 import dev.tsnanh.vku.network.asDomainModel
 import dev.tsnanh.vku.repository.VKURepository
@@ -25,8 +25,8 @@ class RepliesViewModel(
 
     val thread = repository.getThreadById(threadId)
 
-    private val _replies = MutableLiveData<List<Post>>()
-    val replies: LiveData<List<Post>>
+    private val _replies = MutableLiveData<PostContainer>()
+    val replies: LiveData<PostContainer>
         get() = _replies
 
     init {
@@ -38,7 +38,9 @@ class RepliesViewModel(
 
     private suspend fun refreshReplies() {
         withContext(Dispatchers.IO) {
-            _replies.postValue(VKUServiceApi.network.getRepliesInThread(threadId).asDomainModel())
+            _replies.postValue(
+                VKUServiceApi.network.getRepliesInThread(threadId, 1).asDomainModel()
+            )
         }
     }
 

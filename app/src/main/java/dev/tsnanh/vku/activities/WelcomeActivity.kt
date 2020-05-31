@@ -51,6 +51,7 @@ class WelcomeActivity : AppCompatActivity() {
                             try {
                                 VKUServiceApi.network.isUserRegistered("Bearer $token")
                             } catch (e: Exception) {
+                                showErrorDialog()
                                 false
                             }
                         }
@@ -74,11 +75,11 @@ class WelcomeActivity : AppCompatActivity() {
                         .createSignInIntentBuilder()
                         .setAvailableProviders(
                             listOf(
-                                AuthUI.IdpConfig.GoogleBuilder().build(),
-                                AuthUI.IdpConfig.MicrosoftBuilder().build(),
-                                AuthUI.IdpConfig.AppleBuilder().build()
+                                AuthUI.IdpConfig.GoogleBuilder().build()
                             )
                         )
+                        .setLogo(R.drawable.vku_logo)
+                        .setTheme(R.style.AppTheme)
                         .build(),
                     RC_SIGN_IN
                 )
@@ -124,9 +125,21 @@ class WelcomeActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 val user = FirebaseAuth.getInstance().currentUser
                 if (user != null) {
-                    user.getIdToken(true).addOnSuccessListener {
+                    user.getIdToken(true).addOnSuccessListener { result ->
                         lifecycleScope.launch {
-                            it.token?.let { it1 -> registerUser(it1) }
+                            val isRegistered = withContext(Dispatchers.IO) {
+                                try {
+                                    VKUServiceApi.network.isUserRegistered("Bearer ${result.token}")
+                                } catch (e: Exception) {
+                                    showErrorDialog()
+                                    false
+                                }
+                            }
+                            if (isRegistered) {
+                                start()
+                            } else {
+                                result.token?.let { token -> registerUser(token) }
+                            }
                         }
                     }
                 } else {

@@ -16,13 +16,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkManager
 import com.google.android.material.transition.MaterialContainerTransform
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.adapters.RepliesAdapter
+import dev.tsnanh.vku.adapters.ListRepliesPagerAdapter
 import dev.tsnanh.vku.databinding.FragmentRepliesBinding
 import dev.tsnanh.vku.viewmodels.RepliesViewModel
 import dev.tsnanh.vku.viewmodels.RepliesViewModelFactory
@@ -67,7 +64,6 @@ class RepliesFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         Timber.d(navArgs.threadId)
         binding.lifecycleOwner = viewLifecycleOwner
-
         binding.layout.transitionName = navArgs.threadId
         viewModel = ViewModelProvider(
             this,
@@ -77,49 +73,14 @@ class RepliesFragment : Fragment() {
             )
         ).get(RepliesViewModel::class.java)
 
-        val swipeController = SwipeController()
-        val itemTouchHelper = ItemTouchHelper(swipeController)
-        binding.listReplies.apply {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(requireContext())
-            itemTouchHelper.attachToRecyclerView(this)
+        binding.viewPager.apply {
+            setCurrentItem(0, false)
         }
-
-        val adapter = RepliesAdapter()
-        binding.listReplies.adapter = adapter
-        binding.listReplies.adapter?.registerAdapterDataObserver(object :
-            RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
-            }
-
-            override fun onChanged() {
-                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
-            }
-
-            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
-            }
-
-            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
-            }
-
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
-            }
-
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
-                binding.listReplies.scrollToPosition(adapter.currentList.size - 1)
-            }
-        })
 
         viewModel.replies.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.submitList(it)
-
-                // Scroll to top
-                binding.listReplies.scrollToPosition(0)
+                val adapter = ListRepliesPagerAdapter(this, navArgs.threadId, it.totalPages)
+                binding.viewPager.adapter = adapter
             }
         })
 

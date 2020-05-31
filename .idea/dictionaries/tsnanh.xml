@@ -1,7 +1,14 @@
 <component name="ProjectDictionaryState">
   <dictionary name="tsnanh">
     <words>
+      <w>constraintlayout</w>
+      <w>flexbox</w>
+      <w>kapt</w>
+      <w>koin</w>
+      <w>livedata</w>
       <w>moshi</w>
+      <w>savedstate</w>
+      <w>viewmodel</w>
     </words>
   </dictionary>
 </component>

@@ -40,7 +40,7 @@
             android:id="@+id/action_navigation_more_to_navigation_welcome"
             app:destination="@id/navigation_welcome"
             app:launchSingleTop="true"
-            app:popUpTo="@id/nav_graph.xml"
+            app:popUpTo="@id/navigation_welcome"
             app:popUpToInclusive="true" />
     </fragment>
     <activity

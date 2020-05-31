@@ -50,7 +50,7 @@ class VKURepository {
             try {
                 emit(
                     Resource.Success(
-                        VKUServiceApi.network.getRepliesInThread(threadId).asDomainModel()
+                        VKUServiceApi.network.getRepliesInThread(threadId, 0).asDomainModel()
                     )
                 )
             } catch (e: SocketTimeoutException) {

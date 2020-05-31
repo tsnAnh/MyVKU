@@ -29,6 +29,6 @@
 
     <style name="LoginButtonShapeAppearance" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerRadius">50dp</item>
+        <item name="cornerRadius">16dp</item>
     </style>
 </resources>

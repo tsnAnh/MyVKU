@@ -11,6 +11,12 @@ import dev.tsnanh.vku.network.*
  * @author tsnAnh
  */
 
+data class PostContainer(
+    val posts: List<Post>,
+    val totalPages: Int,
+    val currentPage: Int
+)
+
 /**
  * Domain News Data Class
  */

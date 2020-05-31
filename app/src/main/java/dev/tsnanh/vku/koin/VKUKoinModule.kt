@@ -6,6 +6,7 @@ package dev.tsnanh.vku.koin
 
 import android.app.NotificationManager
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import androidx.room.Room
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.database.VKUDatabase
@@ -47,5 +48,10 @@ val vkuModule = module {
             androidContext(),
             NotificationManager::class.java
         ) as NotificationManager
+    }
+
+    // Shared Preferences
+    single {
+        PreferenceManager.getDefaultSharedPreferences(androidContext())
     }
 }

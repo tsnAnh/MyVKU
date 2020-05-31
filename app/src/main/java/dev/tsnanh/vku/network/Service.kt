@@ -4,10 +4,13 @@
 
 package dev.tsnanh.vku.network
 
+import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dev.tsnanh.vku.utils.Constants
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import org.koin.java.KoinJavaComponent.inject
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
@@ -44,7 +47,10 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
+private val sharedPreferences by inject(SharedPreferences::class.java)
+
 interface VKUService {
+
     @GET("n")
     suspend fun getLatestNews(): NetworkNewsContainer
 
@@ -73,7 +79,11 @@ interface VKUService {
     suspend fun isUserRegistered(@Header("Authorization") idToken: String): Boolean
 
     @GET("p/{thread_id}")
-    suspend fun getRepliesInThread(@Path("thread_id") threadId: String): NetworkPostContainer
+    suspend fun getRepliesInThread(
+        @Path("thread_id") threadId: String,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int = sharedPreferences.getInt(Constants.REPLIES_PER_PAGE, 10)
+    ): NetworkPostContainer
 
     @GET("t/get/{thread_id}")
     suspend fun getThreadById(@Path("thread_id") threadId: String): NetworkThread

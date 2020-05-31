@@ -76,10 +76,10 @@ class NewThreadFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform().apply {
-            pathMotion = MaterialArcMotion()
+            setPathMotion(MaterialArcMotion())
         }
         sharedElementReturnTransition = MaterialContainerTransform().apply {
-            pathMotion = MaterialArcMotion()
+            setPathMotion(MaterialArcMotion())
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {

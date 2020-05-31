@@ -6,6 +6,10 @@
     <string name="app_name" translatable="false">My VKU</string>
     <string name="app_version" translatable="false">0.1.1-dev01</string>
 
+    <!-- Shared Preferences Key -->
+    <string name="night_mode_key" translatable="false">night_mode_preferences</string>
+    <string name="replies_per_page_key" translatable="false">replies_per_page_key</string>
+
     <string name="text_forum">Forum</string>
     <string name="vku_image" translatable="false">VKU Image</string>
     <string name="text_confession" translatable="false">Confession</string>
@@ -32,7 +36,6 @@
     <string name="text_display">Display</string>
     <string name="text_night_mode">Night Mode</string>
     <string name="text_night_mode_summary">Change display mode</string>
-    <string name="night_mode_key" translatable="false">night_mode_preferences</string>
     <string name="text_new_post">New Post</string>
     <string name="text_post_image">Post Image (optional)</string>
     <string name="text_timetable">Timetable</string>
@@ -64,6 +67,8 @@
     <string name="text_sunday">Sunday</string>
     <string name="text_sign_in_with_google">Sign In With Google</string>
     <string name="text_sign_out">Sign Out</string>
+    <string name="text_replies_per_page">Replies Per Page</string>
+    <string name="text_summary_replies_per_page">Change the number of posts per page.</string>
 
     <!-- Preference Titles -->
 </resources>

@@ -7,10 +7,9 @@ package dev.tsnanh.vku.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import androidx.work.WorkManager
-import dev.tsnanh.vku.domain.PostContainer
-import dev.tsnanh.vku.network.VKUServiceApi
-import dev.tsnanh.vku.network.asDomainModel
-import dev.tsnanh.vku.repository.VKURepository
+import dev.tsnanh.vku.domain.entities.ReplyContainer
+import dev.tsnanh.vku.domain.usecases.RetrieveRepliesLiveDataUseCase
+import dev.tsnanh.vku.domain.usecases.RetrieveRepliesUseCase
 import dev.tsnanh.vku.views.replies.POST_TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,32 +20,36 @@ class RepliesViewModel(
     private val threadId: String,
     application: Application
 ) : AndroidViewModel(application) {
-    private val repository by inject(VKURepository::class.java)
+    private val retrieveRepliesLiveDataUseCase by inject(RetrieveRepliesLiveDataUseCase::class.java)
+    private val retrieveRepliesUseCase by inject(RetrieveRepliesUseCase::class.java)
 
-    val thread = repository.getThreadById(threadId)
+    val thread = retrieveRepliesLiveDataUseCase.execute(threadId, 1, 10)
 
-    private val _replies = MutableLiveData<PostContainer>()
-    val replies: LiveData<PostContainer>
+    private val _replies = MutableLiveData<Pair<ReplyContainer, Boolean>>()
+    val replies: LiveData<Pair<ReplyContainer, Boolean>>
         get() = _replies
 
     init {
-        refresh()
+        refresh(false)
     }
 
     val createPostWorkerLiveData =
         WorkManager.getInstance(getApplication()).getWorkInfosByTagLiveData(POST_TAG)
 
-    private suspend fun refreshReplies() {
+    private suspend fun refreshReplies(lastPage: Boolean) {
         withContext(Dispatchers.IO) {
             _replies.postValue(
-                VKUServiceApi.network.getRepliesInThread(threadId, 1).asDomainModel()
+                Pair(
+                    retrieveRepliesUseCase.execute(threadId, 1, 10),
+                    lastPage
+                )
             )
         }
     }
 
-    fun refresh() {
+    fun refresh(lastPage: Boolean) {
         viewModelScope.launch {
-            refreshReplies()
+            refreshReplies(lastPage)
         }
     }
 }

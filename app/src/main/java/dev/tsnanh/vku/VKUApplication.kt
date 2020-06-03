@@ -7,6 +7,7 @@ package dev.tsnanh.vku
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import dev.tsnanh.vku.domain.di.module
 import dev.tsnanh.vku.koin.vkuModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -24,7 +25,7 @@ class VKUApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@VKUApplication)
-            modules(vkuModule)
+            modules(vkuModule, module)
         }
 
         // UI Mode

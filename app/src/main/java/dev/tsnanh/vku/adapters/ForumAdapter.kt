@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.google.android.material.card.MaterialCardView
-import dev.tsnanh.vku.domain.Forum
+import dev.tsnanh.vku.domain.entities.Forum
 import dev.tsnanh.vku.viewholders.ForumViewHolder
 
 /**

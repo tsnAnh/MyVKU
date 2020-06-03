@@ -27,14 +27,12 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewReplyBinding
-import dev.tsnanh.vku.domain.Post
-import dev.tsnanh.vku.domain.Resource
+import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.viewmodels.NewReplyViewModel
 import dev.tsnanh.vku.viewmodels.NewThreadViewModelFactory
 import dev.tsnanh.vku.views.createnewthread.RC_ADD_PHOTO
 import dev.tsnanh.vku.views.createnewthread.RC_IMAGE_PICKER
 import dev.tsnanh.vku.views.createnewthread.RC_PERMISSION
-import timber.log.Timber
 
 class NewReplyFragment(
     private val threadId: String,
@@ -89,36 +87,36 @@ class NewReplyFragment(
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.listImageUpload.adapter = pickerAdapter
 
-        viewModel.quotedPost.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                Timber.d("${it.data}")
-                when (it) {
-                    is Resource.Loading -> {
-                        binding.materialCardView.visibility = View.VISIBLE
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.layoutPost.visibility = View.INVISIBLE
-                    }
-                    is Resource.Error -> {
-                        // handle error
-                        if (it.message == "empty")
-                            binding.materialCardView.visibility = View.GONE
-                        else
-                            Snackbar
-                                .make(
-                                    requireView(),
-                                    "${it.message}",
-                                    Snackbar.LENGTH_LONG
-                                )
-                                .show()
-                    }
-                    is Resource.Success -> {
-                        binding.post = it.data
-                        binding.progressBar.visibility = View.GONE
-                        binding.layoutPost.visibility = View.VISIBLE
-                    }
-                }
-            }
-        })
+//        viewModel.quotedPost.observe(viewLifecycleOwner, Observer {
+//            if (it != null) {
+//                Timber.d("${it.data}")
+//                when (it) {
+//                    is Resource.Loading -> {
+//                        binding.materialCardView.visibility = View.VISIBLE
+//                        binding.progressBar.visibility = View.VISIBLE
+//                        binding.layoutPost.visibility = View.INVISIBLE
+//                    }
+//                    is Resource.Error -> {
+//                        // handle error
+//                        if (it.message == "empty")
+//                            binding.materialCardView.visibility = View.GONE
+//                        else
+//                            Snackbar
+//                                .make(
+//                                    requireView(),
+//                                    "${it.message}",
+//                                    Snackbar.LENGTH_LONG
+//                                )
+//                                .show()
+//                    }
+//                    is Resource.Success -> {
+//                        binding.post = it.data
+//                        binding.progressBar.visibility = View.GONE
+//                        binding.layoutPost.visibility = View.VISIBLE
+//                    }
+//                }
+//            }
+//        })
 
         viewModel.pickerHasImage.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -172,7 +170,7 @@ class NewReplyFragment(
             if (binding.content.text.isNullOrBlank()) {
                 binding.content.error = "Empty Reply Content"
             } else {
-                val post = Post(
+                val post = Reply(
                     content = binding.content.text.toString().trim(),
                     threadTitle = threadTitle,
                     threadId = threadId,

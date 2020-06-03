@@ -5,6 +5,7 @@
       <w>flexbox</w>
       <w>kapt</w>
       <w>koin</w>
+      <w>ktlint</w>
       <w>livedata</w>
       <w>moshi</w>
       <w>savedstate</w>

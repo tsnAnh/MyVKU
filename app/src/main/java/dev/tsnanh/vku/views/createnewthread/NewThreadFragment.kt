@@ -40,9 +40,9 @@ import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewThreadBinding
 import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
-import dev.tsnanh.vku.domain.ForumThread
-import dev.tsnanh.vku.domain.Post
-import dev.tsnanh.vku.domain.Resource
+import dev.tsnanh.vku.domain.entities.ForumThread
+import dev.tsnanh.vku.domain.entities.Reply
+import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.sendNotification
 import dev.tsnanh.vku.viewmodels.MainViewModel
 import dev.tsnanh.vku.viewmodels.NewThreadViewModel
@@ -196,20 +196,20 @@ class NewThreadFragment : Fragment() {
                         Timber.d("Loading Forum List...")
                     }
                     is Resource.Success -> {
-                        if (it.data != null && it.data.isNotEmpty()) {
-                            val forumsTitle = it.data.map { forum ->
+                        if (it.data != null && it.data?.forums!!.isNotEmpty()) {
+                            val forumsTitle = it.data?.forums?.map { forum ->
                                 forum.title
                             }
                             val arrAdapter =
                                 ArrayAdapter(
                                     requireContext(),
                                     R.layout.dropdown_menu_popup_item,
-                                    forumsTitle
+                                    forumsTitle!!
                                 )
 
                             binding.forum.setOnItemClickListener { _, _, i, _ ->
-                                binding.forum.tag = it.data[i].id
-                                Timber.d(it.data[i].id)
+                                binding.forum.tag = it.data?.forums!![i].id
+                                Timber.d(it.data?.forums!![i].id)
                             }
 
                             binding.forum.setAdapter(arrAdapter)
@@ -348,8 +348,8 @@ class NewThreadFragment : Fragment() {
         )
     }
 
-    private fun preparePost(): Post {
-        return Post(
+    private fun preparePost(): Reply {
+        return Reply(
             content = binding.content.text.toString().trim()
         )
     }

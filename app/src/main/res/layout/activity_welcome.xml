@@ -8,6 +8,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="dev.tsnanh.vku.viewmodels.WelcomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,6 +51,7 @@
             android:layout_marginEnd="16dp"
             android:padding="16dp"
             android:text="@string/text_sign_in_with_google"
+            android:onClick="@{() -> viewModel.onSignInClick()}"
             app:cornerRadius="24dp"
             app:icon="@drawable/fui_ic_googleg_color_24dp"
             app:iconGravity="start"

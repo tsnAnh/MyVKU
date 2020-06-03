@@ -5,15 +5,38 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:icon="@drawable/ic_archive_black_24dp"
-        android:title="@string/text_archive"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/action_first_page"
+        android:icon="@drawable/ic_round_first_page_24"
+        android:title="@string/text_first_page"
+        app:showAsAction="always" />
     <item
+        android:id="@+id/action_previous_page"
+        android:icon="@drawable/ic_round_navigate_before_24"
+        android:title="@string/text_previous_page"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_next_page"
+        android:icon="@drawable/ic_round_navigate_next_24"
+        android:title="@string/text_next_page"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_last_page"
+        android:icon="@drawable/ic_round_last_page_24"
+        android:title="@string/text_last_page"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_archive"
+        android:icon="@drawable/ic_round_archive_24"
+        android:title="@string/text_archive"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_report"
         android:icon="@drawable/ic_report_black_24dp"
         android:title="@string/text_report"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
-        android:icon="@drawable/ic_bug_report_black_24dp"
+        android:id="@+id/action_bug_report"
+        android:icon="@drawable/ic_round_bug_report_24"
         android:title="@string/text_bug_report"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>

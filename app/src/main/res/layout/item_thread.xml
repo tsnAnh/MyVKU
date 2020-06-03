@@ -7,19 +7,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="thread"
-            type="dev.tsnanh.vku.domain.ForumThread" />
-
+            type="dev.tsnanh.vku.domain.entities.ForumThread" />
         <variable
             name="listener"
             type="dev.tsnanh.vku.adapters.ThreadClickListener" />
-
         <variable
             name="createdAt"
             type="String" />
-
         <variable
             name="lastUpdatedOn"
             type="String" />
@@ -95,7 +91,7 @@
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{ @string/threadDetails(thread.numberOfPosts, thread.numberOfViews, lastUpdatedOn) }"
+                android:text="@{ @string/threadDetails(thread.numberOfReplies, thread.numberOfViews, lastUpdatedOn) }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

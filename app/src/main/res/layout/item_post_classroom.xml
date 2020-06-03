@@ -8,9 +8,7 @@
 
     <data>
 
-        <variable
-            name="classPost"
-            type="dev.tsnanh.vku.domain.ClassPost" />
+
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -31,7 +29,6 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                app:imageClassPost="@{classPost}"
                 app:alignContent="space_between"
                 app:alignItems="stretch"
                 app:flexDirection="row"
@@ -87,7 +84,6 @@
                 app:alignItems="stretch"
                 app:flexDirection="row"
                 app:flexWrap="wrap"
-                app:imageClassPost="@{ classPost }"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -54,6 +54,6 @@
             android:tint="#ffffff"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_clear" />
+            app:srcCompat="@drawable/ic_round_clear_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

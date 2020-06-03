@@ -10,10 +10,9 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dev.tsnanh.vku.domain.ForumThread
-import dev.tsnanh.vku.network.NetworkCreateThreadContainer
-import dev.tsnanh.vku.network.VKUServiceApi
-import dev.tsnanh.vku.network.asDomainModel
+import dev.tsnanh.vku.domain.entities.CreateThreadContainer
+import dev.tsnanh.vku.domain.entities.ForumThread
+import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -30,7 +29,7 @@ class CreateNewThreadWorker(context: Context, params: WorkerParameters) :
         val token = inputData.getStringArray("id_token")?.get(0)
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val jsonAdapter =
-            moshi.adapter(NetworkCreateThreadContainer::class.java)
+            moshi.adapter(CreateThreadContainer::class.java)
 
         setProgress(workDataOf(WorkUtil.Progress to 20))
 
@@ -43,12 +42,12 @@ class CreateNewThreadWorker(context: Context, params: WorkerParameters) :
 
         val listImageURL = inputData.getStringArray(IMAGE_URL)
         if (listImageURL != null && listImageURL.isNotEmpty()) {
-            container?.post?.images = listImageURL.toList()
+            container?.reply?.images = listImageURL.toList()
         }
         setProgress(workDataOf(WorkUtil.Progress to 60))
 
         val deferredThread = async {
-            VKUServiceApi.network.createThread("Bearer $token", container!!).asDomainModel()
+            VKUServiceApi.network.createThread("Bearer $token", container!!)
         }
         setProgress(workDataOf(WorkUtil.Progress to 80))
         val threadJsonAdapter = moshi.adapter(ForumThread::class.java)

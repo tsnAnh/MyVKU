@@ -3,9 +3,8 @@ package dev.tsnanh.vku.viewholders
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.adapters.SubjectClickListener
+//import dev.tsnanh.vku.adapters.SubjectClickListener
 import dev.tsnanh.vku.databinding.ItemSubjectBinding
-import dev.tsnanh.vku.domain.Subject
 
 class SubjectViewHolder private constructor(private val binding: ItemSubjectBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -17,10 +16,10 @@ class SubjectViewHolder private constructor(private val binding: ItemSubjectBind
         }
     }
 
-    fun bind(
-        subject: Subject,
-        clickListener: SubjectClickListener
-    ) {
-
-    }
+//    fun bind(
+//        subject: Subject,
+//        clickListener: SubjectClickListener
+//    ) {
+//        binding.subject = subject
+//    }
 }

@@ -15,7 +15,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -27,9 +26,8 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ForumAdapter
 import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.FragmentForumBinding
-import dev.tsnanh.vku.domain.Resource
+import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.viewmodels.ForumViewModel
-import kotlinx.coroutines.launch
 
 class ForumFragment : Fragment() {
 
@@ -79,7 +77,7 @@ class ForumFragment : Fragment() {
             it?.let {
                 when (it) {
                     is Resource.Success -> {
-                        adapter.submitList(it.data)
+                        adapter.submitList(it.data?.forums)
                         binding.progressBar.visibility = View.GONE
                     }
                     is Resource.Loading -> {
@@ -119,12 +117,12 @@ class ForumFragment : Fragment() {
             )
         }
 
-        binding.swipeToRefresh.setOnRefreshListener {
-            lifecycleScope.launch {
-                viewModel.refreshForums()
-                binding.swipeToRefresh.isRefreshing = false
-            }
-        }
+//        binding.swipeToRefresh.setOnRefreshListener {
+//            lifecycleScope.launch {
+//                viewModel.refreshForums()
+//                binding.swipeToRefresh.isRefreshing = false
+//            }
+//        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding.listTopics.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->

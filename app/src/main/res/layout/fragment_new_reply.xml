@@ -18,7 +18,7 @@
 
         <variable
             name="post"
-            type="dev.tsnanh.vku.domain.Post" />
+            type="dev.tsnanh.vku.domain.entities.Reply" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -142,7 +142,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_new_reply"
-            app:startIconDrawable="@drawable/ic_subject_black_24dp">
+            app:startIconDrawable="@drawable/ic_round_subject_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/content"
@@ -194,7 +194,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_choose_image"
-            app:icon="@drawable/ic_camera_alt_black_24dp"
+            app:icon="@drawable/ic_round_camera_alt_24"
             app:layout_constraintBottom_toBottomOf="@+id/list_image_upload"
             app:layout_constraintEnd_toEndOf="@+id/list_image_upload"
             app:layout_constraintStart_toStartOf="@+id/list_image_upload"

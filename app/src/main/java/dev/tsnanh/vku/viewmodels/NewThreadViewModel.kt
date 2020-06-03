@@ -9,15 +9,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.work.WorkManager
-import dev.tsnanh.vku.repository.VKURepository
+import dev.tsnanh.vku.domain.usecases.RetrieveForumsUseCase
 import org.koin.java.KoinJavaComponent.inject
 
 const val TAG_NEW_THREAD = "dev.tsnanh.newthread"
 
 class NewThreadViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository by inject(VKURepository::class.java)
-
-    val forums = repository.getAllForums()
+    private val retrieveForumsUseCase by inject(RetrieveForumsUseCase::class.java)
+    val forums = retrieveForumsUseCase.execute()
 
     val createThreadWorkerLiveData =
         WorkManager.getInstance(getApplication()).getWorkInfosByTagLiveData(TAG_NEW_THREAD)

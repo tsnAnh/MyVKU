@@ -21,8 +21,8 @@ android {
         applicationId = "dev.tsnanh.vku"
         minSdkVersion(AndroidSdk.min)
         targetSdkVersion(AndroidSdk.target)
-        versionCode = 1
-        versionName = "0.1.1-dev03"
+        versionCode = Version.code
+        versionName = Version.name
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,6 +51,8 @@ android {
 
 dependencies {
     implementation(fileTree("dir" to "libs", "include" to arrayOf("*.jar")))
+    implementation(project(":domain"))
+
     implementation(Libraries.kotlinStdLib)
     implementation(Libraries.appcompat)
     implementation(Libraries.coreKtx)

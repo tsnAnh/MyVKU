@@ -13,8 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialFadeThrough
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.adapters.SubjectAdapter
-import dev.tsnanh.vku.adapters.SubjectClickListener
 import dev.tsnanh.vku.databinding.FragmentTimetableBinding
 
 class TimetableFragment : Fragment() {
@@ -42,16 +40,9 @@ class TimetableFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = SubjectAdapter(SubjectClickListener(
-            setAlarmClickListener = {
-
-            },
-            attendanceClickListener = {}
-        ))
         binding.listSubjects.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
-            setAdapter(adapter)
         }
     }
 

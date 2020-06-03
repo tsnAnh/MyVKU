@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.adapters.NewsClickListener
 import dev.tsnanh.vku.databinding.ItemNewsBinding
-import dev.tsnanh.vku.domain.News
+import dev.tsnanh.vku.domain.entities.News
 
 class NewsViewHolder private constructor(
     private val binding: ItemNewsBinding

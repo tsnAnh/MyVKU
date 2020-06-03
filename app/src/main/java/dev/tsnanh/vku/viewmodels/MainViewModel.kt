@@ -11,10 +11,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.work.*
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.moshi.Moshi
-import dev.tsnanh.vku.domain.ForumThread
-import dev.tsnanh.vku.domain.Post
-import dev.tsnanh.vku.domain.asNetworkModel
-import dev.tsnanh.vku.network.NetworkCreateThreadContainer
+import dev.tsnanh.vku.domain.entities.CreateThreadContainer
+import dev.tsnanh.vku.domain.entities.ForumThread
+import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.utils.sendNotificationWithProgress
 import dev.tsnanh.vku.workers.CreateNewThreadWorker
 import dev.tsnanh.vku.workers.UploadPostImageWorker
@@ -45,16 +44,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun createNewThread(
         list: List<Uri>,
         thread: ForumThread,
-        post: Post
+        post: Reply
     ) {
         firebaseUser?.getIdToken(true)?.addOnSuccessListener {
             it?.token?.let { token ->
                 val moshi = Moshi.Builder().build()
                 val jsonAdapter =
-                    moshi.adapter(NetworkCreateThreadContainer::class.java)
+                    moshi.adapter(CreateThreadContainer::class.java)
 
                 val container =
-                    NetworkCreateThreadContainer(thread.asNetworkModel(), post.asNetworkModel())
+                    CreateThreadContainer(thread, post)
                 val json = jsonAdapter.toJson(container)
                 val constraint = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)

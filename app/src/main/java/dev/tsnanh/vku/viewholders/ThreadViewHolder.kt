@@ -9,9 +9,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.ItemThreadBinding
-import dev.tsnanh.vku.domain.ForumThread
+import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.utils.convertTimestampToDateString
-import timber.log.Timber
 
 class ThreadViewHolder(
     private val binding: ItemThreadBinding
@@ -31,10 +30,6 @@ class ThreadViewHolder(
         binding.thread = thread.apply {
             binding.createdAt = createdAt.convertTimestampToDateString()
             binding.lastUpdatedOn = lastUpdatedOn.convertTimestampToDateString()
-            Timber.d(binding.createdAt)
-            Timber.d(binding.lastUpdatedOn)
-            Timber.d("$createdAt")
-            Timber.d("$lastUpdatedOn")
         }
         binding.listener = listener
         binding.executePendingBindings()

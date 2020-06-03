@@ -9,7 +9,7 @@ import android.net.Uri
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import dev.tsnanh.vku.network.VKUServiceApi
+import dev.tsnanh.vku.domain.network.VKUServiceApi
 import dev.tsnanh.vku.utils.getFilePath
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

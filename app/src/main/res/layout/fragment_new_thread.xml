@@ -36,7 +36,7 @@
                 android:layout_height="match_parent"
                 app:buttonGravity="center_vertical"
                 app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:navigationIcon="@drawable/ic_navigate_before_black_24dp"
+                app:navigationIcon="@drawable/ic_round_arrow_back_24"
                 app:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -76,7 +76,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:startIconDrawable="@drawable/ic_forum">
+                    app:startIconDrawable="@drawable/ic_round_forum_24">
 
                     <AutoCompleteTextView
                         android:id="@+id/forum"
@@ -97,7 +97,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/new_thread"
-                    app:startIconDrawable="@drawable/ic_title_black_24dp">
+                    app:startIconDrawable="@drawable/ic_round_title_24">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/title"
@@ -121,7 +121,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView2"
-                    app:startIconDrawable="@drawable/ic_subject_black_24dp">
+                    app:startIconDrawable="@drawable/ic_round_subject_24">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/content"
@@ -162,7 +162,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/text_choose_image"
-                    app:icon="@drawable/ic_camera_alt_black_24dp"
+                    app:icon="@drawable/ic_round_camera_alt_24"
                     app:layout_constraintBottom_toBottomOf="@+id/list_image_upload"
                     app:layout_constraintEnd_toEndOf="@+id/list_image_upload"
                     app:layout_constraintStart_toStartOf="@+id/list_image_upload"
@@ -206,7 +206,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_add_black_24dp"
+            android:src="@drawable/ic_round_add_24"
             app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

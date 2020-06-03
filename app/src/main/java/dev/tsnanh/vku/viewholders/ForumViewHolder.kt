@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.ItemForumBinding
-import dev.tsnanh.vku.domain.Forum
+import dev.tsnanh.vku.domain.entities.Forum
 
 class ForumViewHolder private constructor(
     private val binding: ItemForumBinding

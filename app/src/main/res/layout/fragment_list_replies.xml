@@ -16,6 +16,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:itemCount="10"
-            tools:listitem="@layout/item_normal_reply" />
+            tools:listitem="@layout/item_reply" />
     </FrameLayout>
 </layout>

@@ -4,47 +4,21 @@
 
 package dev.tsnanh.vku.viewmodels
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.card.MaterialCardView
-import dev.tsnanh.vku.domain.ForumThread
-import dev.tsnanh.vku.domain.Resource
-import dev.tsnanh.vku.network.VKUServiceApi
-import dev.tsnanh.vku.network.asDomainModel
-import dev.tsnanh.vku.repository.VKURepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import dev.tsnanh.vku.domain.entities.ForumThread
+import dev.tsnanh.vku.domain.usecases.RetrieveSingleForumUseCase
+import dev.tsnanh.vku.domain.usecases.RetrieveThreadsUseCase
 import org.koin.java.KoinJavaComponent.inject
-import retrofit2.HttpException
-import java.net.SocketTimeoutException
 
-class ThreadViewModel(private val forumId: String) : ViewModel() {
-    private val repository: VKURepository by inject(VKURepository::class.java)
-
-    private var _threads = MutableLiveData<Resource<List<ForumThread>>>()
-    val threads: LiveData<Resource<List<ForumThread>>>
-        get() = _threads
-
-    init {
-        refreshThreads()
-    }
-
-    fun refreshThreads() = viewModelScope.launch(Dispatchers.IO) {
-        _threads.postValue(Resource.Loading())
-        _threads.postValue(
-            try {
-                Resource.Success(VKUServiceApi.network.getThreadsInForum(forumId).asDomainModel())
-            } catch (e: SocketTimeoutException) {
-                Resource.Error<List<ForumThread>>("Connection Timed Out")
-            } catch (e2: HttpException) {
-                Resource.Error<List<ForumThread>>("Cannot connect to server!")
-            } catch (t: Throwable) {
-                Resource.Error<List<ForumThread>>("Something went wrong!")
-            }
-        )
-    }
-
-    val forum = repository.getForumById(forumId)
-
+class ThreadViewModel(forumId: String) : ViewModel() {
+    private val retrieveThreadsUseCase by inject(RetrieveThreadsUseCase::class.java)
+    private val retrieveSingleForumUseCase by inject(RetrieveSingleForumUseCase::class.java)
+    val threads = retrieveThreadsUseCase.execute(forumId)
+    val forum = retrieveSingleForumUseCase.execute(forumId)
     private val _navigateToReplies = MutableLiveData<Pair<ForumThread, MaterialCardView>>()
     val navigateToReplies: LiveData<Pair<ForumThread, MaterialCardView>>
         get() = _navigateToReplies

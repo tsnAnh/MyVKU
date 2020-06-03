@@ -10,7 +10,7 @@
 
         <variable
             name="forum"
-            type="dev.tsnanh.vku.domain.Forum" />
+            type="dev.tsnanh.vku.domain.entities.Forum" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -53,7 +53,7 @@
                     android:layout_height="@dimen/actionBarSize"
                     app:buttonGravity="center_vertical"
                     app:layout_collapseMode="pin"
-                    app:navigationIcon="@drawable/ic_navigate_before_black_24dp" />
+                    app:navigationIcon="@drawable/ic_round_arrow_back_24" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -71,7 +71,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_add_black_24dp"
+            android:src="@drawable/ic_round_add_24"
             android:transitionName="view"
             app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior" />
 

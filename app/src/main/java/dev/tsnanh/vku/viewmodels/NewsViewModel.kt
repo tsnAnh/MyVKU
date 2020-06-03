@@ -10,19 +10,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.chip.Chip
-import dev.tsnanh.vku.domain.News
-import dev.tsnanh.vku.repository.VKURepository
+import dev.tsnanh.vku.domain.entities.News
+import dev.tsnanh.vku.domain.usecases.RetrieveNewsUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 
 class NewsViewModel : ViewModel() {
 
-    private val repository: VKURepository by inject(VKURepository::class.java)
+    private val retrieveNewsUseCase by inject(RetrieveNewsUseCase::class.java)
 
-    val listNews = repository.news
+    val news = retrieveNewsUseCase.execute()
     var listNewsLocal: List<News>? = null
 
     private val _navigateToView = MutableLiveData<News>()
@@ -37,15 +36,11 @@ class NewsViewModel : ViewModel() {
     val filterData: LiveData<String>
         get() = _filterData
 
-    init {
+    fun refreshNews() {
         viewModelScope.launch {
-            refresh()
-        }
-    }
-
-    suspend fun refresh() {
-        withContext(Dispatchers.IO) {
-            repository.refreshNews()
+            withContext(Dispatchers.IO) {
+                retrieveNewsUseCase.refresh()
+            }
         }
     }
 
@@ -68,19 +63,12 @@ class NewsViewModel : ViewModel() {
     fun onChipClick(category: View) {
         val chip = category as Chip
         if (chip.isChecked) {
-            listNewsLocal = listNews.value
+            listNewsLocal = news.value
             _filterData.value = chip.tag as String
         } else {
             _filterData.value = null
-            viewModelScope.launch {
-                refresh()
-            }
-            listNewsLocal = listNews.value
+            viewModelScope.launch { retrieveNewsUseCase.refresh() }
+            listNewsLocal = news.value
         }
-    }
-
-    override fun onCleared() {
-        viewModelScope.cancel()
-        super.onCleared()
     }
 }

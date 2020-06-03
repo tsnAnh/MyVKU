@@ -10,7 +10,7 @@
 
         <variable
             name="news"
-            type="dev.tsnanh.vku.domain.News" />
+            type="dev.tsnanh.vku.domain.entities.News" />
 
         <variable
             name="clickListener"
@@ -91,7 +91,7 @@
                 android:enabled="@{ !news.url.empty }"
                 android:onClick="@{ () -> clickListener.onViewClick(news) }"
                 android:text="@string/text_view"
-                app:icon="@drawable/ic_visibility_black_24dp"
+                app:icon="@drawable/ic_round_visibility_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/date"
                 app:layout_constraintTop_toBottomOf="@+id/date" />
@@ -104,7 +104,7 @@
                 android:layout_marginStart="8dp"
                 android:onClick="@{ () -> clickListener.onShareClick(news) }"
                 android:text="@string/text_share"
-                app:icon="@drawable/ic_share_black_24dp"
+                app:icon="@drawable/ic_round_share_24"
                 app:layout_constraintBottom_toBottomOf="@+id/button_view"
                 app:layout_constraintStart_toEndOf="@+id/button_view"
                 app:layout_constraintTop_toTopOf="@+id/button_view" />

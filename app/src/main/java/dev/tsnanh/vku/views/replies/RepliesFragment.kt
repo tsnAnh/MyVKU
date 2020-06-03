@@ -62,7 +62,9 @@ class RepliesFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         Timber.d(navArgs.threadId)
+
         binding.lifecycleOwner = viewLifecycleOwner
         binding.layout.transitionName = navArgs.threadId
         viewModel = ViewModelProvider(
@@ -73,23 +75,24 @@ class RepliesFragment : Fragment() {
             )
         ).get(RepliesViewModel::class.java)
 
-        binding.viewPager.apply {
-            setCurrentItem(0, false)
-        }
+        binding.viewPager.apply { setCurrentItem(0, false) }
 
         viewModel.replies.observe(viewLifecycleOwner, Observer {
             it?.let {
-                val adapter = ListRepliesPagerAdapter(this, navArgs.threadId, it.totalPages)
+                val adapter = ListRepliesPagerAdapter(this, navArgs.threadId, it.first.totalPages)
                 binding.viewPager.adapter = adapter
+                if (it.second) {
+                    binding.viewPager.currentItem = it.first.totalPages
+                } else {
+                    binding.viewPager.currentItem = 0
+                }
             }
         })
 
         viewModel.createPostWorkerLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.isNullOrEmpty()) {
-                return@Observer
-            }
+            if (it.isNullOrEmpty()) return@Observer
             WorkManager.getInstance(requireContext()).pruneWork()
-            viewModel.refresh()
+            viewModel.refresh(true)
         })
 
         binding.fabReply.setOnClickListener {

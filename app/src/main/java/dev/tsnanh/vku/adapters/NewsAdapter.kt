@@ -7,7 +7,7 @@ package dev.tsnanh.vku.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import dev.tsnanh.vku.domain.News
+import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.viewholders.NewsViewHolder
 
 class NewsAdapter(

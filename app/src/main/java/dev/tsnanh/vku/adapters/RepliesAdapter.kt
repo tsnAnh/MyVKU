@@ -7,38 +7,23 @@ package dev.tsnanh.vku.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.domain.Post
-import dev.tsnanh.vku.viewholders.RepliesViewHolder
+import dev.tsnanh.vku.domain.entities.Reply
+import dev.tsnanh.vku.viewholders.ReplyViewHolder
 
-const val TYPE_FIRST = 0
-const val TYPE_REPLIES = 1
-
-class RepliesAdapter : ListAdapter<Post, RecyclerView.ViewHolder>(ReplyDiffUtil()) {
+class RepliesAdapter : ListAdapter<Reply, ReplyViewHolder>(ReplyDiffUtil()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): RecyclerView.ViewHolder = when (viewType) {
-        TYPE_FIRST -> RepliesViewHolder.PostViewHolder.from(parent)
-        else -> RepliesViewHolder.NormalReplyViewHolder.from(parent)
-    }
+    ): ReplyViewHolder = ReplyViewHolder.from(parent)
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is RepliesViewHolder.PostViewHolder -> holder.bind(getItem(position))
-            is RepliesViewHolder.NormalReplyViewHolder -> holder.bind(getItem(position))
-        }
-    }
-
-    override fun getItemViewType(position: Int) = when (position) {
-        0 -> TYPE_FIRST
-        else -> TYPE_REPLIES
+    override fun onBindViewHolder(holder: ReplyViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 }
 
 
-class ReplyDiffUtil : DiffUtil.ItemCallback<Post>() {
-    override fun areItemsTheSame(oldItem: Post, newItem: Post) = oldItem === newItem
+class ReplyDiffUtil : DiffUtil.ItemCallback<Reply>() {
+    override fun areItemsTheSame(oldItem: Reply, newItem: Reply) = oldItem === newItem
 
-    override fun areContentsTheSame(oldItem: Post, newItem: Post) = oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: Reply, newItem: Reply) = oldItem.id == newItem.id
 }

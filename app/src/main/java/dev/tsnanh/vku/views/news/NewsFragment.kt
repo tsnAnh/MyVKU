@@ -26,7 +26,7 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.NewsAdapter
 import dev.tsnanh.vku.adapters.NewsClickListener
 import dev.tsnanh.vku.databinding.FragmentNewsBinding
-import dev.tsnanh.vku.domain.News
+import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.utils.CustomTabHelper
 import dev.tsnanh.vku.viewmodels.NewsViewModel
 import kotlinx.coroutines.launch
@@ -72,10 +72,11 @@ class NewsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        viewModel.listNews.observe(viewLifecycleOwner, Observer {
+        viewModel.news.observe(viewLifecycleOwner, Observer {
             it?.let {
                 binding.listNews.adapter = adapter
                 adapter.submitList(it)
+                binding.swipeToRefresh.isRefreshing = false
             }
         })
 
@@ -106,11 +107,11 @@ class NewsFragment : Fragment() {
 
         binding.swipeToRefresh.setOnRefreshListener {
             lifecycleScope.launch {
-                viewModel.refresh()
-                binding.swipeToRefresh.isRefreshing = false
+                binding.swipeToRefresh.isRefreshing = true
                 for (chip in binding.chipsFilterNews.children) {
                     (chip as Chip).isChecked = false
                 }
+                viewModel.refreshNews()
             }
         }
     }

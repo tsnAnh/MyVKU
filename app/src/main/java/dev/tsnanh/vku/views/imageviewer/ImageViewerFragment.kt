@@ -29,7 +29,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageViewerPagerAdapter
 import dev.tsnanh.vku.databinding.FragmentImageViewerBinding
-import dev.tsnanh.vku.network.BASE_URL
+import dev.tsnanh.vku.domain.network.BASE_URL
 import dev.tsnanh.vku.viewmodels.ImageViewerViewModel
 import timber.log.Timber
 

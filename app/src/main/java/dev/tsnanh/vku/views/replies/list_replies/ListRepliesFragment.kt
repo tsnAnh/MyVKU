@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import dev.tsnanh.vku.R
+import dev.tsnanh.vku.adapters.RepliesAdapter
 import dev.tsnanh.vku.databinding.FragmentListRepliesBinding
+import dev.tsnanh.vku.domain.entities.Resource
+import timber.log.Timber
 
 class ListRepliesFragment(private val threadId: String, private val position: Int) : Fragment() {
 
-    private val viewModel: ListRepliesViewModel by viewModels()
+    private lateinit var viewModel: ListRepliesViewModel
     private lateinit var binding: FragmentListRepliesBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +32,32 @@ class ListRepliesFragment(private val threadId: String, private val position: In
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        Toast.makeText(requireContext(), position.toString(), Toast.LENGTH_LONG).show()
+        viewModel = ViewModelProvider(this, ListRepliesViewModelFactory(threadId, position)).get(
+            ListRepliesViewModel::class.java
+        )
+
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        val adapterReplies = RepliesAdapter()
+
+        binding.listReplies.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = adapterReplies
+        }
+
+        viewModel.listReplies.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Resource.Loading -> {
+                }
+                is Resource.Error -> {
+                }
+                is Resource.Success -> {
+                    Timber.d(result.data?.replies.toString())
+                    adapterReplies.submitList(result.data?.replies)
+                }
+            }
+        })
     }
 
 }

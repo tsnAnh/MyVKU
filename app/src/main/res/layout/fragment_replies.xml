@@ -26,10 +26,12 @@
             android:layout_gravity="bottom"
             app:fabAlignmentMode="end"
             app:fabAnimationMode="scale"
+            app:fabCradleMargin="0dp"
+            app:fabCradleRoundedCornerRadius="0dp"
             app:hideOnScroll="true"
             app:layout_behavior="com.google.android.material.bottomappbar.BottomAppBar$Behavior"
             app:menu="@menu/replies_menu"
-            app:navigationIcon="@drawable/ic_navigate_before_black_24dp" />
+            app:navigationIcon="@drawable/ic_round_arrow_back_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_reply"
@@ -37,7 +39,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/ic_create_black_24dp"
+            android:src="@drawable/ic_round_create_24"
             android:text="@string/text_reply"
             app:layout_anchor="@id/bottom_app_bar" />
 

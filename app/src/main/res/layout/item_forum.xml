@@ -14,7 +14,7 @@
 
         <variable
             name="forum"
-            type="dev.tsnanh.vku.domain.Forum" />
+            type="dev.tsnanh.vku.domain.entities.Forum" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

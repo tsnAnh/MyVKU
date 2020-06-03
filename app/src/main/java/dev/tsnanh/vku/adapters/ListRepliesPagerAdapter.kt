@@ -13,5 +13,5 @@ class ListRepliesPagerAdapter(
 
     override fun getItemCount() = totalPage
 
-    override fun createFragment(position: Int) = ListRepliesFragment(threadId, position)
+    override fun createFragment(position: Int) = ListRepliesFragment(threadId, position + 1)
 }

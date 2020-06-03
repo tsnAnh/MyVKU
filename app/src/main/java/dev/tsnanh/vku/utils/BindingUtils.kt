@@ -24,10 +24,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.flexbox.FlexboxLayout
 import com.google.firebase.auth.FirebaseUser
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.domain.ClassPost
-import dev.tsnanh.vku.domain.Forum
-import dev.tsnanh.vku.domain.ForumThread
-import dev.tsnanh.vku.domain.Post
+import dev.tsnanh.vku.domain.entities.ClassPost
+import dev.tsnanh.vku.domain.entities.Forum
+import dev.tsnanh.vku.domain.entities.ForumThread
+import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.views.replies.RepliesFragmentDirections
 import timber.log.Timber
 
@@ -116,11 +116,11 @@ fun ImageView.setItemThreadAvatar(thread: ForumThread) {
 }
 
 @BindingAdapter("postAvatar")
-fun ImageView.setPostAvatar(post: Post?) {
-    post?.let {
+fun ImageView.setPostAvatar(reply: Reply?) {
+    reply?.let {
         Glide
             .with(this.context)
-            .load(post.userAvatar)
+            .load(reply.userAvatar)
             .placeholder(progressBar(this.context))
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()
@@ -130,9 +130,9 @@ fun ImageView.setPostAvatar(post: Post?) {
 }
 
 @BindingAdapter("postImages")
-fun FlexboxLayout.setImages(post: Post?) {
+fun FlexboxLayout.setImages(reply: Reply?) {
     this.removeAllViews()
-    post?.let {
+    reply?.let {
         val imageCount = it.images.size
         val transitionName = this.context.getString(R.string.image_transition_name)
         it.images.mapIndexed { i, image ->
@@ -168,7 +168,7 @@ fun FlexboxLayout.setImages(post: Post?) {
                     FragmentNavigatorExtras(imageView to transitionName)
                 this.findNavController().navigate(
                     RepliesFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
-                        post.images.toTypedArray(),
+                        reply.images.toTypedArray(),
                         i
                     ),
                     extras

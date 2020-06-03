@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.google.android.material.card.MaterialCardView
-import dev.tsnanh.vku.domain.ForumThread
+import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.viewholders.ThreadViewHolder
 
 class ThreadAdapter(

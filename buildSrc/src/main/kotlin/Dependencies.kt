@@ -5,7 +5,7 @@ object BuildPlugins {
         const val buildToolsVersion = "4.0.0"
     }
 
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.0.0"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.buildToolsVersion}"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     const val navigationSafeArgsPlugin =
         "androidx.navigation:navigation-safe-args-gradle-plugin:2.2.2"
@@ -109,4 +109,9 @@ object TestLibraries {
     const val androidTestJunit = "androidx.test.ext:junit:${Versions.androidJunit}"
     const val androidTestEspresso =
         "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
+}
+
+object Version {
+    const val name = "0.1.1-dev04"
+    const val code = 1
 }

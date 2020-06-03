@@ -69,6 +69,10 @@
     <string name="text_sign_out">Sign Out</string>
     <string name="text_replies_per_page">Replies Per Page</string>
     <string name="text_summary_replies_per_page">Change the number of posts per page.</string>
+    <string name="text_last_page">Last Page</string>
+    <string name="text_first_page">First Page</string>
+    <string name="text_previous_page">Previous Page</string>
+    <string name="text_next_page">Next Page</string>
 
     <!-- Preference Titles -->
 </resources>

@@ -25,7 +25,7 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ThreadAdapter
 import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.FragmentThreadBinding
-import dev.tsnanh.vku.domain.Resource
+import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.viewmodels.ThreadViewModel
 import dev.tsnanh.vku.viewmodels.ThreadViewModelFactory
 import timber.log.Timber
@@ -88,7 +88,7 @@ class ThreadFragment : Fragment() {
             it?.let {
                 when (it) {
                     is Resource.Success -> {
-                        adapter.submitList(it.data)
+                        adapter.submitList(it.data?.threads)
                         binding.progressBar.visibility = View.GONE
                     }
                     is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
@@ -104,7 +104,7 @@ class ThreadFragment : Fragment() {
 
         viewModel.forum.observe(viewLifecycleOwner, Observer {
             it?.let {
-                binding.forum = it
+                binding.forum = it.data
             }
         })
 
@@ -149,8 +149,4 @@ class ThreadFragment : Fragment() {
         binding.listThread.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    override fun onStart() {
-        viewModel.refreshThreads()
-        super.onStart()
-    }
 }

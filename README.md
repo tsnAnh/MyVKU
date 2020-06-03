@@ -5,16 +5,21 @@ My VKU is currently under heavy development. Note that some changes (such as dat
 Clone project using this command
 
 ``
-git clone https://github.com/tsnanh/VKU.git
+git clone https://github.com/tsnanh/MyVKU.git
 ``
 
 and open project folder using Android Studio.
+## Clean Architecture
+A strong base architecture is extremely important for an app to scale and meet the expectation of the user base.
+
+## Gradle Kotlin DSL
+Gradle’s Kotlin DSL provides an alternative syntax to the traditional Groovy DSL with an enhanced editing experience in supported IDEs, with superior content assist, refactoring, documentation, and more.
 
 ## Screenshot
-* [Screenshot 1](https://github.com/tsnanh/VKU/tree/master/screenshots/screenshot_1.jpg)
-* [Screenshot 2](https://github.com/tsnanh/VKU/tree/master/screenshots/screenshot_2.jpg)
-* [Screenshot 3](https://github.com/tsnanh/VKU/tree/master/screenshots/screenshot_3.jpg)
-* [Screenshot 4](https://github.com/tsnanh/VKU/tree/master/screenshots/screenshot_4.jpg)
+* [Screenshot 1](https://github.com/tsnanh/MyVKU/tree/master/screenshots/screenshot_1.jpg)
+* [Screenshot 2](https://github.com/tsnanh/MyVKU/tree/master/screenshots/screenshot_2.jpg)
+* [Screenshot 3](https://github.com/tsnanh/MyVKU/tree/master/screenshots/screenshot_3.jpg)
+* [Screenshot 4](https://github.com/tsnanh/MyVKU/tree/master/screenshots/screenshot_4.jpg)
 ## Libraries Used
 * Google's Android Library
   * [AndroidX Browser](https://developer.chrome.com/multidevice/android/customtabs)
@@ -46,7 +51,7 @@ and open project folder using Android Studio.
   * [Firebase UI](https://firebase.google.com/docs/auth/android/firebaseui)
 
 ## Support
-If you've found an error in this sample, please file an issue: https://github.com/tsnanh/VKU/issues
+If you've found an error in this sample, please file an issue: https://github.com/tsnanh/MyVKU/issues
 
 Patches are encouraged, and may be submitted by forking this project and submitting a pull request through GitHub.
 

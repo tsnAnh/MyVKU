@@ -6,22 +6,22 @@
 
     <item
         android:id="@+id/navigation_news"
-        android:icon="@drawable/ic_news"
+        android:icon="@drawable/ic_round_news_24"
         android:title="@string/text_news" />
     <item
         android:id="@+id/navigation_forum"
-        android:icon="@drawable/ic_forum"
+        android:icon="@drawable/ic_round_forum_24"
         android:title="@string/text_forum" />
     <item
         android:id="@+id/navigation_my_class"
-        android:icon="@drawable/ic_class_black_24dp"
+        android:icon="@drawable/ic_round_class_24"
         android:title="@string/text_my_class" />
     <item
         android:id="@+id/navigation_timetable"
-        android:icon="@drawable/ic_timetable"
+        android:icon="@drawable/ic_round_view_list_24"
         android:title="@string/text_timetable" />
     <item
         android:id="@+id/navigation_more"
-        android:icon="@drawable/ic_more_black_24dp"
+        android:icon="@drawable/ic_round_more_24"
         android:title="@string/text_more" />
 </menu>

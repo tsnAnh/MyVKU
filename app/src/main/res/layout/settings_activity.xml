@@ -29,7 +29,7 @@
                 app:buttonGravity="center_vertical"
                 app:contentInsetStart="0dp"
                 app:layout_scrollFlags="snap|enterAlways|scroll"
-                app:navigationIcon="@drawable/ic_navigate_before_black_24dp"
+                app:navigationIcon="@drawable/ic_round_arrow_back_24"
                 app:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
         </com.google.android.material.appbar.AppBarLayout>
 

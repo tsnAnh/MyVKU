@@ -10,8 +10,8 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dev.tsnanh.vku.network.NetworkPost
-import dev.tsnanh.vku.network.VKUServiceApi
+import dev.tsnanh.vku.domain.entities.Reply
+import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -25,7 +25,7 @@ class CreateNewPostWorker(context: Context, params: WorkerParameters) :
         setProgress(workDataOf(WorkUtil.Progress to 0))
         val idToken = inputData.getStringArray("id_token")!![0]
         val jsonAdapter =
-            Moshi.Builder().add(KotlinJsonAdapterFactory()).build().adapter(NetworkPost::class.java)
+            Moshi.Builder().add(KotlinJsonAdapterFactory()).build().adapter(Reply::class.java)
         val postJson = inputData.getStringArray("post")!![0]
 
         setProgress(workDataOf(WorkUtil.Progress to 33))

@@ -10,10 +10,10 @@
 
         <ListPreference
             android:defaultValue="system"
-            android:dialogIcon="@drawable/ic_brightness_6_black_24dp"
+            android:dialogIcon="@drawable/ic_round_brightness_6_24"
             android:entries="@array/night_mode_entries"
             android:entryValues="@array/night_mode_values"
-            android:icon="@drawable/ic_brightness_6_black_24dp"
+            android:icon="@drawable/ic_round_brightness_6_24"
             android:key="@string/night_mode_key"
             android:summary="@string/text_night_mode_summary"
             android:title="@string/text_night_mode" />
@@ -22,6 +22,8 @@
 
         <ListPreference
             android:defaultValue="10"
+            android:dialogIcon="@drawable/ic_round_pages_24"
+            android:icon="@drawable/ic_round_pages_24"
             android:entries="@array/reply_limit_entries"
             android:entryValues="@array/reply_limit_values"
             android:key="@string/replies_per_page_key"

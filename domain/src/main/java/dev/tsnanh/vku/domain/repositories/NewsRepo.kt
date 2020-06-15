@@ -19,8 +19,13 @@ class NewsRepoImpl : NewsRepo {
         return dao.getAllNews()
     }
 
+    @Throws(Exception::class)
     override suspend fun refresh() = withContext(Dispatchers.IO) {
-        val news = VKUServiceApi.network.getLatestNews()
-        dao.insertAllNews(*news.news.toTypedArray())
+        try {
+            val news = VKUServiceApi.network.getLatestNews()
+            dao.insertAllNews(*news.news.toTypedArray())
+        } catch (e: Throwable) {
+            throw e
+        }
     }
 }

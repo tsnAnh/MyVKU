@@ -13,7 +13,13 @@ interface RetrieveNewsUseCase {
 class RetrieveNewsUseCaseImpl : RetrieveNewsUseCase {
     private val newsRepo: NewsRepo by inject(NewsRepo::class.java)
     override fun execute() = newsRepo.getAllNews()
+
+    @Throws(Exception::class)
     override suspend fun refresh() {
-        newsRepo.refresh()
+        try {
+            newsRepo.refresh()
+        } catch (e: Exception) {
+            throw e
+        }
     }
 }

@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
         android:background="@color/background"
         android:fitsSystemWindows="false"
-        tools:context=".views.thread.ThreadFragment">
+        tools:context=".views.my_vku.thread.ThreadFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"

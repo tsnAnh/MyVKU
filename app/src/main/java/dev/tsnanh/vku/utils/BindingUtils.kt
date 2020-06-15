@@ -22,13 +22,14 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.flexbox.FlexboxLayout
-import com.google.firebase.auth.FirebaseUser
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.material.chip.Chip
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.domain.entities.ClassPost
 import dev.tsnanh.vku.domain.entities.Forum
 import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.Reply
-import dev.tsnanh.vku.views.replies.RepliesFragmentDirections
+import dev.tsnanh.vku.domain.network.BASE_URL
+import dev.tsnanh.vku.views.my_vku.replies.RepliesFragmentDirections
 import timber.log.Timber
 
 fun progressBar(context: Context) = CircularProgressDrawable(context).apply {
@@ -50,7 +51,7 @@ fun TextView.setCategory(category: String?) {
 }
 
 @BindingAdapter("userAvatar")
-fun ImageView.setAvatar(user: FirebaseUser?) {
+fun ImageView.setAvatar(user: GoogleSignInAccount?) {
     user?.let {
         Glide
             .with(this.context)
@@ -158,7 +159,7 @@ fun FlexboxLayout.setImages(reply: Reply?) {
             imageView.layoutParams = params
             Glide
                 .with(imageView)
-                .load("http://34.87.13.195:3000/$image")
+                .load("$BASE_URL/$image")
                 .placeholder(progressBar(this.context))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
@@ -182,62 +183,49 @@ fun FlexboxLayout.setImages(reply: Reply?) {
 @BindingAdapter("image")
 fun ImageView.setImageByURL(url: String?) {
     url?.let {
-        Timber.d("http://34.87.13.195:3000/$url")
+        Timber.d("$BASE_URL/$url")
         Glide
             .with(this.context)
-            .load("http://34.87.13.195:3000/$url")
+            .load("$BASE_URL/$url")
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(progressBar(this.context))
             .into(this)
     }
 }
 
-@BindingAdapter("imageClassPost")
-fun FlexboxLayout.setImageClassPost(classPost: ClassPost?) {
-    this.removeAllViews()
-    classPost?.let {
-        val imageCount = it.images.size
-        val transitionName = this.context.getString(R.string.image_transition_name)
-        it.images.mapIndexed { i, image ->
-            val imageView = AppCompatImageView(this.context)
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            val metrics = DisplayMetrics()
-            (this.context as Activity).windowManager
-                .defaultDisplay
-                .getMetrics(metrics)
-            val params = FlexboxLayout.LayoutParams(
-                when (imageCount) {
-                    1, 2 -> metrics.widthPixels / imageCount
-                    else -> metrics.widthPixels / 3
-                },
-                when (imageCount) {
-                    1, 2 -> metrics.widthPixels / imageCount
-                    else -> metrics.widthPixels / 3
-                }
-            )
-//            params.flexBasisPercent = 30F
-            params.order = 1
-            params.flexShrink = 1F
-            imageView.layoutParams = params
-            Glide
-                .with(imageView)
-                .load("http://34.87.13.195:3000/$image")
-                .placeholder(progressBar(this.context))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView)
-            imageView.transitionName = transitionName
-            imageView.setOnClickListener {
-                val extras =
-                    FragmentNavigatorExtras(imageView to transitionName)
-                this.findNavController().navigate(
-                    RepliesFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
-                        classPost.images.toTypedArray(),
-                        i
-                    ),
-                    extras
-                )
-            }
-            this.addView(imageView, params)
-        }
+@BindingAdapter("dayOfWeek")
+fun TextView.setDayOfWeek(string: String) {
+    text = when (string) {
+        Constants.MONDAY -> context.getString(R.string.text_monday)
+        Constants.TUESDAY -> context.getString(R.string.text_tuesday)
+        Constants.WEDNESDAY -> context.getString(R.string.text_wednesday)
+        Constants.THURSDAY -> context.getString(R.string.text_thursday)
+        Constants.FRIDAY -> context.getString(R.string.text_friday)
+        Constants.SATURDAY -> context.getString(R.string.text_saturday)
+        else -> context.getString(R.string.text_not_available)
+    }
+}
+
+@BindingAdapter("weekChip")
+fun Chip.setWeekChip(week: String) {
+    text = when (week.trim()) {
+        "", "_" -> "-"
+        else -> "${context.getString(R.string.week)} $week"
+    }
+}
+
+@BindingAdapter("roomChip")
+fun Chip.setRoomChip(room: String) {
+    text = when (room.trim()) {
+        "", "_" -> "-"
+        else -> "${context.getString(R.string.room)} $room"
+    }
+}
+
+@BindingAdapter("lessonChip")
+fun Chip.setLessonChip(lesson: String) {
+    text = when (lesson.trim()) {
+        "", "_" -> "-"
+        else -> "${context.getString(R.string.lesson)} $lesson"
     }
 }

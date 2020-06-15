@@ -1,9 +1,11 @@
 package dev.tsnanh.vku.domain.entities
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.Parcelize
 
 // A generic class that contains data and status about loading this data.
 sealed class Resource<out T>(
@@ -14,11 +16,6 @@ sealed class Resource<out T>(
     class Loading<T>(data: T? = null) : Resource<T>(data)
     class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
 }
-
-@JsonClass(generateAdapter = true)
-data class TokenRequestContainer(
-    val token: String
-)
 
 @JsonClass(generateAdapter = true)
 data class HasUserResponse(
@@ -57,21 +54,6 @@ data class ReplyContainer(
 data class CreateThreadContainer(
     val thread: ForumThread,
     val reply: Reply
-)
-
-@JsonClass(generateAdapter = true)
-data class ClassroomContainer(
-    val classrooms: List<Classroom>
-)
-
-@JsonClass(generateAdapter = true)
-data class ClassPostContainer(
-    val classPosts: List<ClassPost>
-)
-
-@JsonClass(generateAdapter = true)
-data class CommentContainer(
-    val comments: List<Comment>
 )
 
 @JsonClass(generateAdapter = true)
@@ -123,7 +105,6 @@ data class User(
     val displayName: String,
     val photoUrl: String,
     val email: String,
-    val emailVerified: Boolean,
     val numberOfThreads: String,
     val threads: List<String>,
     val replies: List<String>
@@ -146,43 +127,23 @@ data class Reply(
     val quotedReply: Reply? = null
 )
 
-data class Classroom(
-    @field:Json(name = "_id")
-    val id: String,
-    val classname: String,
-    val students: List<String>,
-    val numberOfStudents: Int,
-    val homeroomTeacher: String
-)
-
-data class ClassPost(
-    @field:Json(name = "_id")
-    val id: String,
-    val classId: String,
-    val userId: String,
-    val likes: Int,
-    val numberOfComments: Int,
-    val numberOfShares: Int,
-    val isAnnouncement: Boolean,
-    val pinned: Boolean,
-    val content: String,
-    val images: List<String>,
-    val createdAt: Long,
-    val lastUpdatedOn: Long,
-    val comments: List<String>,
-    val editHistory: List<String>
-)
-
-data class Comment(
-    @field:Json(name = "_id")
-    val id: String,
-    val userId: String,
-    val classPostId: String,
-    val userDisplayName: String,
-    val userAvatar: String,
-    val editHistory: List<String>,
-    val content: String,
-    val images: List<String>,
-    val createdAt: String,
-    val lastUpdatedOn: String
-)
+@Entity(tableName = "subjects")
+@JsonClass(generateAdapter = true)
+@Parcelize
+data class Subject(
+    @field:Json(name = "tenlop")
+    @PrimaryKey
+    val className: String,
+    @field:Json(name = "chucdanh")
+    val title: String,
+    @field:Json(name = "hoten")
+    val fullName: String,
+    @field: Json(name = "tuan")
+    val week: String,
+    @field:Json(name = "thu")
+    val dayOfWeek: String,
+    @field:Json(name = "tiet")
+    val lesson: String,
+    @field:Json(name = "phong")
+    val room: String
+) : Parcelable

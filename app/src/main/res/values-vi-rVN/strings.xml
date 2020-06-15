@@ -46,4 +46,21 @@
     <string name="text_friday">Thứ Sáu</string>
     <string name="text_saturday">Thứ Bảy</string>
     <string name="text_sunday">Chủ Nhật</string>
+    <string name="text_sign_in_with_google">Đăng nhập với Google</string>
+    <string name="text_sign_out">Đăng xuất</string>
+    <string name="text_replies_per_page">Trả lời mỗi trang</string>
+    <string name="text_summary_replies_per_page">Thay đổi số câu trả lời trên mỗi trangg</string>
+    <string name="text_last_page">Trang cuối</string>
+    <string name="text_first_page">Trang đầu</string>
+    <string name="text_previous_page">Trang trước</string>
+    <string name="text_next_page">Trang tiếp</string>
+    <string name="text_teacher_evaluation">Đánh giá giảng viên</string>
+    <string name="text_home">Trang chủ</string>
+    <string name="text_calendar">Lịch</string>
+    <string name="text_message">Tin nhắn</string>
+    <string name="text_notification">Thông báo</string>
+    <string name="week">Tuần: </string>
+    <string name="room">Phòng: </string>
+    <string name="lesson">Tiết: </string>
+    <string name="text_not_available">Không có sẵn</string>
 </resources>

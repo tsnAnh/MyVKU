@@ -16,4 +16,13 @@
     <color name="black_overlay">#66000000</color>
     <color name="accountPlaceholder">@color/primaryLightColor</color>
     <color name="background">#FFFFFFFF</color>
+
+    <color name="elearningPrimaryColor">#ffeb3b</color>
+    <color name="elearningPrimaryLightColor">#ffff72</color>
+    <color name="elearningPrimaryDarkColor">#c8b900</color>
+    <color name="elearningSecondaryColor">#0d47a1</color>
+    <color name="elearningSecondaryLightColor">#5472d3</color>
+    <color name="elearningSecondaryDarkColor">#002171</color>
+    <color name="elearningPrimaryTextColor">#000000</color>
+    <color name="elearningSecondaryTextColor">#ffffff</color>
 </resources>

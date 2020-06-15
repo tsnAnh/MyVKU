@@ -9,15 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.preference.PreferenceFragmentCompat
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.databinding.SettingsActivityBinding
+import dev.tsnanh.vku.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var binding: SettingsActivityBinding
+    private lateinit var binding: ActivitySettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.settings_activity)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.settings, SettingsFragment())

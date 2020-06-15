@@ -4,11 +4,13 @@
 
 <resources>
     <string name="app_name" translatable="false">My VKU</string>
-    <string name="app_version" translatable="false">0.1.1-dev01</string>
-
+    <string name="app_version" translatable="false">0.1.1-dev05</string>
+    <string name="client_id" translatable="false">1079734932411-js3q64evvspd077hl6bnhf0q4ih629ns.apps.googleusercontent.com</string>
+    <string name="elearning_mode" translatable="false">elearning</string>
     <!-- Shared Preferences Key -->
     <string name="night_mode_key" translatable="false">night_mode_preferences</string>
     <string name="replies_per_page_key" translatable="false">replies_per_page_key</string>
+    <string name="timetable_mode_key" translatable="false">timetable_mode</string>
 
     <string name="text_forum">Forum</string>
     <string name="vku_image" translatable="false">VKU Image</string>
@@ -67,12 +69,56 @@
     <string name="text_sunday">Sunday</string>
     <string name="text_sign_in_with_google">Sign In With Google</string>
     <string name="text_sign_out">Sign Out</string>
-    <string name="text_replies_per_page">Replies Per Page</string>
-    <string name="text_summary_replies_per_page">Change the number of posts per page.</string>
-    <string name="text_last_page">Last Page</string>
-    <string name="text_first_page">First Page</string>
+    <string name="text_replies_per_page">Replies per page</string>
+    <string name="text_summary_replies_per_page">Change the number of reply per page.</string>
+    <string name="text_last_page">Last page</string>
+    <string name="text_first_page">First page</string>
     <string name="text_previous_page">Previous Page</string>
     <string name="text_next_page">Next Page</string>
+    <string name="text_teacher_evaluation">Teacher Evaluation</string>
+    <string name="text_elearning" translatable="false">E-Learning</string>
+    <string name="text_home">Home</string>
+    <string name="text_calendar">Calendar</string>
+    <string name="text_message">Message</string>
+    <string name="text_notification">Notification</string>
+    <string name="text_exit">Exit</string>
 
-    <!-- Preference Titles -->
+    <string name="title_and_full_name" translatable="false">%s. %s</string>
+    <string name="week">Week: </string>
+    <string name="room">Room: </string>
+    <string name="lesson">Lesson: </string>
+    <string name="text_not_available">Not Available</string>
+    <string name="school_reminder_channel_id" translatable="false">dev.tsnanh.vku.school_reminder</string>
+    <string name="school_reminder_channel_name" translatable="false">School Reminder</string>
+    <string name="title_notification_school_reminder_no_subject">Hooray!</string>
+    <string name="content_notification_school_reminder_no_subject">You have no class today!</string>
+    <string name="title_notification_school_reminder_no_subject_morning">Yay!</string>
+    <string name="content_notification_school_reminder_no_subject_morning">You have no class this morning!</string>
+    <string name="title_notification_school_reminder_no_subject_afternoon">Yay!</string>
+    <string name="content_notification_school_reminder_no_subject_afternoon">You have no class this afternoon!</string>
+    <string name="text_show_all">Show all</string>
+    <string name="msg_thread_creating">Your thread is being created…</string>
+    <string name="msg_permission_granted">Permission Granted</string>
+    <string name="text_uploading">Uploading</string>
+    <string name="err_msg_request_timeout">Request timeout!</string>
+    <string name="err_msg_socket_exception">Cannot fetch news!</string>
+    <string name="err_msg_something_went_wrong">Something went wrong!</string>
+    <string name="msg_no_image_selected">No image selected!</string>
+    <string name="msg_creating_your_thread">Creating your thread…</string>
+    <string name="text_create_new_thread">Create New Thread</string>
+    <string name="msg_successfully_created">is successfully created!</string>
+    <string name="text_loading_forums">Loading forums...</string>
+    <string name="msg_permission_required">Permission required</string>
+    <string name="msg_need_permission">We need permission to upload your image!</string>
+    <string name="text_ok">OK</string>
+    <string name="msg_pick_image_canceled">Pick image canceled!</string>
+    <string name="msg_empty_title">Empty Title</string>
+    <string name="msg_choose_a_forum">Choose a forum!</string>
+    <string name="msg_empty_content">Empty content</string>
+    <string name="text_are_u_sure">Are you sure?</string>
+    <string name="text_hide">HIDE</string>
+    <string name="msg_alarm_set">Alarm set!</string>
+    <string name="text_show_all_subjects">Show all subjects</string>
+    <string name="text_show_all_subject_summary">Display all subjects in your timetable</string>
+    <string name="show_all_subjects_key">dev.tsnanh.vku.show_all_subjects</string>
 </resources>

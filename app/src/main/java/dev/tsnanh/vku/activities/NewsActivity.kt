@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.navArgs
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityNewsBinding
+import dev.tsnanh.vku.utils.Constants
 
 /**
  * An Activity with webview for display news when user's device doesn't have browser
@@ -26,7 +27,7 @@ class NewsActivity : AppCompatActivity() {
 
         // load content
         binding.webView.apply {
-            loadUrl("http://daotao.sict.udn.vn" + navArgs.url)
+            loadUrl(Constants.DAO_TAO_URL + navArgs.url)
             setTitle(navArgs.title)
         }
     }

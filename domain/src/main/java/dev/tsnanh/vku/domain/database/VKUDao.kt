@@ -10,6 +10,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import dev.tsnanh.vku.domain.entities.News
+import dev.tsnanh.vku.domain.entities.Subject
 
 /**
  * Database Access Object for VKUDatabase
@@ -31,4 +32,24 @@ interface VKUDao {
     @Query("SELECT * FROM news ORDER BY date DESC")
     fun getAllNews(): LiveData<List<News>>
 
+    /**
+     * Insert all subjects to database
+     * @param subjects Subjects
+     */
+    @Insert(entity = Subject::class, onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllSubjects(vararg subjects: Subject)
+
+    /**
+     * Retrieve all subjects cached in database
+     * @return LiveData<List<Subject>>
+     */
+    @Query("SELECT * FROM subjects ORDER BY lesson")
+    fun getAllSubjectsLiveData(): LiveData<List<Subject>>
+
+    /**
+     * Retrieve all subjects cached in database
+     * @return List<Subject>
+     */
+    @Query("SELECT * FROM subjects ORDER BY lesson")
+    fun getAllSubjects(): List<Subject>
 }

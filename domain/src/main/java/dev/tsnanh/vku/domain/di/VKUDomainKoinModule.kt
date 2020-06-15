@@ -49,4 +49,19 @@ val module = module {
     single<CheckHasUserUseCase> {
         CheckHasUserUseCaseImpl()
     }
+    single<TimetableRepo> {
+        TimetableRepoImpl()
+    }
+    single<ThreadRepo> {
+        ThreadRepoImpl()
+    }
+    single<RetrieveUserTimetableLiveDataUseCase> {
+        RetrieveUserTimetableLiveDataUseCaseImpl()
+    }
+    single<RetrieveUserTimetableUseCase> {
+        RetrieveUserTimetableUseCaseImpl()
+    }
+    single<RetrieveSingleForumUseCase> {
+        RetrieveSingleForumUseCaseImpl()
+    }
 }

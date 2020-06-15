@@ -30,4 +30,13 @@
             android:summary="@string/text_summary_replies_per_page"
             android:title="@string/text_replies_per_page" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/text_timetable">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_round_subject_24"
+            android:key="@string/show_all_subjects_key"
+            android:summary="@string/text_show_all_subject_summary"
+            android:title="@string/text_show_all_subjects" />
+    </PreferenceCategory>
 </PreferenceScreen>

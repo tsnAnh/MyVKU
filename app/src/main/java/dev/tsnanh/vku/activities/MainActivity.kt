@@ -24,7 +24,8 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
-import dev.tsnanh.vku.views.createnewthread.RC_PERMISSION
+import dev.tsnanh.vku.utils.Constants
+import dev.tsnanh.vku.utils.Constants.Companion.RC_PERMISSION
 import org.koin.java.KoinJavaComponent.inject
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
@@ -57,6 +58,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         createChannelNewThread(
             getString(R.string.new_thread_channel_id), getString(R.string.new_thread_channel_name)
         )
+        createChannelSchoolReminder(
+            getString(R.string.school_reminder_channel_id),
+            getString(R.string.school_reminder_channel_name)
+        )
+
+
     }
 
     private fun createChannelNewThread(channelId: String, channelName: String) {
@@ -67,11 +74,26 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 setShowBadge(false)
-                description = "Your thread is being created..."
+                description = getString(R.string.msg_thread_creating)
                 enableLights(false)
                 enableVibration(true)
             }
 
+            manager.createNotificationChannel(notificationChannel)
+        }
+    }
+
+    private fun createChannelSchoolReminder(channelId: String, channelName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                setShowBadge(false)
+                enableLights(false)
+                enableVibration(true)
+            }
             manager.createNotificationChannel(notificationChannel)
         }
     }
@@ -88,7 +110,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                             PackageManager.PERMISSION_GRANTED)
                 ) {
                     Toast
-                        .makeText(this, "Permission Granted", Toast.LENGTH_LONG).show()
+                        .makeText(
+                            this,
+                            getString(R.string.msg_permission_granted),
+                            Toast.LENGTH_LONG
+                        ).show()
                 }
             }
         }
@@ -160,12 +186,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     ) {
         key?.let {
             if (key == getString(R.string.night_mode_key)) {
-                val mode = sharedPreferences?.getString(key, "system")
+                val mode = sharedPreferences?.getString(key, Constants.MODE_SYSTEM)
 
                 AppCompatDelegate.setDefaultNightMode(
                     when (mode) {
-                        "light" -> AppCompatDelegate.MODE_NIGHT_NO
-                        "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                        Constants.MODE_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+                        Constants.MODE_DARK -> AppCompatDelegate.MODE_NIGHT_YES
                         else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                     }
                 )

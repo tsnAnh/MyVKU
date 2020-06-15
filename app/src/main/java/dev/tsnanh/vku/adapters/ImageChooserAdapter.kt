@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.viewholders.imagechooser.ImageChooserFooterViewHolder
 import dev.tsnanh.vku.viewholders.imagechooser.ImageChooserViewHolder
 
-const val TYPE_FOOTER = 0
-const val TYPE_ITEM = 1
+private const val TYPE_FOOTER = 0
+private const val TYPE_ITEM = 1
 
 class ImageChooserAdapter(
     private val listener: ImageChooserClickListener

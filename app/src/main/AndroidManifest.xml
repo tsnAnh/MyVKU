@@ -4,7 +4,11 @@
     package="dev.tsnanh.vku">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -19,6 +23,33 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
+        <!--        <service-->
+        <!--            android:name=".services.SchoolReminderService"-->
+        <!--            android:enabled="true"-->
+        <!--            android:exported="false" />-->
+
+        <receiver
+            android:name=".receivers.SchoolReminderReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="dev.tsnanh.vku.ACTION_SCHOOL_REMINDER" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receivers.RestartSchoolReminderNotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receivers.SubjectReminderReceiver" />
+
+        <activity
+            android:name=".activities.ElearningMainActivity"
+            android:theme="@style/ElearningAppTheme" />
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />

@@ -32,10 +32,10 @@ object AndroidSdk {
 object Libraries {
     private object Versions {
         const val constraintLayout = "1.1.3"
-        const val fragmentVersion = "1.2.4"
+        const val fragmentVersion = "1.2.5"
         const val lifecycleVersion = "2.2.0"
         const val savedStateVersion = "2.2.0"
-        const val navigation = "2.3.0-beta01"
+        const val navigation = "2.3.0-rc01"
         const val roomVersion = "2.2.5"
         const val glideVersion = "4.11.0"
         const val pagingVersion = "2.1.2"
@@ -90,12 +90,13 @@ object Libraries {
     const val workManager = "androidx.work:work-runtime-ktx:${Versions.workManagerVersion}"
     const val androidTestWorkManager = "androidx.work:work-testing:${Versions.workManagerVersion}"
     const val material = "com.google.android.material:material:${Versions.materialVersion}"
-    const val firebaseAuth = "com.google.firebase:firebase-auth:19.3.1"
+    const val firebaseAuthKtx = "com.google.firebase:firebase-auth-ktx:19.3.1"
     const val androidxBrowser = "androidx.browser:browser:1.2.0"
     const val flexbox = "com.google.android:flexbox:2.0.1"
     const val timber = "com.jakewharton.timber:timber:4.7.1"
     const val viewPager2 = "androidx.viewpager2:viewpager2:1.0.0"
     const val firebaseUI = "com.firebaseui:firebase-ui-auth:6.2.0"
+    const val playServicesAuth = "com.google.android.gms:play-services-auth:18.0.0"
 }
 
 object TestLibraries {
@@ -112,6 +113,6 @@ object TestLibraries {
 }
 
 object Version {
-    const val name = "0.1.1-dev04"
+    const val name = "0.1.1-dev05"
     const val code = 1
 }

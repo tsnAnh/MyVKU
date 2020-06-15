@@ -3,5 +3,5 @@
   -->
 
 <resources>
-    <dimen name="actionBarSize">72dp</dimen>
+    <dimen name="actionBarSize">56dp</dimen>
 </resources>

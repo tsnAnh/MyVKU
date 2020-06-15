@@ -3,13 +3,11 @@
  */
 package dev.tsnanh.vku.domain.network
 
-import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.tsnanh.vku.domain.entities.*
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
-import org.koin.java.KoinJavaComponent.inject
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
@@ -19,15 +17,16 @@ import java.util.concurrent.TimeUnit
  * Base URL
  */
 // Google Cloud VM Instance Server
-const val BASE_URL = "http://34.87.151.214:3000/"
+const val BASE_URL = "http://34.87.151.214:3000"
+const val BASE_URL_DAO_TAO = "http://daotao.sict.udn.vn"
 
 /**
  * OkHttp client
  */
 private val client = OkHttpClient.Builder()
-    .connectTimeout(60, TimeUnit.SECONDS)
-    .readTimeout(60, TimeUnit.SECONDS)
-    .writeTimeout(60, TimeUnit.SECONDS)
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(30, TimeUnit.SECONDS)
+    .writeTimeout(30, TimeUnit.SECONDS)
     .build()
 
 /**
@@ -46,8 +45,6 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
-private val sharedPreferences by inject(SharedPreferences::class.java)
-
 interface VKUService {
 
     @GET("n")
@@ -58,7 +55,7 @@ interface VKUService {
 
     @POST("t/create")
     suspend fun createThread(
-        @Header("Authorization") idToken: String,
+        @Header("Authentication") idToken: String,
         @Body container: CreateThreadContainer
     ): ForumThread
 
@@ -84,25 +81,32 @@ interface VKUService {
     @Multipart
     @POST("/p/upload/{uid}")
     suspend fun uploadImage(
-        @Header("Authorization") idToken: String,
+        @Header("Authentication") idToken: String,
         @Path("uid") uid: String,
         @Part image: MultipartBody.Part
     ): String
 
     @POST("/p/new")
     suspend fun newReply(
-        @Header("Authorization") idToken: String,
-        @Body post: Reply
+        @Header("Authentication") idToken: String,
+        @Body reply: Reply
     ): Reply
 
     @GET("/p/get/{id}")
     suspend fun getReplyById(@Path("id") id: String): Reply
 
     @POST("/u/has-user")
-    suspend fun hasUser(@Body userId: TokenRequestContainer): HasUserResponse
+    suspend fun hasUser(@Header("Authentication") idToken: String): HasUserResponse
 
     @POST("/u/sign-up")
     suspend fun signUp(@Body idToken: String): User
+
+    /**
+     * Retrieve user's timetable
+     * @param email String
+     */
+    @GET
+    suspend fun getTimetable(@Url url: String, @Query("email") email: String): List<Subject>
 }
 
 /**

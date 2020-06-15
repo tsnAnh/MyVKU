@@ -98,7 +98,7 @@ dependencies {
     androidTestImplementation(TestLibraries.androidTestJunit)
     androidTestImplementation(TestLibraries.androidTestEspresso)
     // Firebase Authentication
-    implementation(Libraries.firebaseAuth)
+    implementation(Libraries.firebaseAuthKtx)
     // Material Design
     implementation(Libraries.material)
     // Androidx Browser
@@ -111,6 +111,8 @@ dependencies {
     implementation(Libraries.timber)
     // ViewPager2
     implementation(Libraries.viewPager2)
+    // Google Sign In
+    implementation(Libraries.playServicesAuth)
 }
 ktlint {
     android.set(true)

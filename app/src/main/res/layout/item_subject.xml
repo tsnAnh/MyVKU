@@ -5,10 +5,13 @@
 
     <data>
 
-        <!--        <variable-->
-        <!--            name="subject"-->
-        <!--            type="dev.tsnanh.vku.domain.entities.Subject" />-->
+        <variable
+            name="subject"
+            type="dev.tsnanh.vku.domain.entities.Subject" />
 
+        <variable
+            name="listener"
+            type="dev.tsnanh.vku.adapters.TimetableClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -29,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                app:dayOfWeek="@{ subject.dayOfWeek }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -42,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
+                android:text="@{ subject.className }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/day_of_week"
@@ -53,17 +58,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{ @string/title_and_full_name(subject.title, subject.fullName) }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 app:layout_constraintEnd_toEndOf="@+id/subject_name"
                 app:layout_constraintStart_toStartOf="@+id/subject_name"
                 app:layout_constraintTop_toBottomOf="@+id/subject_name"
-                tools:text="NaTuan" />
+                tools:text="NaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan NaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuanNaTuan" />
 
             <HorizontalScrollView
                 android:id="@+id/chip_group_scroll"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="@+id/lecturer"
                 app:layout_constraintStart_toStartOf="@+id/lecturer"
                 app:layout_constraintTop_toBottomOf="@+id/lecturer">
@@ -75,17 +83,17 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/week_chip"
-                        style="@style/Widget.MaterialComponents.Chip.Entry"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:weekChip="@{ subject.week }"
                         app:chipIcon="@drawable/ic_round_view_week_24"
                         tools:text="Alo" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/room_chip"
-                        style="@style/Widget.MaterialComponents.Chip.Entry"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:roomChip="@{ subject.room }"
                         app:chipIcon="@drawable/ic_round_business_24"
                         tools:text="Room" />
 
@@ -93,6 +101,7 @@
                         android:id="@+id/lesson_chip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:lessonChip="@{ subject.lesson }"
                         app:chipIcon="@drawable/ic_round_school_24"
                         tools:text="Lesson" />
                 </com.google.android.material.chip.ChipGroup>
@@ -102,9 +111,10 @@
                 android:id="@+id/set_alarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/text_set_alarm"
+                android:onClick="@{ () -> listener.onSetAlarm(subject) }"
                 app:icon="@drawable/ic_round_alarm_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/chip_group_scroll"

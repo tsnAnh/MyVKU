@@ -4,35 +4,41 @@
 
 package dev.tsnanh.vku.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.ErrorCodes
-import com.firebase.ui.auth.IdpResponse
+import androidx.preference.PreferenceManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityWelcomeBinding
-import dev.tsnanh.vku.viewmodels.WelcomeViewModel
+import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.utils.Constants
+import dev.tsnanh.vku.utils.setSchoolReminderAlarm
+import dev.tsnanh.vku.viewmodels.my_vku.WelcomeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
-
-// Sign In request code
-const val RC_SIGN_IN = 100
 
 class WelcomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityWelcomeBinding
-    private val user = FirebaseAuth.getInstance().currentUser
     private val viewModel: WelcomeViewModel by viewModels()
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,90 +48,164 @@ class WelcomeActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome)
 
         binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+        binding.googleSignInButton.setSize(SignInButton.SIZE_WIDE)
 
-        // implement new sign in flow
-        viewModel.authenticationState.observe(this, Observer {
-            it?.let { state ->
-                when (state) {
-                    WelcomeViewModel.AuthenticationState.UNAUTHENTICATED -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.signinButton.visibility = View.VISIBLE
-                    }
-                    WelcomeViewModel.AuthenticationState.AUTHENTICATED -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.signinButton.visibility = View.INVISIBLE
+        val gso = GoogleSignInOptions.Builder()
+            .requestId()
+            .requestIdToken(getString(R.string.client_id))
+            .requestProfile()
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
-                        val user = FirebaseAuth.getInstance().currentUser
+        auth = Firebase.auth
+
+        binding.googleSignInButton.setOnClickListener {
+            signIn()
+        }
+    }
+
+    private fun signIn() {
+        val signInIntent = mGoogleSignInClient.signInIntent
+        startActivityForResult(signInIntent, Constants.RC_SIGN_IN)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        showProgressBar()
+        mGoogleSignInClient.silentSignIn().addOnCompleteListener {
+            if (it.isSuccessful) {
+                try {
+                    val account = it.getResult(ApiException::class.java)!!
+                    updateUI(account)
+                    Timber.d("Token: ${account.idToken}")
+                } catch (e: ApiException) {
+                    updateUI(null)
+                }
+            } else {
+                hideProgressBar()
+            }
+        }
+    }
+    // region old updateUI function
+/*
+    private fun updateUI(account: GoogleSignInAccount?) {
+        if (account != null) {
+            showProgressBar()
+            account.getIdToken(true).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    try {
+                        val token = it.getResult(ApiException::class.java)!!.token!!
                         lifecycleScope.launch(Dispatchers.IO) {
-                            val response = viewModel.hasUser(user!!.uid)
-                            Timber.d(response.isNew.toString())
-                            startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
-                            this@WelcomeActivity.finish()
+                            val response = async {
+                                viewModel.hasUser(token)
+                            }
+                            if (response.await().user.id.isNotEmpty()) {
+                                startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
+                            }
+                        }
+                    } catch (e: ApiException) {
+                        throw e
+                    }
+                } else {
+                    showProgressBar()
+                }
+            }
+        } else {
+            hideProgressBar()
+        }
+    }*/
 
+    // endregion
+
+    private fun updateUI(account: GoogleSignInAccount?) {
+        if (account != null) {
+            showProgressBar()
+            setSchoolReminderAlarm(account.email!!)
+            account.idToken!!.let {
+                lifecycleScope.launch {
+                    val response =
+                        withContext(Dispatchers.IO) {
+                            viewModel.hasUser(it)
+                        }
+                    when (response) {
+                        is Resource.Success -> {
+                            if (response.data!!.user.id.isNotEmpty()) {
+                                val sharedPreferences =
+                                    PreferenceManager.getDefaultSharedPreferences(this@WelcomeActivity)
+                                if (sharedPreferences.getBoolean(
+                                        getString(R.string.elearning_mode),
+                                        false
+                                    )
+                                ) {
+                                    startActivity(
+                                        Intent(
+                                            this@WelcomeActivity,
+                                            ElearningMainActivity::class.java
+                                        )
+                                    )
+                                } else {
+                                    startActivity(
+                                        Intent(
+                                            this@WelcomeActivity,
+                                            MainActivity::class.java
+                                        )
+                                    )
+                                }
+                                finish()
+                            }
+                        }
+                        is Resource.Error -> {
+                            binding.progressBar.visibility = View.INVISIBLE
+                            Snackbar
+                                .make(binding.root, response.message!!, Snackbar.LENGTH_INDEFINITE)
+                                .setAction(getString(R.string.text_exit)) {
+                                    this@WelcomeActivity.finish()
+                                }
+                                .show()
                         }
                     }
                 }
             }
-        })
-
-        viewModel.signIn.observe(this, Observer {
-            it?.let {
-                startActivityForResult(
-                    AuthUI
-                        .getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(
-                            listOf(
-                                AuthUI.IdpConfig.GoogleBuilder().build()
-                            )
-                        )
-                        .build(),
-                    RC_SIGN_IN
-                )
-
-                viewModel.onSignInClicked()
-            }
-        })
+        } else {
+            hideProgressBar()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == RC_SIGN_IN) {
-            val response = IdpResponse.fromResultIntent(data)
-            if (resultCode == Activity.RESULT_OK) {
-                val user = FirebaseAuth.getInstance().currentUser
-            } else {
-                if (response == null) {
-                    Snackbar
-                        .make(
-                            binding.root,
-                            "Sign in canceled!",
-                            Snackbar.LENGTH_LONG
-                        )
-                        .show()
-                } else {
-                    if (response.error?.errorCode == ErrorCodes.NO_NETWORK) {
-                        Snackbar
-                            .make(
-                                binding.root,
-                                "No internet connection!",
-                                Snackbar.LENGTH_SHORT
-                            )
-                            .show()
-                        return
-                    }
-                    Snackbar
-                        .make(
-                            binding.root,
-                            "Unknown Error!",
-                            Snackbar.LENGTH_SHORT
-                        )
-                        .show()
-                    Timber.e("Sign in Error: ${response.error}")
-                }
+        if (requestCode == Constants.RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            // handle sign in result
+            try {
+                val account = task.getResult(ApiException::class.java)!!
+//                firebaseAuthWithGoogle(account.idToken!!)
+                updateUI(account)
+            } catch (e: ApiException) {
+                updateUI(null)
             }
         }
+    }
+//
+//    private fun firebaseAuthWithGoogle(idToken: String) {
+//        showProgressBar()
+//        val credential = GoogleAuthProvider.getCredential(idToken, null)
+//        auth.signInWithCredential(credential)
+//            .addOnCompleteListener(this) { task ->
+//                if (task.isSuccessful) {
+//                    val user = auth.currentUser
+//                    updateUI(user)
+//                }
+//            }
+//    }
+
+    private fun showProgressBar() {
+        binding.googleSignInButton.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        binding.googleSignInButton.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
     }
 }

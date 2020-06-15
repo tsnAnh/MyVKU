@@ -10,11 +10,11 @@
 
         <variable
             name="viewModel"
-            type="dev.tsnanh.vku.viewmodels.MoreViewModel" />
+            type="dev.tsnanh.vku.viewmodels.my_vku.MoreViewModel" />
 
         <variable
             name="user"
-            type="com.google.firebase.auth.FirebaseUser" />
+            type="com.google.android.gms.auth.api.signin.GoogleSignInAccount" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -41,7 +41,7 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/user_avatar"
-                        userAvatar="@{ user }"
+                        app:userAvatar="@{ user }"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
                         android:layout_marginTop="16dp"
@@ -93,15 +93,38 @@
                     android:layout_marginEnd="16dp"
                     android:clickable="true"
                     android:focusable="true"
+                    android:onClick="@{ () -> viewModel.onNavigateToTeacherEvaluation() }"
                     app:cardCornerRadius="4dp">
 
                     <TextView
-                        android:id="@+id/school_remider"
+                        android:id="@+id/teacher_evaluation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_round_alarm_24"
+                        android:drawableEnd="@drawable/ic_round_poll_24"
                         android:padding="16dp"
-                        android:text="@string/text_school_reminder"
+                        android:text="@string/text_teacher_evaluation"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                        app:drawableTint="@color/primaryColor" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{ () -> viewModel.onNavigateToElearning() }"
+                    app:cardCornerRadius="4dp">
+
+                    <TextView
+                        android:id="@+id/back_to_my_vku"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/ic_round_school_24"
+                        android:padding="16dp"
+                        android:text="@string/text_elearning"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         app:drawableTint="@color/primaryColor" />
                 </com.google.android.material.card.MaterialCardView>

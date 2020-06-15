@@ -2,7 +2,7 @@ package dev.tsnanh.vku.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import dev.tsnanh.vku.views.replies.list_replies.ListRepliesFragment
+import dev.tsnanh.vku.views.my_vku.replies.list_replies.ListRepliesFragment
 
 class ListRepliesPagerAdapter(
     fragment: Fragment,
@@ -13,5 +13,9 @@ class ListRepliesPagerAdapter(
 
     override fun getItemCount() = totalPage
 
-    override fun createFragment(position: Int) = ListRepliesFragment(threadId, position + 1)
+    override fun createFragment(position: Int) =
+        ListRepliesFragment(
+            threadId,
+            position + 1
+        )
 }

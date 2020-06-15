@@ -24,8 +24,8 @@ fun NotificationManager.sendNotification(
     val pendingIntent = NavDeepLinkBuilder(applicationContext)
         .setArguments(
             bundleOf(
-                "threadId" to threadId,
-                "threadTitle" to threadTitle
+                Constants.THREAD_ID_KEY to threadId,
+                Constants.THREAD_TITLE_KEY to threadTitle
             )
         )
         .setDestination(R.id.navigation_replies)
@@ -51,7 +51,6 @@ fun NotificationManager.sendNotificationWithProgress(
     message: String,
     applicationContext: Context
 ) {
-
     val builder = NotificationCompat.Builder(
         applicationContext,
         applicationContext.getString(R.string.new_thread_channel_id)
@@ -60,6 +59,23 @@ fun NotificationManager.sendNotificationWithProgress(
         .setContentTitle(title)
         .setContentText(message)
         .setProgress(0, 0, true)
+
+    notify(NOTIFICATION_ID, builder.build())
+}
+
+fun NotificationManager.sendSchoolReminderNotification(
+    title: String,
+    message: String,
+    applicationContext: Context
+) {
+    val builder = NotificationCompat.Builder(
+        applicationContext,
+        applicationContext.getString(R.string.school_reminder_channel_id)
+    )
+        .setContentTitle(title)
+        .setSmallIcon(R.mipmap.ic_launcher)
+        .setContentText(message)
+        .setAutoCancel(true)
 
     notify(NOTIFICATION_ID, builder.build())
 }

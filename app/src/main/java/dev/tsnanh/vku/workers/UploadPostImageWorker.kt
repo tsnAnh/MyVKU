@@ -10,6 +10,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import dev.tsnanh.vku.domain.network.VKUServiceApi
+import dev.tsnanh.vku.utils.Constants
+import dev.tsnanh.vku.utils.Constants.Companion.IMAGE_URL_KEY
 import dev.tsnanh.vku.utils.getFilePath
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -21,16 +23,14 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.*
 
-internal const val IMAGE_URL = "imageURL"
-
 class UploadPostImageWorker(private val context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result = coroutineScope {
         setProgress(workDataOf(WorkUtil.Progress to 0))
-        val token = inputData.getString("id_token")
-        val uid = inputData.getString("uid")!!
-        val imageUri = Uri.parse(inputData.getString("image"))
+        val token = inputData.getString(Constants.TOKEN_KEY)
+        val uid = inputData.getString(Constants.UNIQUE_ID_KEY)!!
+        val imageUri = Uri.parse(inputData.getString(Constants.IMAGE_KEY))
 
         setProgress(workDataOf(WorkUtil.Progress to 20))
 
@@ -60,11 +60,11 @@ class UploadPostImageWorker(private val context: Context, params: WorkerParamete
         // Upload image
         setProgress(workDataOf(WorkUtil.Progress to 80))
         val imageURL = async {
-            VKUServiceApi.network.uploadImage("Bearer $token", uid, filePart)
+            VKUServiceApi.network.uploadImage("$token", uid, filePart)
         }
 
         setProgress(workDataOf(WorkUtil.Progress to 100))
 
-        Result.success(workDataOf(IMAGE_URL to imageURL.await()))
+        Result.success(workDataOf(IMAGE_URL_KEY to imageURL.await()))
     }
 }

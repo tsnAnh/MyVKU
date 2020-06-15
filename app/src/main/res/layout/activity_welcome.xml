@@ -8,9 +8,9 @@
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="dev.tsnanh.vku.viewmodels.WelcomeViewModel" />
+        <!--        <variable-->
+        <!--            name="viewModel"-->
+        <!--            type="dev.tsnanh.vku.viewmodels.my_vku.WelcomeViewModel" />-->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,10 +23,13 @@
             android:id="@+id/vku_image"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:src="@drawable/vku_logo"
-            app:layout_constraintBottom_toTopOf="@+id/signin_button"
-            app:layout_constraintEnd_toEndOf="@+id/signin_button"
-            app:layout_constraintStart_toStartOf="@+id/signin_button"
+            app:layout_constraintBottom_toTopOf="@+id/google_sign_in_button"
+            app:layout_constraintEnd_toEndOf="@+id/google_sign_in_button"
+            app:layout_constraintStart_toStartOf="@+id/google_sign_in_button"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
@@ -37,29 +40,10 @@
             android:layout_height="32dp"
             android:indeterminate="true"
             android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/signin_button"
-            app:layout_constraintEnd_toEndOf="@+id/signin_button"
-            app:layout_constraintStart_toStartOf="@+id/signin_button"
-            app:layout_constraintTop_toTopOf="@+id/signin_button" />
-
-        <Button
-            android:id="@+id/signin_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:padding="16dp"
-            android:text="@string/text_sign_in_with_google"
-            android:onClick="@{() -> viewModel.onSignInClick()}"
-            app:cornerRadius="24dp"
-            app:icon="@drawable/fui_ic_googleg_color_24dp"
-            app:iconGravity="start"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/vku_image"
-            app:shapeAppearance="@style/LoginButtonShapeAppearance" />
+            app:layout_constraintBottom_toBottomOf="@+id/google_sign_in_button"
+            app:layout_constraintEnd_toEndOf="@+id/google_sign_in_button"
+            app:layout_constraintStart_toStartOf="@+id/google_sign_in_button"
+            app:layout_constraintTop_toTopOf="@+id/google_sign_in_button" />
 
         <TextView
             android:id="@+id/textView6"
@@ -72,5 +56,16 @@
             android:textColor="?android:attr/textColorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_sign_in_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/vku_image" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

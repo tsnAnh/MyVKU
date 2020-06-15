@@ -10,7 +10,7 @@
 
         <variable
             name="viewModel"
-            type="dev.tsnanh.vku.viewmodels.NewReplyViewModel" />
+            type="dev.tsnanh.vku.viewmodels.my_vku.NewReplyViewModel" />
 
         <variable
             name="pickerHasImage"
@@ -24,7 +24,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".views.replies.createnewreply.NewReplyFragment">
+        tools:context=".views.my_vku.replies.createnewreply.NewReplyFragment">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView"

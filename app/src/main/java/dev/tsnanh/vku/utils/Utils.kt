@@ -7,6 +7,8 @@ package dev.tsnanh.vku.utils
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import dev.tsnanh.vku.domain.entities.Subject
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -47,4 +49,20 @@ fun Subject.checkSubjectHasValidAlarm() = try {
     true
 } catch (e: IllegalArgumentException) {
     false
+}
+
+fun String.checkValidWeek(): Boolean = length >= 3
+
+fun showSnackbarWithAction(
+    view: View,
+    msg: String,
+    actionButton: String
+) {
+    val bar = Snackbar
+        .make(view, msg, Snackbar.LENGTH_INDEFINITE)
+
+    bar.setAction(actionButton) { v ->
+        bar.dismiss()
+    }
+    bar.show()
 }

@@ -108,7 +108,7 @@ fun RecyclerView.setHasImage(visibility: Boolean) {
 fun ImageView.setItemThreadAvatar(thread: ForumThread) {
     Glide
         .with(this.context)
-        .load(thread.userAvatar)
+        .load(/*thread.userAvatar*/"")
         .placeholder(progressBar(this.context))
         .diskCacheStrategy(DiskCacheStrategy.ALL)
         .centerCrop()
@@ -121,7 +121,7 @@ fun ImageView.setPostAvatar(reply: Reply?) {
     reply?.let {
         Glide
             .with(this.context)
-            .load(reply.userAvatar)
+            .load(/*reply.userAvatar*/"")
             .placeholder(progressBar(this.context))
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()

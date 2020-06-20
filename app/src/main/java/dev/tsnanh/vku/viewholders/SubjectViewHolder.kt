@@ -7,6 +7,7 @@ import dev.tsnanh.vku.adapters.TimetableClickListener
 import dev.tsnanh.vku.databinding.ItemSubjectBinding
 import dev.tsnanh.vku.domain.entities.Subject
 import dev.tsnanh.vku.utils.checkSubjectHasValidAlarm
+import dev.tsnanh.vku.utils.checkValidWeek
 
 class SubjectViewHolder(
     private val binding: ItemSubjectBinding
@@ -26,7 +27,8 @@ class SubjectViewHolder(
     ) {
         binding.subject = subject
         binding.listener = listener
-        binding.setAlarm.isEnabled = subject.checkSubjectHasValidAlarm()
+        binding.setAlarm.isEnabled =
+            subject.checkSubjectHasValidAlarm() && subject.week.checkValidWeek()
         binding.executePendingBindings()
     }
 }

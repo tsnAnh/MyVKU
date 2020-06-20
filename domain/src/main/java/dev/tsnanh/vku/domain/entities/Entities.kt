@@ -76,51 +76,44 @@ data class Forum(
     val image: String,
     val numberOfThreads: Int,
     val numberOfReplies: Int,
-    val lastUpdatedOn: String,
-    val threads: List<String> = emptyList()
+    val lastUpdatedAt: String
 )
 
 @JsonClass(generateAdapter = true)
 data class ForumThread(
     @field:Json(name = "_id")
     val id: String = "",
+    val uid: String = "",
     val title: String,
-    val userDisplayName: String = "",
-    val userAvatar: String = "",
     val forumId: String = "",
     val numberOfReplies: Int = 1,
     val numberOfViews: Int = 0,
-    val userId: String = "",
+    val likes: List<String> = emptyList(),
     val createdAt: Long = 0L,
-    val lastUpdatedOn: Long = 0L,
-    val replies: List<String> = emptyList(),
-    val editHistory: List<String> = emptyList()
+    val lastUpdatedAt: Long = 0L/*,
+    val editHistory: List<String> = emptyList()*/
 )
 
 @JsonClass(generateAdapter = true)
 data class User(
     @field:Json(name = "_id")
     val id: String = "",
-    val uid: String,
+    val uidGG: String,
     val displayName: String,
-    val photoUrl: String,
+    val photoURL: String,
     val email: String,
-    val numberOfThreads: String,
-    val threads: List<String>,
-    val replies: List<String>
+    val role: Int = 0
 )
 
 @JsonClass(generateAdapter = true)
 data class Reply(
     @field:Json(name = "_id")
     val id: String = "",
+    val uid: String = "",
     val content: String,
     var images: List<String> = emptyList(),
-    val userId: String = "",
-    val userDisplayName: String = "",
-    val userAvatar: String = "",
     val threadId: String = "",
-    val threadTitle: String = "",
+    val forumId: String = "",
     val editHistory: List<String> = emptyList(),
     val createdAt: Long = 0L,
     val quoted: String = "",

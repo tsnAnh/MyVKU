@@ -104,7 +104,7 @@ dependencies {
     // Androidx Browser
     implementation(Libraries.androidxBrowser)
     // Firebase UI Auth
-    implementation(Libraries.firebaseUI)
+//    implementation(Libraries.firebaseUI)
     // Flexbox Layout
     implementation(Libraries.flexbox)
     // Timber Log

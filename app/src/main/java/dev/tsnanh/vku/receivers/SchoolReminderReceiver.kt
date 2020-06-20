@@ -7,14 +7,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Build.VERSION_CODES.M
 import android.os.PowerManager
+import androidx.annotation.RequiresApi
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.usecases.RetrieveUserTimetableUseCase
-import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.RC_SCHOOL_REMINDER
-import dev.tsnanh.vku.utils.prepareCalendar
-import dev.tsnanh.vku.utils.sendSchoolReminderNotification
+import dev.tsnanh.vku.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -54,15 +53,7 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                 is Resource.Success -> {
                     val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
                     val list = result.data!!.filter { subject ->
-                        when (subject.dayOfWeek) {
-                            Constants.MONDAY -> Calendar.MONDAY == dayOfWeek
-                            Constants.TUESDAY -> Calendar.TUESDAY == dayOfWeek
-                            Constants.WEDNESDAY -> Calendar.WEDNESDAY == dayOfWeek
-                            Constants.THURSDAY -> Calendar.THURSDAY == dayOfWeek
-                            Constants.FRIDAY -> Calendar.FRIDAY == dayOfWeek
-                            Constants.SATURDAY -> Calendar.SATURDAY == dayOfWeek
-                            else -> Calendar.SUNDAY == dayOfWeek
-                        }
+                        dayOfWeekFilter(subject, dayOfWeek)
                     }
                     if (list.isEmpty()) {
                         notificationManager.sendSchoolReminderNotification(
@@ -122,22 +113,19 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                     }
                 }
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= M) {
                 setAlarmApi23AndAbove(context, intent)
             }
             wakeLock.release()
         }
     }
 
+    @RequiresApi(M)
     private fun setAlarmApi23AndAbove(
         context: Context,
         intent: Intent
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val calendarMorning = prepareCalendar(6, 30)
-        val calendarAfternoon = prepareCalendar(12, 0)
-        val calendarEvening = prepareCalendar(18, 0)
-        val calendarNight = prepareCalendar(21, 0)
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -146,25 +134,27 @@ class SchoolReminderReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendarMorning.timeInMillis,
-            pendingIntent
-        )
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendarAfternoon.timeInMillis,
-            pendingIntent
-        )
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendarEvening.timeInMillis,
-            pendingIntent
-        )
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendarNight.timeInMillis,
-            pendingIntent
-        )
+        when (Calendar.getInstance()[Calendar.HOUR_OF_DAY]) {
+            6 -> alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendarMorning.timeInMillis + AlarmManager.INTERVAL_DAY,
+                pendingIntent
+            )
+            12 -> alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendarAfternoon.timeInMillis + AlarmManager.INTERVAL_DAY,
+                pendingIntent
+            )
+            18 -> alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendarEvening.timeInMillis + AlarmManager.INTERVAL_DAY,
+                pendingIntent
+            )
+            21 -> alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendarNight.timeInMillis + AlarmManager.INTERVAL_DAY,
+                pendingIntent
+            )
+        }
     }
 }

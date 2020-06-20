@@ -29,7 +29,7 @@ class ThreadViewHolder(
     fun bind(thread: ForumThread, listener: ThreadClickListener) {
         binding.thread = thread.apply {
             binding.createdAt = createdAt.convertTimestampToDateString()
-            binding.lastUpdatedOn = lastUpdatedOn.convertTimestampToDateString()
+            binding.lastUpdatedOn = lastUpdatedAt.convertTimestampToDateString()
         }
         binding.listener = listener
         binding.executePendingBindings()

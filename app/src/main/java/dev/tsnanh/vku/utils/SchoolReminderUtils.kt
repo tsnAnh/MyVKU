@@ -5,12 +5,16 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import dev.tsnanh.vku.domain.entities.Subject
 import dev.tsnanh.vku.receivers.SchoolReminderReceiver
 import timber.log.Timber
 import java.util.*
 
 const val RC_SCHOOL_REMINDER = 1000
-
+val calendarMorning = prepareCalendar(6, 30)
+val calendarAfternoon = prepareCalendar(12, 0)
+val calendarEvening = prepareCalendar(18, 0)
+val calendarNight = prepareCalendar(21, 0)
 fun Context.setSchoolReminderAlarm(email: String) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -31,11 +35,6 @@ fun Context.setSchoolReminderAlarm(email: String) {
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
-
-        val calendarMorning = prepareCalendar(6, 30)
-        val calendarAfternoon = prepareCalendar(12, 0)
-        val calendarEvening = prepareCalendar(18, 0)
-        val calendarNight = prepareCalendar(21, 0)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             alarmManager.setInexactRepeating(
@@ -99,6 +98,7 @@ fun prepareCalendar(hourOfDay: Int, minute: Int): Calendar {
     }
 }
 
+@Throws(IllegalArgumentException::class)
 fun String.getHourFromStringLesson(): Int {
     return when (this[0]) {
         '1', '2' -> 7
@@ -137,4 +137,16 @@ fun String.getDayOfWeekFromString(): ArrayList<Int> {
             else -> throw IllegalArgumentException("Wrong day of week string")
         }
     )
+}
+
+fun dayOfWeekFilter(subject: Subject, dayOfWeek: Int): Boolean {
+    return when (subject.dayOfWeek) {
+        Constants.MONDAY -> Calendar.MONDAY == dayOfWeek
+        Constants.TUESDAY -> Calendar.TUESDAY == dayOfWeek
+        Constants.WEDNESDAY -> Calendar.WEDNESDAY == dayOfWeek
+        Constants.THURSDAY -> Calendar.THURSDAY == dayOfWeek
+        Constants.FRIDAY -> Calendar.FRIDAY == dayOfWeek
+        Constants.SATURDAY -> Calendar.SATURDAY == dayOfWeek
+        else -> Calendar.SUNDAY == dayOfWeek
+    }
 }

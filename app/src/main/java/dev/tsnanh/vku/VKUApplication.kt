@@ -7,7 +7,6 @@ package dev.tsnanh.vku
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import dev.tsnanh.vku.domain.di.module
 import dev.tsnanh.vku.koin.vkuModule
 import dev.tsnanh.vku.utils.Constants
@@ -17,7 +16,6 @@ import org.koin.core.context.startKoin
 import timber.log.Timber
 
 class VKUApplication : Application() {
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
     override fun onCreate() {
         super.onCreate()
 

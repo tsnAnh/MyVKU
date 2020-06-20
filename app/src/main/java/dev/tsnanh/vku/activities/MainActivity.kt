@@ -62,8 +62,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             getString(R.string.school_reminder_channel_id),
             getString(R.string.school_reminder_channel_name)
         )
-
-
     }
 
     private fun createChannelNewThread(channelId: String, channelName: String) {

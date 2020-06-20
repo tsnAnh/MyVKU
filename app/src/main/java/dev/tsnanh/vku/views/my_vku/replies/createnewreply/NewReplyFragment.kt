@@ -141,7 +141,6 @@ class NewReplyFragment(
             } else {
                 val post = Reply(
                     content = binding.content.text.toString().trim(),
-                    threadTitle = threadTitle,
                     threadId = threadId,
                     quoted = if (quotedPostId.isNotBlank()) quotedPostId else ""
                 )

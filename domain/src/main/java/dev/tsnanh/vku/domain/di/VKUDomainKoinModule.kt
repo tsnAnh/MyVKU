@@ -46,8 +46,8 @@ val module = module {
     single<RetrieveRepliesLiveDataUseCase> {
         RetrieveRepliesLiveDataUseCaseImpl()
     }
-    single<CheckHasUserUseCase> {
-        CheckHasUserUseCaseImpl()
+    single<LoginUseCase> {
+        LoginUseCaseImpl()
     }
     single<TimetableRepo> {
         TimetableRepoImpl()

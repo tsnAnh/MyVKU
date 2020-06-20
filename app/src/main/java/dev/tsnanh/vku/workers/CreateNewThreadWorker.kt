@@ -50,7 +50,7 @@ class CreateNewThreadWorker(context: Context, params: WorkerParameters) :
 
         Timber.d("$token")
         val deferredThread = async {
-            VKUServiceApi.network.createThread("$token", container!!)
+            VKUServiceApi.network.createThread("$token", container!!, "")
         }
         setProgress(workDataOf(WorkUtil.Progress to 80))
         val threadJsonAdapter = moshi.adapter(ForumThread::class.java)

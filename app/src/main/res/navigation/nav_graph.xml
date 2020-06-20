@@ -11,7 +11,7 @@
     <fragment
         android:id="@+id/navigation_forum"
         android:name="dev.tsnanh.vku.views.my_vku.forum.ForumFragment"
-        android:label="@string/text_vku_forum"
+        android:label="@string/text_forum"
         tools:layout="@layout/fragment_forum">
         <action
             android:id="@+id/action_navigation_forum_to_navigation_thread"

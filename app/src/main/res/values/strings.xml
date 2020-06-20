@@ -4,8 +4,8 @@
 
 <resources>
     <string name="app_name" translatable="false">My VKU</string>
-    <string name="app_version" translatable="false">0.1.1-dev05</string>
-    <string name="client_id" translatable="false">1079734932411-js3q64evvspd077hl6bnhf0q4ih629ns.apps.googleusercontent.com</string>
+    <string name="app_version" translatable="false">0.1.1-dev06</string>
+    <string name="client_id" translatable="false">880553460800-vn4gqhn1p6qqbg04e84fpqj2k7elp01l.apps.googleusercontent.com</string>
     <string name="elearning_mode" translatable="false">elearning</string>
     <!-- Shared Preferences Key -->
     <string name="night_mode_key" translatable="false">night_mode_preferences</string>
@@ -21,11 +21,10 @@
     <string name="title_activity_settings">Settings</string>
     <string name="preferences_key" translatable="false">dev.tsnanh.VKU</string>
     <string name="text_news">News</string>
-    <string name="text_vku_forum">Forum</string>
     <string name="text_thong_bao_chung">General</string>
     <string name="text_thong_bao_ctsv">Student Work</string>
     <string name="text_options">Options</string>
-    <string name="text_new_thread">New Thread</string>
+    <string name="text_new_thread">New thread</string>
     <string name="text_uncategorized">Uncategorized</string>
     <string name="vku_database" translatable="false">vku_database</string>
     <string name="text_title">Title</string>
@@ -33,19 +32,17 @@
     <string name="text_submit">Submit</string>
     <string name="text_choose_image">Choose Image</string>
     <string name="text_clear_image_content" translatable="false"><![CDATA[<i>add later</i>]]></string>
-    <string name="text_add_a_photo">Add a photo</string>
+    <string name="text_add_photo">Add photo</string>
     <string name="text_about">About us :)</string>
     <string name="text_display">Display</string>
-    <string name="text_night_mode">Night Mode</string>
+    <string name="text_night_mode">Night mode</string>
     <string name="text_night_mode_summary">Change display mode</string>
-    <string name="text_new_post">New Post</string>
-    <string name="text_post_image">Post Image (optional)</string>
+    <string name="text_reply_image">Add photo (optional)</string>
     <string name="text_timetable">Timetable</string>
     <string name="text_more">More</string>
 
     <string name="threadNameTime" translatable="false">%s - %s</string>
     <string name="threadDetails" translatable="true">Replies: %s, Views: %s, Last Updated On: %s</string>
-    <string name="text_school_reminder">School Reminder</string>
     <string name="toolbar_image_transition_key" translatable="false">toolbar_image</string>
     <string name="new_thread_channel_name" translatable="false">New Thread</string>
     <string name="new_thread_channel_id" translatable="false">dev.tsnanh.vku.newthread.notification</string>
@@ -69,7 +66,7 @@
     <string name="text_sunday">Sunday</string>
     <string name="text_sign_in_with_google">Sign In With Google</string>
     <string name="text_sign_out">Sign Out</string>
-    <string name="text_replies_per_page">Replies per page</string>
+    <string name="text_replies_per_page">Number of reply per page</string>
     <string name="text_summary_replies_per_page">Change the number of reply per page.</string>
     <string name="text_last_page">Last page</string>
     <string name="text_first_page">First page</string>
@@ -87,32 +84,32 @@
     <string name="week">Week: </string>
     <string name="room">Room: </string>
     <string name="lesson">Lesson: </string>
-    <string name="text_not_available">Not Available</string>
+    <string name="text_not_available">Not available</string>
     <string name="school_reminder_channel_id" translatable="false">dev.tsnanh.vku.school_reminder</string>
     <string name="school_reminder_channel_name" translatable="false">School Reminder</string>
-    <string name="title_notification_school_reminder_no_subject">Hooray!</string>
-    <string name="content_notification_school_reminder_no_subject">You have no class today!</string>
-    <string name="title_notification_school_reminder_no_subject_morning">Yay!</string>
+    <string name="title_notification_school_reminder_no_subject" translatable="false">Hooray!</string>
+    <string name="content_notification_school_reminder_no_subject">You have a day off today!</string>
+    <string name="title_notification_school_reminder_no_subject_morning" translatable="false">Yay!</string>
     <string name="content_notification_school_reminder_no_subject_morning">You have no class this morning!</string>
-    <string name="title_notification_school_reminder_no_subject_afternoon">Yay!</string>
+    <string name="title_notification_school_reminder_no_subject_afternoon" translatable="false">Tadaaaa!</string>
     <string name="content_notification_school_reminder_no_subject_afternoon">You have no class this afternoon!</string>
     <string name="text_show_all">Show all</string>
     <string name="msg_thread_creating">Your thread is being created…</string>
-    <string name="msg_permission_granted">Permission Granted</string>
+    <string name="msg_permission_granted">Permission granted</string>
     <string name="text_uploading">Uploading</string>
     <string name="err_msg_request_timeout">Request timeout!</string>
     <string name="err_msg_socket_exception">Cannot fetch news!</string>
     <string name="err_msg_something_went_wrong">Something went wrong!</string>
     <string name="msg_no_image_selected">No image selected!</string>
     <string name="msg_creating_your_thread">Creating your thread…</string>
-    <string name="text_create_new_thread">Create New Thread</string>
+    <string name="text_create_new_thread">Create new thread</string>
     <string name="msg_successfully_created">is successfully created!</string>
     <string name="text_loading_forums">Loading forums...</string>
     <string name="msg_permission_required">Permission required</string>
     <string name="msg_need_permission">We need permission to upload your image!</string>
-    <string name="text_ok">OK</string>
-    <string name="msg_pick_image_canceled">Pick image canceled!</string>
-    <string name="msg_empty_title">Empty Title</string>
+    <string name="text_ok" translatable="false">OK</string>
+    <string name="msg_pick_image_canceled">Canceled!</string>
+    <string name="msg_empty_title">Empty thread title</string>
     <string name="msg_choose_a_forum">Choose a forum!</string>
     <string name="msg_empty_content">Empty content</string>
     <string name="text_are_u_sure">Are you sure?</string>
@@ -120,5 +117,5 @@
     <string name="msg_alarm_set">Alarm set!</string>
     <string name="text_show_all_subjects">Show all subjects</string>
     <string name="text_show_all_subject_summary">Display all subjects in your timetable</string>
-    <string name="show_all_subjects_key">dev.tsnanh.vku.show_all_subjects</string>
+    <string name="show_all_subjects_key" translatable="false">dev.tsnanh.vku.show_all_subjects</string>
 </resources>

@@ -11,18 +11,20 @@ import org.koin.java.KoinJavaComponent.inject
 interface CreateNewThreadUseCase {
     fun execute(
         idToken: String,
-        threadContainer: CreateThreadContainer
+        threadContainer: CreateThreadContainer,
+        forumId: String
     ): LiveData<Resource<ForumThread>>
 }
 
 class CreateNewThreadUseCaseImpl : CreateNewThreadUseCase {
     private val threadRepo by inject(ThreadRepo::class.java)
-    override fun execute(idToken: String, threadContainer: CreateThreadContainer) = liveData {
-        emit(Resource.Loading<ForumThread>())
-        try {
-            emit(Resource.Success(threadRepo.createThread(idToken, threadContainer)))
-        } catch (e: Exception) {
-            emit(Resource.Error<ForumThread>(""))
+    override fun execute(idToken: String, threadContainer: CreateThreadContainer, forumId: String) =
+        liveData {
+            emit(Resource.Loading<ForumThread>())
+            try {
+                emit(Resource.Success(threadRepo.createThread(idToken, threadContainer, forumId)))
+            } catch (e: Exception) {
+                emit(Resource.Error<ForumThread>(""))
+            }
         }
-    }
 }

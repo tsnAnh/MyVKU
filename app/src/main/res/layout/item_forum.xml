@@ -34,20 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/thread_image"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:scaleType="centerCrop"
-                app:forumImage="@{ forum }"
-                app:layout_constraintDimensionRatio="16:9"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
             <TextView
-                android:id="@+id/thread_title"
+                android:id="@+id/forum_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -58,35 +46,34 @@
                 android:textColor="?android:attr/textColorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/thread_image"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Topic" />
 
             <TextView
-                android:id="@+id/thread_subtitle"
+                android:id="@+id/threads_replies_count"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@{ forum.subtitle }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                app:layout_constraintEnd_toEndOf="@+id/thread_title"
-                app:layout_constraintStart_toStartOf="@+id/thread_title"
-                app:layout_constraintTop_toBottomOf="@+id/thread_title"
-                tools:text="Subtitle" />
+                app:layout_constraintEnd_toEndOf="@+id/forum_title"
+                app:layout_constraintStart_toStartOf="@+id/forum_title"
+                app:layout_constraintTop_toBottomOf="@+id/forum_title"
+                tools:text="Threads: 1000 Replies: 10000" />
 
             <TextView
-                android:id="@+id/thread_description"
+                android:id="@+id/last_updated_thread_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
+                android:ellipsize="end"
                 android:maxLines="2"
-                android:text="@{ forum.description }"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/thread_subtitle"
-                app:layout_constraintStart_toStartOf="@+id/thread_subtitle"
-                app:layout_constraintTop_toBottomOf="@+id/thread_subtitle"
-                tools:text="Description" />
+                app:layout_constraintEnd_toEndOf="@+id/threads_replies_count"
+                app:layout_constraintStart_toStartOf="@+id/threads_replies_count"
+                app:layout_constraintTop_toBottomOf="@+id/threads_replies_count"
+                tools:text="Hello m.n" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

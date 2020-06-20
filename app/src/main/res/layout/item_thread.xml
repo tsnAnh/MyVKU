@@ -59,7 +59,7 @@
                 android:layout_marginEnd="16dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{ @string/threadNameTime(thread.userDisplayName, createdAt) }"
+                android:text=""
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                 app:layout_constraintEnd_toStartOf="@+id/user_avatar"
                 app:layout_constraintHorizontal_bias="0.0"

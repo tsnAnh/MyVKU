@@ -17,8 +17,7 @@ import java.util.concurrent.TimeUnit
  * Base URL
  */
 // Google Cloud VM Instance Server
-const val BASE_URL = "http://34.87.151.214:3000"
-const val BASE_URL_DAO_TAO = "http://daotao.sict.udn.vn"
+const val BASE_URL = "http://34.87.151.214:5000"
 
 /**
  * OkHttp client
@@ -47,35 +46,43 @@ private val retrofit = Retrofit.Builder()
 
 interface VKUService {
 
+    // region News routes
+    /**
+     * Get latest news from REST API
+     * @return news NewsContainer
+     */
     @GET("n")
     suspend fun getLatestNews(): NewsContainer
+    // endregion
 
-    @GET("f")
+    // region Forum routes
+    @GET("api/forum")
     suspend fun getForums(): ForumContainer
 
-    @POST("t/create")
+    @GET("api/forum/{forumId}")
+    suspend fun getForumById(@Path("forumId") forumId: String): Forum
+
+    @POST("api/thread/{forumId}")
     suspend fun createThread(
         @Header("Authentication") idToken: String,
-        @Body container: CreateThreadContainer
+        @Body container: CreateThreadContainer,
+        @Path("forumId") forumId: String
     ): ForumThread
 
-    @GET("t/{forumId}")
+    @GET("api/forum/thread/{forumId}")
     suspend fun getThreads(@Path("forumId") forumId: String): ThreadContainer
 
     @GET("u/get/{userId}")
     suspend fun getUserById(@Path("userId") userId: String): User
 
-    @GET("f/get/{forumId}")
-    suspend fun getForumById(@Path("forumId") forumId: String): Forum
-
-    @GET("p/{threadId}")
+    @GET("api/thread/reply/{threadId}")
     suspend fun getRepliesInThread(
         @Path("threadId") threadId: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): ReplyContainer
 
-    @GET("t/get/{threadId}")
+    @GET("api/thread/{threadId}")
     suspend fun getThreadById(@Path("threadId") threadId: String): Thread
 
     @Multipart
@@ -95,8 +102,8 @@ interface VKUService {
     @GET("/p/get/{id}")
     suspend fun getReplyById(@Path("id") id: String): Reply
 
-    @POST("/u/has-user")
-    suspend fun hasUser(@Header("Authentication") idToken: String): HasUserResponse
+    @GET("api/user/auth")
+    suspend fun login(@Header("gg-auth-token") idToken: String): HasUserResponse
 
     @POST("/u/sign-up")
     suspend fun signUp(@Body idToken: String): User
@@ -107,6 +114,26 @@ interface VKUService {
      */
     @GET
     suspend fun getTimetable(@Url url: String, @Query("email") email: String): List<Subject>
+
+    /**
+     * Delete thread
+     * @param threadId String
+     */
+    @DELETE("api/thread/{threadId}")
+    suspend fun deleteThread(
+        @Header("gg-auth-token") idToken: String,
+        @Path("threadId") threadId: String
+    )
+
+    /**
+     * Edit thread
+     * @param threadId String
+     */
+    @PUT("api/thread/{threadId}")
+    suspend fun editThread(
+        @Header("gg-auth-token") idToken: String,
+        @Path("threadId") threadId: String
+    )
 }
 
 /**

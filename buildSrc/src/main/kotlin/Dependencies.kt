@@ -113,6 +113,6 @@ object TestLibraries {
 }
 
 object Version {
-    const val name = "0.1.1-dev05"
+    const val name = "0.1.1-dev06"
     const val code = 1
 }

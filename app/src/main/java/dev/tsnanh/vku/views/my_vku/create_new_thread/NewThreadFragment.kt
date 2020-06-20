@@ -30,7 +30,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import com.squareup.moshi.Moshi
@@ -46,6 +45,7 @@ import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.Constants.Companion.THREAD_KEY
 import dev.tsnanh.vku.utils.sendNotification
+import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.MainViewModel
 import dev.tsnanh.vku.viewmodels.my_vku.NewThreadViewModel
 import dev.tsnanh.vku.workers.WorkUtil
@@ -214,8 +214,11 @@ class NewThreadFragment : Fragment() {
                         }
                     }
                     is Resource.Error -> {
-                        Snackbar.make(requireView(), it.message.toString(), Snackbar.LENGTH_SHORT)
-                            .show()
+                        showSnackbarWithAction(
+                            requireView(),
+                            it.message.toString(),
+                            requireContext().getString(R.string.text_hide)
+                        )
                     }
                 }
             }
@@ -292,11 +295,11 @@ class NewThreadFragment : Fragment() {
                     viewModel.onPickerHasImage()
                 }
             } else {
-                Snackbar.make(
+                showSnackbarWithAction(
                     requireView(),
                     requireContext().getString(R.string.msg_pick_image_canceled),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                    requireContext().getString(R.string.text_hide)
+                )
                 viewModel.onPickerHasNoImage()
             }
         } else if (requestCode == Constants.RC_ADD_PHOTO) {
@@ -315,11 +318,11 @@ class NewThreadFragment : Fragment() {
                     pickerAdapter.submitList(list)
                 }
             } else {
-                Snackbar.make(
+                showSnackbarWithAction(
                     requireView(),
-                    requireContext().getString(R.string.msg_no_image_selected),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                    requireContext().getString(R.string.msg_pick_image_canceled),
+                    requireContext().getString(R.string.text_hide)
+                )
             }
         }
     }

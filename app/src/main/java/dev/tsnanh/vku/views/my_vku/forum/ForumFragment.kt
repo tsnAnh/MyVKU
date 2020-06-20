@@ -19,7 +19,6 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialFadeThrough
 import dev.tsnanh.vku.R
@@ -28,6 +27,7 @@ import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.FragmentForumBinding
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
+import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.ForumViewModel
 
 class ForumFragment : Fragment() {
@@ -68,25 +68,30 @@ class ForumFragment : Fragment() {
             binding.listTopics.layoutManager = GridLayoutManager(requireContext(), 2)
         }
 
-        val adapter = ForumAdapter(ForumClickListener { forum, imageView ->
-            viewModel.onItemClick(Pair(forum, imageView))
+        val adapter = ForumAdapter(emptyList(), ForumClickListener { forum, imageView ->
+            viewModel.onItemClick(forum to imageView)
         })
 
         binding.listTopics.adapter = adapter
 
         viewModel.forums.observe(viewLifecycleOwner, Observer {
             it?.let {
+                binding.errorLayout.visibility = View.GONE
                 when (it) {
                     is Resource.Success -> {
-                        adapter.submitList(it.data?.forums)
+                        adapter.updateForums(it.data?.forums!!)
                         binding.progressBar.visibility = View.GONE
                     }
                     is Resource.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                     }
                     is Resource.Error -> {
-                        Snackbar.make(requireView(), it.message.toString(), Snackbar.LENGTH_LONG)
-                            .show()
+                        binding.errorLayout.visibility = View.VISIBLE
+                        showSnackbarWithAction(
+                            requireView(),
+                            it.message.toString(),
+                            requireContext().getString(R.string.text_hide)
+                        )
                         binding.progressBar.visibility = View.GONE
                     }
                 }

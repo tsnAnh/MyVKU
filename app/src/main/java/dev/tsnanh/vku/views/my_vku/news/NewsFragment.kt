@@ -22,7 +22,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.NewsAdapter
@@ -31,6 +30,7 @@ import dev.tsnanh.vku.databinding.FragmentNewsBinding
 import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.CustomTabHelper
+import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.NewsViewModel
 import kotlinx.coroutines.launch
 
@@ -113,13 +113,11 @@ class NewsFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
             it?.let {
-                val bar = Snackbar
-                    .make(requireView(), it, Snackbar.LENGTH_INDEFINITE)
-                bar.setAction(requireContext().getString(R.string.text_hide)) {
-                    bar.dismiss()
-                }
-                bar.show()
-
+                showSnackbarWithAction(
+                    requireView(),
+                    it,
+                    requireContext().getString(R.string.text_hide)
+                )
                 viewModel.onErrorDisplayed()
             }
         })

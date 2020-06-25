@@ -5,8 +5,9 @@
 <resources>
     <string name="app_name" translatable="false">My VKU</string>
     <string name="app_version" translatable="false">0.1.1-dev06</string>
-    <string name="client_id" translatable="false">880553460800-vn4gqhn1p6qqbg04e84fpqj2k7elp01l.apps.googleusercontent.com</string>
+    <string name="server_client_id" translatable="false">880553460800-avf5t7quhmfggpitm8adc83oqd2gojlo.apps.googleusercontent.com</string>
     <string name="elearning_mode" translatable="false">elearning</string>
+    <string name="firebase_forum_notification_channel" translatable="false">dev.tsnanh.vku.firebase_forum_notification_channel</string>
     <!-- Shared Preferences Key -->
     <string name="night_mode_key" translatable="false">night_mode_preferences</string>
     <string name="replies_per_page_key" translatable="false">replies_per_page_key</string>
@@ -24,7 +25,7 @@
     <string name="text_thong_bao_chung">General</string>
     <string name="text_thong_bao_ctsv">Student Work</string>
     <string name="text_options">Options</string>
-    <string name="text_new_thread">New thread</string>
+    <string name="text_new_thread">New Thread</string>
     <string name="text_uncategorized">Uncategorized</string>
     <string name="vku_database" translatable="false">vku_database</string>
     <string name="text_title">Title</string>
@@ -37,12 +38,9 @@
     <string name="text_display">Display</string>
     <string name="text_night_mode">Night mode</string>
     <string name="text_night_mode_summary">Change display mode</string>
-    <string name="text_reply_image">Add photo (optional)</string>
+    <string name="text_reply_image">Add photo(s)</string>
     <string name="text_timetable">Timetable</string>
     <string name="text_more">More</string>
-
-    <string name="threadNameTime" translatable="false">%s - %s</string>
-    <string name="threadDetails" translatable="true">Replies: %s, Views: %s, Last Updated On: %s</string>
     <string name="toolbar_image_transition_key" translatable="false">toolbar_image</string>
     <string name="new_thread_channel_name" translatable="false">New Thread</string>
     <string name="new_thread_channel_id" translatable="false">dev.tsnanh.vku.newthread.notification</string>
@@ -78,9 +76,8 @@
     <string name="text_calendar">Calendar</string>
     <string name="text_message">Message</string>
     <string name="text_notification">Notification</string>
+    <string name="text_notifications">Notifications</string>
     <string name="text_exit">Exit</string>
-
-    <string name="title_and_full_name" translatable="false">%s. %s</string>
     <string name="week">Week: </string>
     <string name="room">Room: </string>
     <string name="lesson">Lesson: </string>
@@ -102,9 +99,9 @@
     <string name="err_msg_something_went_wrong">Something went wrong!</string>
     <string name="msg_no_image_selected">No image selected!</string>
     <string name="msg_creating_your_thread">Creating your thread…</string>
-    <string name="text_create_new_thread">Create new thread</string>
+    <string name="text_create_new_thread">Create New Thread</string>
     <string name="msg_successfully_created">is successfully created!</string>
-    <string name="text_loading_forums">Loading forums...</string>
+    <string name="text_loading_forums">Loading forums…</string>
     <string name="msg_permission_required">Permission required</string>
     <string name="msg_need_permission">We need permission to upload your image!</string>
     <string name="text_ok" translatable="false">OK</string>
@@ -118,4 +115,9 @@
     <string name="text_show_all_subjects">Show all subjects</string>
     <string name="text_show_all_subject_summary">Display all subjects in your timetable</string>
     <string name="show_all_subjects_key" translatable="false">dev.tsnanh.vku.show_all_subjects</string>
+
+    <!-- String template -->
+    <string name="threadNameTime" translatable="false">%s - %s</string>
+    <string name="threadDetails" translatable="true">Threads: %d Replies: %d</string>
+    <string name="title_and_full_name" translatable="false">%s. %s</string>
 </resources>

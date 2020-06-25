@@ -24,14 +24,11 @@ import org.koin.java.KoinJavaComponent.inject
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val workManager = WorkManager.getInstance(application)
     private val account = GoogleSignIn.getLastSignedInAccount(getApplication())
-
     private val notificationManager by inject(NotificationManager::class.java)
 
-    fun createNewThread(
-        list: List<Uri>,
-        thread: ForumThread,
-        post: Reply
-    ) {
+    // TODO: Create Notifications LiveData
+
+    fun createNewThread(list: List<Uri>, thread: ForumThread, post: Reply) {
         account?.idToken?.let {
             it.let { token ->
                 val moshi = Moshi.Builder().build()

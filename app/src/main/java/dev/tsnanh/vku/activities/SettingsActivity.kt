@@ -24,7 +24,6 @@ class SettingsActivity : AppCompatActivity() {
             .commit()
 
         binding.toolbar.apply {
-            title = getString(R.string.title_activity_settings)
             setNavigationOnClickListener {
                 finish()
             }

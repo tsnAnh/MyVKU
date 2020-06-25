@@ -56,13 +56,16 @@ fun String.checkValidWeek(): Boolean = length >= 3
 fun showSnackbarWithAction(
     view: View,
     msg: String,
-    actionButton: String
+    actionButton: String,
+    action: ((View) -> Unit)? = null
 ) {
     val bar = Snackbar
         .make(view, msg, Snackbar.LENGTH_INDEFINITE)
 
-    bar.setAction(actionButton) { v ->
-        bar.dismiss()
-    }
+    bar.setAction(actionButton, if (action != null) {
+        action
+    } else {
+        { bar.dismiss() }
+    })
     bar.show()
 }

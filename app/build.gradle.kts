@@ -56,6 +56,8 @@ dependencies {
     implementation(Libraries.kotlinStdLib)
     implementation(Libraries.appcompat)
     implementation(Libraries.coreKtx)
+    implementation(Libraries.activityKtx)
+    implementation(Libraries.collectionKtx)
     implementation(Libraries.fragment)
     implementation(Libraries.constraintLayout)
     implementation(Libraries.legacySupport)
@@ -113,6 +115,8 @@ dependencies {
     implementation(Libraries.viewPager2)
     // Google Sign In
     implementation(Libraries.playServicesAuth)
+
+    implementation(Libraries.cloudMessaging)
 }
 ktlint {
     android.set(true)

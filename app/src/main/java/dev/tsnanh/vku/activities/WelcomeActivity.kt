@@ -48,7 +48,7 @@ class WelcomeActivity : AppCompatActivity() {
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestId()
-            .requestIdToken(getString(R.string.client_id))
+            .requestIdToken(getString(R.string.server_client_id))
             .requestProfile()
             .requestEmail()
             .build()
@@ -121,12 +121,28 @@ class WelcomeActivity : AppCompatActivity() {
                         }
                         is Resource.Error -> {
                             binding.progressBar.visibility = View.INVISIBLE
-                            Snackbar
-                                .make(binding.root, response.message!!, Snackbar.LENGTH_INDEFINITE)
-                                .setAction(getString(R.string.text_exit)) {
-                                    this@WelcomeActivity.finish()
-                                }
-                                .show()
+                            if (response.message == "403 Forbidden") {
+                                binding.googleSignInButton.visibility = View.VISIBLE
+                                mGoogleSignInClient.signOut()
+                                Snackbar
+                                    .make(
+                                        binding.root,
+                                        "Bạn phải sử dụng email \"sict.udn.vn\" để có " +
+                                                "thể đăng nhập vào ứng dụng!",
+                                        Snackbar.LENGTH_LONG
+                                    )
+                                    .show()
+                            } else
+                                Snackbar
+                                    .make(
+                                        binding.root,
+                                        response.message!!,
+                                        Snackbar.LENGTH_INDEFINITE
+                                    )
+                                    .setAction(getString(R.string.text_exit)) {
+                                        this@WelcomeActivity.finish()
+                                    }
+                                    .show()
                         }
                     }
                 }

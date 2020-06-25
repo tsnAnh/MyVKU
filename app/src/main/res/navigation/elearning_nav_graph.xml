@@ -7,27 +7,22 @@
 
     <fragment
         android:id="@+id/navigation_elearning_home"
-        android:name="dev.tsnanh.vku.views.elearning.home.HomeFragment"
+        android:name="dev.tsnanh.vku.views.elearning.home.ElearningHomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_elearning_home" />
     <fragment
         android:id="@+id/navigation_elearning_calendar"
-        android:name="dev.tsnanh.vku.views.elearning.calendar.CalendarFragment"
+        android:name="dev.tsnanh.vku.views.elearning.calendar.ElearningCalendarFragment"
         android:label="fragment_calendar"
-        tools:layout="@layout/fragment_calendar" />
-    <fragment
-        android:id="@+id/navigation_elearning_message"
-        android:name="dev.tsnanh.vku.views.elearning.message.MessageFragment"
-        android:label="fragment_message"
-        tools:layout="@layout/fragment_message" />
+        tools:layout="@layout/fragment_elearning_calendar" />
     <fragment
         android:id="@+id/navigation_elearning_notification"
-        android:name="dev.tsnanh.vku.views.elearning.notification.NotificationFragment"
+        android:name="dev.tsnanh.vku.views.elearning.notification.ElearningNotificationFragment"
         android:label="fragment_notification"
-        tools:layout="@layout/fragment_notification" />
+        tools:layout="@layout/fragment_elearning_notification" />
     <fragment
         android:id="@+id/navigation_elearning_option"
-        android:name="dev.tsnanh.vku.views.elearning.option.OptionFragment"
+        android:name="dev.tsnanh.vku.views.elearning.option.ElearningOptionFragment"
         android:label="fragment_option"
-        tools:layout="@layout/fragment_option" />
+        tools:layout="@layout/fragment_elearning_option" />
 </navigation>

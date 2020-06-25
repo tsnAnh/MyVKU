@@ -2,11 +2,11 @@ package dev.tsnanh.vku.domain.repositories
 
 import dev.tsnanh.vku.domain.entities.CreateThreadContainer
 import dev.tsnanh.vku.domain.entities.ForumThread
-import dev.tsnanh.vku.domain.entities.ThreadContainer
+import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
 import dev.tsnanh.vku.domain.network.VKUServiceApi
 
 interface ThreadRepo {
-    suspend fun getThreads(forumId: String): ThreadContainer
+    suspend fun getThreads(forumId: String): List<NetworkForumThreadCustom>
     suspend fun createThread(
         idToken: String,
         container: CreateThreadContainer,

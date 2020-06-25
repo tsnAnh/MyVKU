@@ -18,6 +18,8 @@
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <item name="colorOnPrimary">@color/primaryTextColor</item>
         <item name="android:statusBarColor">@color/primaryDarkColor</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
     </style>
     <!-- Elearning Theme -->
     <style name="ElearningAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">

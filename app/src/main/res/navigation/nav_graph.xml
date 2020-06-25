@@ -95,9 +95,9 @@
         android:name="dev.tsnanh.vku.views.my_vku.timetable.TimetableFragment"
         android:label="Timetable" />
     <fragment
-        android:id="@+id/navigation_my_class"
-        android:name="dev.tsnanh.vku.views.my_vku.my_class.MyClassFragment"
-        android:label="@string/text_my_class" />
+        android:id="@+id/navigation_notifications"
+        android:name="dev.tsnanh.vku.views.my_vku.notifications.NotificationsFragment"
+        android:label="@string/text_notification" />
     <fragment
         android:id="@+id/navigation_replies"
         android:name="dev.tsnanh.vku.views.my_vku.replies.RepliesFragment"

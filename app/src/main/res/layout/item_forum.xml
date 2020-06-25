@@ -14,19 +14,20 @@
 
         <variable
             name="forum"
-            type="dev.tsnanh.vku.domain.entities.Forum" />
+            type="dev.tsnanh.vku.domain.entities.NetworkCustomForum" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
+        app:cardElevation="2dp"
         android:transitionName="@{ forum.id }"
         app:cardCornerRadius="4dp">
 
@@ -40,11 +41,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
                 android:text="@{ forum.title }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="?android:attr/textColorPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageView4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Topic" />
@@ -54,8 +55,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@{ @string/threadDetails(forum.numberOfThreads, forum.numberOfReplies) }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                app:layout_constraintEnd_toEndOf="@+id/forum_title"
+                app:layout_constraintEnd_toStartOf="@+id/imageView4"
                 app:layout_constraintStart_toStartOf="@+id/forum_title"
                 app:layout_constraintTop_toBottomOf="@+id/forum_title"
                 tools:text="Threads: 1000 Replies: 10000" />
@@ -68,12 +71,23 @@
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:text="@{ forum.latestThread.title }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/threads_replies_count"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/threads_replies_count"
                 app:layout_constraintTop_toBottomOf="@+id/threads_replies_count"
                 tools:text="Hello m.n" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_marginEnd="16dp"
+                android:tint="@color/primaryColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/forum_title"
+                app:srcCompat="@drawable/ic_round_forum_24" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

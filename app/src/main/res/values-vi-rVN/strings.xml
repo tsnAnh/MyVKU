@@ -24,9 +24,9 @@
     <string name="text_night_mode">Chế độ ban đêm</string>
     <string name="text_night_mode_summary">Thay đổi chế độ hiển thị</string>
     <string name="text_reply_image">Thêm ảnh (không bắt buộc)</string>
-    <string name="text_timetable">TKB</string>
+    <string name="text_timetable">Thời khóa biểu</string>
     <string name="text_more">Thêm</string>
-    <string name="threadDetails">Trả lời: %s, Lượt xem: %s, Cập nhật lần cuối: %s</string>
+    <string name="threadDetails">Chủ đề: %d Trả lời: %d</string>
     <string name="text_report">Báo cáo</string>
     <string name="text_archive">Lưu trữ</string>
     <string name="text_bug_report">Báo lỗi</string>
@@ -87,4 +87,5 @@
     <string name="content_notification_school_reminder_no_subject">Bạn được nghỉ cả ngày hôm nay. Hãy tận hưởng nhé!</string>
     <string name="msg_pick_image_canceled">Đã hủy!</string>
     <string name="text_exit">Thoát</string>
+    <string name="text_notifications">Thông báo</string>
 </resources>

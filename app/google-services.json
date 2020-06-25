@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "880553460800-kp4nrpa2p7v456ttgq4io398hia2rqd0.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "dev.tsnanh.vku",
-            "certificate_hash": "e4a04c07f1447f435c774575c5a94b476037821e"
-          }
-        },
-        {
           "client_id": "880553460800-vn4gqhn1p6qqbg04e84fpqj2k7elp01l.apps.googleusercontent.com",
           "client_type": 3
         }

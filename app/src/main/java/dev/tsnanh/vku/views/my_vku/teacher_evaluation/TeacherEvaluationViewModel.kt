@@ -2,6 +2,4 @@ package dev.tsnanh.vku.views.my_vku.teacher_evaluation
 
 import androidx.lifecycle.ViewModel
 
-class TeacherEvaluationViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
-}
+class TeacherEvaluationViewModel : ViewModel()

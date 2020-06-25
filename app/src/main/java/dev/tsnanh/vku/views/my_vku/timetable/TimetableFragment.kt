@@ -75,7 +75,7 @@ class TimetableFragment : Fragment() {
         }
         val gso = GoogleSignInOptions.Builder()
             .requestId()
-            .requestIdToken(getString(R.string.client_id))
+            .requestIdToken(getString(R.string.server_client_id))
             .requestProfile()
             .requestEmail()
             .build()

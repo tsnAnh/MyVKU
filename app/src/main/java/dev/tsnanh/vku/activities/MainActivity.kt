@@ -7,12 +7,10 @@ package dev.tsnanh.vku.activities
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
@@ -22,11 +20,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.iid.FirebaseInstanceId
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
 import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.Constants.Companion.RC_PERMISSION
 import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
     NavController.OnDestinationChangedListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -55,16 +54,26 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         preferences.registerOnSharedPreferenceChangeListener(this)
 
         // create notification channel
-        createChannelNewThread(
+        createNotificationChannel(
             getString(R.string.new_thread_channel_id), getString(R.string.new_thread_channel_name)
         )
-        createChannelSchoolReminder(
+        createNotificationChannel(
             getString(R.string.school_reminder_channel_id),
             getString(R.string.school_reminder_channel_name)
         )
+        createNotificationChannel(
+            getString(R.string.firebase_forum_notification_channel),
+            "Forum Notification"
+        )
+
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Timber.d(task.result?.token)
+            }
+        }
     }
 
-    private fun createChannelNewThread(channelId: String, channelName: String) {
+    private fun createNotificationChannel(channelId: String, channelName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 channelId,
@@ -81,44 +90,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
-    private fun createChannelSchoolReminder(channelId: String, channelName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                channelId,
-                channelName,
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                setShowBadge(false)
-                enableLights(false)
-                enableVibration(true)
-            }
-            manager.createNotificationChannel(notificationChannel)
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            // Read external permission callback
-            RC_PERMISSION -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] ==
-                            PackageManager.PERMISSION_GRANTED)
-                ) {
-                    Toast
-                        .makeText(
-                            this,
-                            getString(R.string.msg_permission_granted),
-                            Toast.LENGTH_LONG
-                        ).show()
-                }
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
     // Bottom Navigation View callback
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -131,8 +102,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             R.id.navigation_more -> navController.navigate(
                 R.id.navigation_more
             )
-            R.id.navigation_my_class -> navController.navigate(
-                R.id.navigation_my_class
+            R.id.navigation_notifications -> navController.navigate(
+                R.id.navigation_notifications
             )
             R.id.navigation_timetable -> navController.navigate(
                 R.id.navigation_timetable

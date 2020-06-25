@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class OptionViewModel : ViewModel() {
+class ElearningOptionViewModel : ViewModel() {
     private val _backToMyVKU = MutableLiveData<Boolean>()
     val backToMyVKU: LiveData<Boolean>
         get() = _backToMyVKU

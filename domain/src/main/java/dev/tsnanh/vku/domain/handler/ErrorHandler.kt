@@ -15,9 +15,10 @@ class ErrorHandler {
             return when (e) {
                 is HttpException -> {
                     when (e.code()) {
-                        HttpURLConnection.HTTP_NOT_FOUND -> Resource.Error("Not Found!")
-                        HttpURLConnection.HTTP_UNAVAILABLE -> Resource.Error("Unavailable!")
-                        HttpURLConnection.HTTP_BAD_REQUEST -> Resource.Error("Bad Request!")
+                        HttpURLConnection.HTTP_NOT_FOUND -> Resource.Error("404 Not Found!")
+                        HttpURLConnection.HTTP_UNAVAILABLE -> Resource.Error("503 Unavailable!")
+                        HttpURLConnection.HTTP_BAD_REQUEST -> Resource.Error("400 Bad Request!")
+                        HttpURLConnection.HTTP_FORBIDDEN -> Resource.Error("403 Forbidden")
                         else -> Resource.Error("Unknown Error!")
                     }
                 }

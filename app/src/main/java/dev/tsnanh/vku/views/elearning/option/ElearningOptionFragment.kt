@@ -13,30 +13,30 @@ import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.activities.MainActivity
-import dev.tsnanh.vku.databinding.FragmentOptionBinding
-import dev.tsnanh.vku.viewmodels.elearning.OptionViewModel
+import dev.tsnanh.vku.databinding.FragmentElearningOptionBinding
+import dev.tsnanh.vku.viewmodels.elearning.ElearningOptionViewModel
 
-class OptionFragment : Fragment() {
+class ElearningOptionFragment : Fragment() {
 
-    private val viewModel: OptionViewModel by viewModels()
-    private lateinit var binding: FragmentOptionBinding
+    private val viewModelElearning: ElearningOptionViewModel by viewModels()
+    private lateinit var binding: FragmentElearningOptionBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_option, container, false)
+            DataBindingUtil.inflate(inflater, R.layout.fragment_elearning_option, container, false)
 
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        binding.viewModel = viewModel
+        binding.viewModel = viewModelElearning
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.backToMyVKU.observe(viewLifecycleOwner, Observer {
+        viewModelElearning.backToMyVKU.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(requireContext())
@@ -44,7 +44,7 @@ class OptionFragment : Fragment() {
                     putBoolean(requireContext().getString(R.string.elearning_mode), false)
                 }
                 startActivity(Intent(requireContext(), MainActivity::class.java))
-                viewModel.navigatedBackToMyVKU()
+                viewModelElearning.navigatedBackToMyVKU()
                 requireActivity().finish()
             }
         })

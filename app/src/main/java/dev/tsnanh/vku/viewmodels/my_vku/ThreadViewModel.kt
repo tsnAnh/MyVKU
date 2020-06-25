@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.card.MaterialCardView
-import dev.tsnanh.vku.domain.entities.ForumThread
+import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
 import dev.tsnanh.vku.domain.usecases.RetrieveSingleForumUseCase
 import dev.tsnanh.vku.domain.usecases.RetrieveThreadsUseCase
 import org.koin.java.KoinJavaComponent.inject
@@ -19,11 +19,12 @@ class ThreadViewModel(forumId: String) : ViewModel() {
     private val retrieveSingleForumUseCase by inject(RetrieveSingleForumUseCase::class.java)
     val threads = retrieveThreadsUseCase.execute(forumId)
     val forum = retrieveSingleForumUseCase.execute(forumId)
-    private val _navigateToReplies = MutableLiveData<Pair<ForumThread, MaterialCardView>>()
-    val navigateToReplies: LiveData<Pair<ForumThread, MaterialCardView>>
+    private val _navigateToReplies =
+        MutableLiveData<Pair<NetworkForumThreadCustom, MaterialCardView>>()
+    val navigateToReplies: LiveData<Pair<NetworkForumThreadCustom, MaterialCardView>>
         get() = _navigateToReplies
 
-    fun onNavigateToReplies(thread: ForumThread, cardView: MaterialCardView) {
+    fun onNavigateToReplies(thread: NetworkForumThreadCustom, cardView: MaterialCardView) {
         _navigateToReplies.value = thread to cardView
     }
 

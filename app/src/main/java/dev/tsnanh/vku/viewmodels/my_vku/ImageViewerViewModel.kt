@@ -6,6 +6,4 @@ package dev.tsnanh.vku.viewmodels.my_vku
 
 import androidx.lifecycle.ViewModel
 
-class ImageViewerViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
-}
+class ImageViewerViewModel : ViewModel()

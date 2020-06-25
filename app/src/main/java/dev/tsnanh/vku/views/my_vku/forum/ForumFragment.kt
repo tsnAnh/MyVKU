@@ -79,7 +79,7 @@ class ForumFragment : Fragment() {
                 binding.errorLayout.visibility = View.GONE
                 when (it) {
                     is Resource.Success -> {
-                        adapter.updateForums(it.data?.forums!!)
+                        adapter.updateForums(it.data!!)
                         binding.progressBar.visibility = View.GONE
                     }
                     is Resource.Loading -> {

@@ -49,6 +49,7 @@ interface VKUService {
     // region News routes
     /**
      * Get latest news from REST API
+     * @method GET
      * @return news NewsContainer
      */
     @GET("n")
@@ -56,25 +57,62 @@ interface VKUService {
     // endregion
 
     // region Forum routes
+    /**
+     * Get all forums from REST API
+     * @return forums List<NetworkCustomForum>
+     */
     @GET("api/forum")
-    suspend fun getForums(): ForumContainer
+    suspend fun getForums(): List<NetworkCustomForum>
 
+    /**
+     * Get a forum by id
+     * @param forumId String
+     * @method GET
+     * @return forum Forum
+     */
     @GET("api/forum/{forumId}")
     suspend fun getForumById(@Path("forumId") forumId: String): Forum
 
+    /**
+     * Create new thread in specified forum
+     * @param idToken String
+     * @param container CreateThreadContainer
+     * @param forumId String
+     * @method POST
+     * @return thread ForumThread
+     */
     @POST("api/thread/{forumId}")
     suspend fun createThread(
-        @Header("Authentication") idToken: String,
+        @Header("gg-auth-token") idToken: String,
         @Body container: CreateThreadContainer,
         @Path("forumId") forumId: String
     ): ForumThread
 
+    // endregion
+    /**
+     * Get all threads from a specified forum
+     * @param forumId String
+     * @method GET
+     * @return threads List<NetworkForumThreadCustom>
+     */
     @GET("api/forum/thread/{forumId}")
-    suspend fun getThreads(@Path("forumId") forumId: String): ThreadContainer
+    suspend fun getThreads(@Path("forumId") forumId: String): List<NetworkForumThreadCustom>
 
+    /**
+     * Get a user by id from REST API
+     * @param userId String
+     * @method GET
+     * @return user User
+     */
     @GET("u/get/{userId}")
     suspend fun getUserById(@Path("userId") userId: String): User
 
+    /**
+     * Get all replies in specified thread
+     * @param threadId String, page Int, limit Int
+     * @method GET
+     * @return replyContainer ReplyContainer
+     */
     @GET("api/thread/reply/{threadId}")
     suspend fun getRepliesInThread(
         @Path("threadId") threadId: String,
@@ -88,29 +126,32 @@ interface VKUService {
     @Multipart
     @POST("/p/upload/{uid}")
     suspend fun uploadImage(
-        @Header("Authentication") idToken: String,
+        @Header("gg-auth-token") idToken: String,
         @Path("uid") uid: String,
         @Part image: MultipartBody.Part
     ): String
 
     @POST("/p/new")
     suspend fun newReply(
-        @Header("Authentication") idToken: String,
+        @Header("gg-auth-token") idToken: String,
         @Body reply: Reply
     ): Reply
 
     @GET("/p/get/{id}")
     suspend fun getReplyById(@Path("id") id: String): Reply
 
+    /**
+     * Login
+     * @param idToken String
+     * @return response LoginResponse
+     */
     @GET("api/user/auth")
-    suspend fun login(@Header("gg-auth-token") idToken: String): HasUserResponse
-
-    @POST("/u/sign-up")
-    suspend fun signUp(@Body idToken: String): User
+    suspend fun login(@Header("gg-auth-token") idToken: String): LoginResponse
 
     /**
      * Retrieve user's timetable
      * @param email String
+     * @return subjects List<Subject>
      */
     @GET
     suspend fun getTimetable(@Url url: String, @Query("email") email: String): List<Subject>

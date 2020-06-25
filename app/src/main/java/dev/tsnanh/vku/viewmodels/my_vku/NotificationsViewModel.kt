@@ -6,4 +6,4 @@ package dev.tsnanh.vku.viewmodels.my_vku
 
 import androidx.lifecycle.ViewModel
 
-class MyClassViewModel : ViewModel()
+class NotificationsViewModel : ViewModel()

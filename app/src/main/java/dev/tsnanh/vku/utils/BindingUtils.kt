@@ -25,8 +25,7 @@ import com.google.android.flexbox.FlexboxLayout
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.chip.Chip
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.domain.entities.Forum
-import dev.tsnanh.vku.domain.entities.ForumThread
+import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.network.BASE_URL
 import dev.tsnanh.vku.views.my_vku.replies.RepliesFragmentDirections
@@ -63,19 +62,6 @@ fun ImageView.setAvatar(user: GoogleSignInAccount?) {
     }
 }
 
-@BindingAdapter("forumImage")
-fun ImageView.setForumImage(forum: Forum?) {
-    forum?.let {
-        Glide
-            .with(this.context)
-            .load(forum.image)
-            .dontTransform()
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .placeholder(progressBar(this.context))
-            .into(this)
-    }
-}
-
 @BindingAdapter("imageChooser")
 fun ImageView.setChooserImage(uri: Uri?) {
     uri?.let {
@@ -105,10 +91,10 @@ fun RecyclerView.setHasImage(visibility: Boolean) {
 }
 
 @BindingAdapter("itemThreadAvatar")
-fun ImageView.setItemThreadAvatar(thread: ForumThread) {
+fun ImageView.setItemThreadAvatar(thread: NetworkForumThreadCustom) {
     Glide
         .with(this.context)
-        .load(/*thread.userAvatar*/"")
+        .load(thread.uid?.photoURL)
         .placeholder(progressBar(this.context))
         .diskCacheStrategy(DiskCacheStrategy.ALL)
         .centerCrop()

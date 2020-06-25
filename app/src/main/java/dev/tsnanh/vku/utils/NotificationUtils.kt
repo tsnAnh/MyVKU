@@ -79,3 +79,20 @@ fun NotificationManager.sendSchoolReminderNotification(
 
     notify(NOTIFICATION_ID, builder.build())
 }
+
+fun NotificationManager.sendCloudMessageNotification(
+    applicationContext: Context,
+    payload: Map<String, String>
+) {
+    val builder = NotificationCompat.Builder(
+        applicationContext,
+        applicationContext.getString(R.string.firebase_forum_notification_channel)
+    ).apply {
+        setContentTitle("casdasdasd")
+        setContentText("cccsadasd")
+        setAutoCancel(true)
+        setSmallIcon(R.mipmap.ic_launcher)
+    }
+
+    notify(2, builder.build())
+}

@@ -15,6 +15,7 @@ val calendarMorning = prepareCalendar(6, 30)
 val calendarAfternoon = prepareCalendar(12, 0)
 val calendarEvening = prepareCalendar(18, 0)
 val calendarNight = prepareCalendar(21, 0)
+
 fun Context.setSchoolReminderAlarm(email: String) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -62,26 +63,88 @@ fun Context.setSchoolReminderAlarm(email: String) {
                 pendingIntent
             )
         } else {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendarMorning.timeInMillis,
-                pendingIntent
-            )
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendarAfternoon.timeInMillis,
-                pendingIntent
-            )
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendarEvening.timeInMillis,
-                pendingIntent
-            )
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendarNight.timeInMillis,
-                pendingIntent
-            )
+            when (Calendar.getInstance()[Calendar.HOUR_OF_DAY]) {
+                in 0..6 -> {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarMorning.timeInMillis,
+                        pendingIntent
+                    )
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarAfternoon.timeInMillis,
+                        pendingIntent
+                    )
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarEvening.timeInMillis,
+                        pendingIntent
+                    )
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarNight.timeInMillis,
+                        pendingIntent
+                    )
+                }
+                in 6..12 -> {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarAfternoon.timeInMillis,
+                        pendingIntent
+                    )
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarEvening.timeInMillis,
+                        pendingIntent
+                    )
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarNight.timeInMillis,
+                        pendingIntent
+                    )
+                }
+                in 12..18 -> {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarEvening.timeInMillis,
+                        pendingIntent
+                    )
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarNight.timeInMillis,
+                        pendingIntent
+                    )
+                }
+                in 18..21 -> {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarNight.timeInMillis,
+                        pendingIntent
+                    )
+                }
+                else -> {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarMorning.timeInMillis + AlarmManager.INTERVAL_DAY,
+                        pendingIntent
+                    )
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarAfternoon.timeInMillis + AlarmManager.INTERVAL_DAY,
+                        pendingIntent
+                    )
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarEvening.timeInMillis + AlarmManager.INTERVAL_DAY,
+                        pendingIntent
+                    )
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendarNight.timeInMillis + AlarmManager.INTERVAL_DAY,
+                        pendingIntent
+                    )
+                }
+            }
         }
         Timber.d("Create successfully!")
     } else {

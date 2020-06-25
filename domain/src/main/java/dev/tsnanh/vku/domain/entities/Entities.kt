@@ -18,45 +18,6 @@ sealed class Resource<out T>(
 }
 
 @JsonClass(generateAdapter = true)
-data class HasUserResponse(
-    val user: User,
-    val isNew: Boolean
-)
-
-@JsonClass(generateAdapter = true)
-data class NewsContainer(
-    val news: List<News>
-)
-
-@JsonClass(generateAdapter = true)
-data class ForumContainer(
-    val forums: List<Forum>
-)
-
-@JsonClass(generateAdapter = true)
-data class ThreadContainer(
-    val threads: List<ForumThread>
-)
-
-@JsonClass(generateAdapter = true)
-data class UserContainer(
-    val users: List<User>
-)
-
-@JsonClass(generateAdapter = true)
-data class ReplyContainer(
-    val replies: List<Reply>,
-    val totalPages: Int,
-    val currentPage: Int
-)
-
-@JsonClass(generateAdapter = true)
-data class CreateThreadContainer(
-    val thread: ForumThread,
-    val reply: Reply
-)
-
-@JsonClass(generateAdapter = true)
 @Entity(tableName = "news")
 data class News(
     @PrimaryKey
@@ -71,27 +32,65 @@ data class Forum(
     @field:Json(name = "_id")
     val id: String = "",
     val title: String,
-    val subtitle: String,
-    val description: String,
-    val image: String,
     val numberOfThreads: Int,
     val numberOfReplies: Int,
-    val lastUpdatedAt: String
+    val latestThread: String?,
+    val tag: String
+)
+
+@JsonClass(generateAdapter = true)
+data class NetworkCustomForum(
+    @field:Json(name = "_id")
+    val id: String = "",
+    val title: String,
+    val numberOfThreads: Int,
+    val numberOfReplies: Int,
+    val latestThread: NetworkForumThread?,
+    val tag: String
 )
 
 @JsonClass(generateAdapter = true)
 data class ForumThread(
     @field:Json(name = "_id")
     val id: String = "",
-    val uid: String = "",
+    val uid: String? = null,
     val title: String,
     val forumId: String = "",
     val numberOfReplies: Int = 1,
     val numberOfViews: Int = 0,
     val likes: List<String> = emptyList(),
     val createdAt: Long = 0L,
-    val lastUpdatedAt: Long = 0L/*,
+    val latestReply: NetworkReply? = null/*,
     val editHistory: List<String> = emptyList()*/
+)
+
+@JsonClass(generateAdapter = true)
+data class NetworkForumThread(
+    @field:Json(name = "_id")
+    val id: String = "",
+    val uid: String? = null,
+    val title: String,
+    val forumId: String = "",
+    val numberOfReplies: Int = 1,
+    val numberOfViews: Int = 1,
+    val likes: List<String> = emptyList(),
+    val createdAt: Long = 0L,
+    val latestReply: String? = null/*,
+    val editHistory: List<String> = emptyList()*/
+)
+
+@JsonClass(generateAdapter = true)
+data class NetworkForumThreadCustom(
+    @field:Json(name = "_id")
+    val id: String = "",
+    val uid: User? = null,
+    val title: String,
+    val forumId: String = "",
+    val numberOfReplies: Int = 1,
+    val numberOfViews: Int = 1,
+    val likes: List<String> = emptyList(),
+    val createdAt: Long = 0L,
+    val latestReply: NetworkReply? = null
 )
 
 @JsonClass(generateAdapter = true)
@@ -118,6 +117,21 @@ data class Reply(
     val createdAt: Long = 0L,
     val quoted: String = "",
     val quotedReply: Reply? = null
+)
+
+@JsonClass(generateAdapter = true)
+data class NetworkReply(
+    @field:Json(name = "_id")
+    val id: String = "",
+    val uid: String = "",
+    val content: String,
+    var images: List<String> = emptyList(),
+    val threadId: String = "",
+    val forumId: String = "",
+    val editHistory: List<String> = emptyList(),
+    val createdAt: Long = 0L,
+    val quoted: String = "",
+    val quotedReply: String? = null
 )
 
 @Entity(tableName = "subjects")

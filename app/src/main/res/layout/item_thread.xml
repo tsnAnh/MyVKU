@@ -9,27 +9,25 @@
     <data>
         <variable
             name="thread"
-            type="dev.tsnanh.vku.domain.entities.ForumThread" />
+            type="dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom" />
         <variable
             name="listener"
             type="dev.tsnanh.vku.adapters.ThreadClickListener" />
         <variable
             name="createdAt"
             type="String" />
-        <variable
-            name="lastUpdatedOn"
-            type="String" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
+        app:cardElevation="2dp"
         android:onClick="@{ (view) -> listener.onClick(thread, view) }"
         android:transitionName="@{ thread.id }">
 
@@ -59,7 +57,7 @@
                 android:layout_marginEnd="16dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text=""
+                android:text="@{ @string/threadNameTime(thread.uid.displayName, createdAt) }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                 app:layout_constraintEnd_toStartOf="@+id/user_avatar"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -83,7 +81,7 @@
                 tools:text="Huhuhuhu" />
 
             <TextView
-                android:id="@+id/details"
+                android:id="@+id/latest_reply_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -91,8 +89,8 @@
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{ @string/threadDetails(thread.numberOfReplies, thread.numberOfViews, lastUpdatedOn) }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:text="@{ thread.latestReply.content }"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/title"

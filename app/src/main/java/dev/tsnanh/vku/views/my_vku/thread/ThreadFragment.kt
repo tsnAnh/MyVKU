@@ -56,11 +56,9 @@ class ThreadFragment : Fragment() {
             .inflate(inflater, R.layout.fragment_thread, container, false)
 
         val args: ThreadFragmentArgs by navArgs()
-        binding.toolbar.apply {
-            setNavigationOnClickListener {
-                findNavController().navigateUp()
-            }
-            title = args.title
+        binding.toolbar.title = args.title
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
 
         return binding.root
@@ -89,7 +87,7 @@ class ThreadFragment : Fragment() {
             it?.let {
                 when (it) {
                     is Resource.Success -> {
-                        adapter.submitList(it.data?.threads)
+                        adapter.submitList(it.data!!)
                         binding.progressBar.visibility = View.GONE
                     }
                     is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE

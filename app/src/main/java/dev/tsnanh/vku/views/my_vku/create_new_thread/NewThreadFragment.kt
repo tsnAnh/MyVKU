@@ -95,7 +95,6 @@ class NewThreadFragment : Fragment() {
             setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
-            title = requireContext().getString(R.string.text_create_new_thread)
         }
         progressBarLayoutBinding =
             ProgressDialogLayoutBinding.inflate(LayoutInflater.from(requireContext()))
@@ -136,10 +135,15 @@ class NewThreadFragment : Fragment() {
                 pickImage(Constants.RC_ADD_PHOTO)
             }
         ))
-        binding.listImageUpload.setHasFixedSize(true)
-        binding.listImageUpload.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.listImageUpload.adapter = pickerAdapter
+        binding.listImageUpload.apply {
+            setHasFixedSize(true)
+            isNestedScrollingEnabled = false
+            layoutManager =
+                LinearLayoutManager(
+                    requireContext()
+                )
+            adapter = pickerAdapter
+        }
 
         viewModel.pickerHasImage.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -194,31 +198,40 @@ class NewThreadFragment : Fragment() {
                             requireContext().getString(R.string.text_loading_forums)
                     }
                     is Resource.Success -> {
-                        if (it.data != null && it.data?.forums!!.isNotEmpty()) {
-                            val forumsTitle = it.data?.forums?.map { forum ->
+                        binding.layoutForum.hint = "Forums"
+                        if (it.data != null && it.data!!.isNotEmpty()) {
+                            val forumsTitle = it.data!!.map { forum ->
                                 forum.title
                             }
                             val arrAdapter =
                                 ArrayAdapter(
                                     requireContext(),
                                     R.layout.dropdown_menu_popup_item,
-                                    forumsTitle!!
+                                    forumsTitle
                                 )
 
                             binding.forum.setOnItemClickListener { _, _, i, _ ->
-                                binding.forum.tag = it.data?.forums!![i].id
-                                Timber.d(it.data?.forums!![i].id)
+                                binding.forum.tag = it.data!![i].id
                             }
 
                             binding.forum.setAdapter(arrAdapter)
                         }
                     }
                     is Resource.Error -> {
+                        binding.apply {
+                            this.chooseImage.isEnabled = false
+                            this.layoutForum.isEnabled = false
+                            this.fabSubmit.isEnabled = false
+                            this.layoutTitle.isEnabled = false
+                            this.layoutContent.isEnabled = false
+                        }
                         showSnackbarWithAction(
                             requireView(),
-                            it.message.toString(),
-                            requireContext().getString(R.string.text_hide)
-                        )
+                            "${it.message.toString()}. Please try again later.",
+                            "BACK"
+                        ) {
+                            findNavController().navigateUp()
+                        }
                     }
                 }
             }
@@ -245,8 +258,7 @@ class NewThreadFragment : Fragment() {
                         .setTitle(requireContext().getString(R.string.msg_permission_required))
                         .setMessage(requireContext().getString(R.string.msg_need_permission))
                         .setPositiveButton(requireContext().getString(R.string.text_ok)) { d, _ ->
-                            ActivityCompat.requestPermissions(
-                                requireActivity(),
+                            requestPermissions(
                                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                                 Constants.RC_PERMISSION
                             )
@@ -257,14 +269,27 @@ class NewThreadFragment : Fragment() {
                         }
                         .create().show()
                 } else {
-                    ActivityCompat.requestPermissions(
-                        requireActivity(),
+                    requestPermissions(
                         arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                         Constants.RC_PERMISSION
                     )
                 }
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Constants.RC_PERMISSION &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            pickImage(Constants.RC_IMAGE_PICKER)
+        }
+        Timber.d("YOoooooooooooooooooooooooooooooooo")
     }
 
     // region Pick Image
@@ -295,11 +320,6 @@ class NewThreadFragment : Fragment() {
                     viewModel.onPickerHasImage()
                 }
             } else {
-                showSnackbarWithAction(
-                    requireView(),
-                    requireContext().getString(R.string.msg_pick_image_canceled),
-                    requireContext().getString(R.string.text_hide)
-                )
                 viewModel.onPickerHasNoImage()
             }
         } else if (requestCode == Constants.RC_ADD_PHOTO) {
@@ -367,8 +387,9 @@ class NewThreadFragment : Fragment() {
         binding.content.error = null
         binding.forum.error = null
     }
-
-    override fun onSaveInstanceState(outState: Bundle) {
+    // Disabled for two months
+    // TODO: Make it better
+/*    override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(Constants.URIS_KEY, ArrayList(pickerAdapter.currentList))
         super.onSaveInstanceState(outState)
     }
@@ -376,6 +397,6 @@ class NewThreadFragment : Fragment() {
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         pickerAdapter.submitList(savedInstanceState?.getParcelableArrayList(Constants.URIS_KEY))
         super.onViewStateRestored(savedInstanceState)
-    }
+    }*/
 
 }

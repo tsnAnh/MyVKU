@@ -22,6 +22,10 @@
         android:icon="@drawable/ic_round_view_list_24"
         android:title="@string/text_timetable" />
     <item
+        android:id="@+id/navigation_notifications"
+        android:icon="@drawable/ic_round_notifications_24"
+        android:title="@string/text_notifications" />
+    <item
         android:id="@+id/navigation_more"
         android:icon="@drawable/ic_round_more_24"
         android:title="@string/text_more" />

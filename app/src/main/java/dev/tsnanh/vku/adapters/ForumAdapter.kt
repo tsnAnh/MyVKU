@@ -7,14 +7,14 @@ package dev.tsnanh.vku.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
-import dev.tsnanh.vku.domain.entities.Forum
+import dev.tsnanh.vku.domain.entities.NetworkCustomForum
 import dev.tsnanh.vku.viewholders.ForumViewHolder
 
 /**
  * A recycler view adapter for display list of Forum
  */
 class ForumAdapter(
-    private var forums: List<Forum>,
+    private var forums: List<NetworkCustomForum>,
     private val listener: ForumClickListener
 ) : RecyclerView.Adapter<ForumViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ForumViewHolder.from(parent)
@@ -24,13 +24,14 @@ class ForumAdapter(
     }
 
     override fun getItemCount() = forums.size
-    fun updateForums(forums: List<Forum>) {
+    fun updateForums(forums: List<NetworkCustomForum>) {
         this.forums = forums
         notifyDataSetChanged()
     }
 }
 
 // Click listener for each forum item
-class ForumClickListener(val clickListener: (Forum, MaterialCardView) -> Unit) {
-    fun onClick(forum: Forum, imageView: MaterialCardView) = clickListener(forum, imageView)
+class ForumClickListener(val clickListener: (NetworkCustomForum, MaterialCardView) -> Unit) {
+    fun onClick(forum: NetworkCustomForum, imageView: MaterialCardView) =
+        clickListener(forum, imageView)
 }

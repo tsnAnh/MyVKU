@@ -70,17 +70,17 @@
     <string name="msg_empty_title">Chủ đề trống</string>
     <string name="msg_need_permission">Chúng tôi cần quyền truy cập để đăng tải bức ảnh của bạn</string>
     <string name="msg_permission_required">Cần có quyền truy cập</string>
-    <string name="text_loading_forums">Đang tải các diễn đàn...</string>
+    <string name="text_loading_forums">Đang tải các diễn đàn…</string>
     <string name="msg_successfully_created">đã được tạo thành công!</string>
     <string name="text_create_new_thread">Tạo chủ đề mới</string>
-    <string name="msg_creating_your_thread">Đang tạo chủ đề của bạn...</string>
+    <string name="msg_creating_your_thread">Đang tạo chủ đề của bạn…</string>
     <string name="msg_no_image_selected">Không có ảnh nào được chọn!</string>
     <string name="err_msg_something_went_wrong">Có cái gì đó sai sai :((</string>
     <string name="err_msg_socket_exception">Không thể tải được tin tức. Tứk!</string>
     <string name="err_msg_request_timeout">Yêu cầu đã hết thời gian chờ!</string>
     <string name="text_uploading">Đang tải lên</string>
     <string name="msg_permission_granted">Đã được cho phép</string>
-    <string name="msg_thread_creating">Chủ đề của bạn đang được tạo...</string>
+    <string name="msg_thread_creating">Chủ đề của bạn đang được tạo…</string>
     <string name="text_show_all">Xem tất cả</string>
     <string name="content_notification_school_reminder_no_subject_afternoon">Bạn không có tiết học nào trong buổi chiều hôm nay. Thăm ngàn vì tương lai hoặc làm vài trận Liên minh \"giải trí\" đi nào :v!</string>
     <string name="content_notification_school_reminder_no_subject_morning">Bạn không có tiết học nào trong buối sáng hôm nay. Ngại gì mà không đi ra ngoài xả stress hay test nhân phẩm bằng vài ván \"Đấu trường vô lý\" :v?</string>
@@ -90,7 +90,7 @@
     <string name="text_notifications">Thông báo</string>
     <string name="emptyLatestThread">Diễn đàn hiện đang trống!</string>
     <string name="userSaid">%s đã nói:</string>
-    <string name="text_processing">Đang xử lý...</string>
+    <string name="text_processing">Đang xử lý…</string>
     <string name="text_create">Tạo mới</string>
     <string name="text_create_new_reply">Bình Luận Mới</string>
 </resources>

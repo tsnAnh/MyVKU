@@ -35,12 +35,12 @@ object Libraries {
         const val fragmentVersion = "1.2.5"
         const val lifecycleVersion = "2.2.0"
         const val savedStateVersion = "2.2.0"
-        const val navigation = "2.3.0-rc01"
+        const val navigation = "2.3.0"
         const val roomVersion = "2.2.5"
         const val glideVersion = "4.11.0"
         const val pagingVersion = "2.1.2"
         const val retrofitVersion = "2.9.0"
-        const val koinVersion = "2.1.5"
+        const val koinVersion = "2.1.6"
         const val workManagerVersion = "2.3.4"
         const val materialVersion = "1.2.0-beta01"
     }
@@ -80,8 +80,8 @@ object Libraries {
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
     const val retrofitConverterMoshi =
         "com.squareup.retrofit2:converter-moshi:${Versions.retrofitVersion}"
-    const val moshiKotlin = "com.squareup.moshi:moshi-kotlin:1.9.2"
-    const val moshiKotlinCodeGen = "com.squareup.moshi:moshi-kotlin-codegen:1.9.2"
+    const val moshiKotlin = "com.squareup.moshi:moshi-kotlin:1.9.3"
+    const val moshiKotlinCodeGen = "com.squareup.moshi:moshi-kotlin-codegen:1.9.3"
     const val koin = "org.koin:koin-android:${Versions.koinVersion}"
     const val koinAndroidXScope = "org.koin:koin-androidx-scope:${Versions.koinVersion}"
     const val koinAndroidXViewModel = "org.koin:koin-androidx-viewmodel:${Versions.koinVersion}"
@@ -116,6 +116,6 @@ object TestLibraries {
 }
 
 object Version {
-    const val name = "0.1.2-dev03"
+    const val name = "0.1.2-dev05"
     const val code = 1
 }

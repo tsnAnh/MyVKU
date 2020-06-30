@@ -13,7 +13,7 @@ plugins {
     id(BuildPlugins.googleServices)
     id(BuildPlugins.koin)
 }
-
+apply(plugin = "name.remal.check-dependency-updates")
 
 android {
     compileSdkVersion(AndroidSdk.compile)

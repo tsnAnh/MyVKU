@@ -20,7 +20,13 @@ Gradle’s Kotlin DSL provides an alternative syntax to the traditional Groovy D
 * [Screenshot 2](https://github.com/tsnanh/MyVKU/tree/master/screenshots/screenshot_2.jpg)
 * [Screenshot 3](https://github.com/tsnanh/MyVKU/tree/master/screenshots/screenshot_3.jpg)
 * [Screenshot 4](https://github.com/tsnanh/MyVKU/tree/master/screenshots/screenshot_4.jpg)
+* [Screenshot 5](https://github.com/tsnanh/MyVKU/tree/master/screenshots/screenshot_5.jpg)
+* [Screenshot 6](https://github.com/tsnanh/MyVKU/tree/master/screenshots/screenshot_6.jpg)
+
 ## Libraries Used
+* Kotlin
+  * Ktlint
+  * [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - for managing background threads with simplified code and reducing needs for callbacks
 * Google's Android Library
   * [AndroidX Browser](https://developer.chrome.com/multidevice/android/customtabs)
   * [Google Material Design](https://material.io) - Material Design library for Android
@@ -41,14 +47,12 @@ Gradle’s Kotlin DSL provides an alternative syntax to the traditional Groovy D
   * [ViewPager2](https://developer.android.com/training/animation/vp2-migration) - an improved version of the ViewPager.
 * Third party
   * [Glide](https://bumptech.github.io/glide/) - for image loading.
-  * [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - for managing background threads with simplified code and reducing needs for callbacks
   * [Retrofit](https://square.github.io/retrofit/) for REST API call.
   * [Koin](https://insert-koin.io/) - Dependency Injection for Kotlin
   * [Timber](https://github.com/JakeWharton/timber) - A logger with a small, extensible API which provides utility on top of Android's normal Log class. 
 * Firebase
-  * [Firebase Auth](https://firebase.google.com/docs/auth)
-  * [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging) - (working on it...)
-  * [Firebase UI](https://firebase.google.com/docs/auth/android/firebaseui)
+  * [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging)
+* Machine Learning (pending)
 
 ## Support
 If you've found an error in this sample, please file an issue: https://github.com/tsnanh/MyVKU/issues

@@ -8,9 +8,13 @@ import android.os.Build
 import dev.tsnanh.vku.domain.entities.Subject
 import dev.tsnanh.vku.receivers.SchoolReminderReceiver
 import timber.log.Timber
-import java.util.*
+import java.util.ArrayList
+import java.util.Calendar
 
-const val RC_SCHOOL_REMINDER = 1000
+const val RC_SCHOOL_REMINDER_MORNING = 1000
+const val RC_SCHOOL_REMINDER_AFTERNOON = 2000
+const val RC_SCHOOL_REMINDER_EVENING = 3000
+const val RC_SCHOOL_REMINDER_NIGHT = 4000
 val calendarMorning = prepareCalendar(6, 30)
 val calendarAfternoon = prepareCalendar(12, 0)
 val calendarEvening = prepareCalendar(18, 0)
@@ -22,17 +26,53 @@ fun Context.setSchoolReminderAlarm(email: String) {
     val intent = Intent(this, SchoolReminderReceiver::class.java).apply {
         putExtra("email", email)
     }
-    val hasPendingIntent = PendingIntent.getBroadcast(
+    val hasIntentMorning = PendingIntent.getBroadcast(
         this,
-        RC_SCHOOL_REMINDER,
+        RC_SCHOOL_REMINDER_MORNING,
+        intent,
+        PendingIntent.FLAG_NO_CREATE
+    )
+    val hasIntentAfternoon = PendingIntent.getBroadcast(
+        this,
+        RC_SCHOOL_REMINDER_AFTERNOON,
+        intent,
+        PendingIntent.FLAG_NO_CREATE
+    )
+    val hasIntentEvening = PendingIntent.getBroadcast(
+        this,
+        RC_SCHOOL_REMINDER_EVENING,
+        intent,
+        PendingIntent.FLAG_NO_CREATE
+    )
+    val hasIntentNight = PendingIntent.getBroadcast(
+        this,
+        RC_SCHOOL_REMINDER_NIGHT,
         intent,
         PendingIntent.FLAG_NO_CREATE
     )
 
-    if (hasPendingIntent == null) {
-        val pendingIntent = PendingIntent.getBroadcast(
+    if (hasIntentMorning == null || hasIntentAfternoon == null || hasIntentEvening == null || hasIntentNight == null) {
+        val morningIntent = PendingIntent.getBroadcast(
             this,
-            RC_SCHOOL_REMINDER,
+            RC_SCHOOL_REMINDER_MORNING,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val afternoonIntent = PendingIntent.getBroadcast(
+            this,
+            RC_SCHOOL_REMINDER_AFTERNOON,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val eveningIntent = PendingIntent.getBroadcast(
+            this,
+            RC_SCHOOL_REMINDER_EVENING,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val nightIntent = PendingIntent.getBroadcast(
+            this,
+            RC_SCHOOL_REMINDER_NIGHT,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -42,25 +82,25 @@ fun Context.setSchoolReminderAlarm(email: String) {
                 AlarmManager.RTC_WAKEUP,
                 calendarMorning.timeInMillis,
                 AlarmManager.INTERVAL_DAY,
-                pendingIntent
+                morningIntent
             )
             alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendarAfternoon.timeInMillis,
                 AlarmManager.INTERVAL_DAY,
-                pendingIntent
+                afternoonIntent
             )
             alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendarEvening.timeInMillis,
                 AlarmManager.INTERVAL_DAY,
-                pendingIntent
+                eveningIntent
             )
             alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendarNight.timeInMillis,
                 AlarmManager.INTERVAL_DAY,
-                pendingIntent
+                nightIntent
             )
         } else {
             when (Calendar.getInstance()[Calendar.HOUR_OF_DAY]) {
@@ -68,110 +108,110 @@ fun Context.setSchoolReminderAlarm(email: String) {
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarMorning.timeInMillis,
-                        pendingIntent
+                        morningIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarAfternoon.timeInMillis,
-                        pendingIntent
+                        afternoonIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarEvening.timeInMillis,
-                        pendingIntent
+                        eveningIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarNight.timeInMillis,
-                        pendingIntent
+                        nightIntent
                     )
                 }
                 in 6..12 -> {
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarMorning.timeInMillis + AlarmManager.INTERVAL_DAY,
-                        pendingIntent
+                        morningIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarAfternoon.timeInMillis,
-                        pendingIntent
+                        afternoonIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarEvening.timeInMillis,
-                        pendingIntent
+                        eveningIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarNight.timeInMillis,
-                        pendingIntent
+                        nightIntent
                     )
                 }
                 in 12..18 -> {
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarMorning.timeInMillis + AlarmManager.INTERVAL_DAY,
-                        pendingIntent
+                        morningIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarAfternoon.timeInMillis + AlarmManager.INTERVAL_DAY,
-                        pendingIntent
+                        afternoonIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarEvening.timeInMillis,
-                        pendingIntent
+                        eveningIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarNight.timeInMillis,
-                        pendingIntent
+                        nightIntent
                     )
                 }
                 in 18..21 -> {
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarMorning.timeInMillis + AlarmManager.INTERVAL_DAY,
-                        pendingIntent
+                        morningIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarAfternoon.timeInMillis + AlarmManager.INTERVAL_DAY,
-                        pendingIntent
+                        afternoonIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarEvening.timeInMillis + AlarmManager.INTERVAL_DAY,
-                        pendingIntent
+                        eveningIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarNight.timeInMillis,
-                        pendingIntent
+                        nightIntent
                     )
                 }
                 else -> {
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarMorning.timeInMillis + AlarmManager.INTERVAL_DAY,
-                        pendingIntent
+                        morningIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarAfternoon.timeInMillis + AlarmManager.INTERVAL_DAY,
-                        pendingIntent
+                        afternoonIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarEvening.timeInMillis + AlarmManager.INTERVAL_DAY,
-                        pendingIntent
+                        eveningIntent
                     )
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         calendarNight.timeInMillis + AlarmManager.INTERVAL_DAY,
-                        pendingIntent
+                        nightIntent
                     )
                 }
             }

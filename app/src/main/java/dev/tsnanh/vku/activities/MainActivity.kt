@@ -4,13 +4,11 @@
 
 package dev.tsnanh.vku.activities
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
@@ -20,21 +18,23 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
 import dev.tsnanh.vku.utils.Constants
-import org.koin.java.KoinJavaComponent.inject
+import dev.tsnanh.vku.utils.createNotificationChannel
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
     NavController.OnDestinationChangedListener, SharedPreferences.OnSharedPreferenceChangeListener {
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var preferences: SharedPreferences
 
-    private val manager by inject(NotificationManager::class.java)
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementsUseOverlay = false
+
         super.onCreate(savedInstanceState)
         // DataBinding initialization
         binding = DataBindingUtil.setContentView(
@@ -68,22 +68,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         )
     }
 
-    private fun createNotificationChannel(channelId: String, channelName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                channelId,
-                channelName,
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                setShowBadge(false)
-                description = getString(R.string.msg_thread_creating)
-                enableLights(false)
-                enableVibration(true)
-            }
-
-            manager.createNotificationChannel(notificationChannel)
-        }
-    }
 
     // Bottom Navigation View callback
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

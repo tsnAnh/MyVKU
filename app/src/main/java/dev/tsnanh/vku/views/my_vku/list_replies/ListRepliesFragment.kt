@@ -1,4 +1,4 @@
-package dev.tsnanh.vku.views.my_vku.reply.list_replies
+package dev.tsnanh.vku.views.my_vku.list_replies
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +17,8 @@ import dev.tsnanh.vku.adapters.ReplyClickListener
 import dev.tsnanh.vku.databinding.FragmentListRepliesBinding
 import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.viewmodels.my_vku.ListRepliesViewModel
+import dev.tsnanh.vku.viewmodels.my_vku.ListRepliesViewModelFactory
 import dev.tsnanh.vku.views.my_vku.reply.ReplyFragmentDirections
 import timber.log.Timber
 

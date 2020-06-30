@@ -89,5 +89,8 @@
     <string name="text_exit">Thoát</string>
     <string name="text_notifications">Thông báo</string>
     <string name="emptyLatestThread">Diễn đàn hiện đang trống!</string>
-    <string name="userSaid">%s đã nói rằng:</string>
+    <string name="userSaid">%s đã nói:</string>
+    <string name="text_processing">Đang xử lý...</string>
+    <string name="text_create">Tạo mới</string>
+    <string name="text_create_new_reply">Bình Luận Mới</string>
 </resources>

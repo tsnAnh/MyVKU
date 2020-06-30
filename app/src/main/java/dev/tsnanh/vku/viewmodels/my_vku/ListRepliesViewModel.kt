@@ -1,4 +1,4 @@
-package dev.tsnanh.vku.views.my_vku.reply.list_replies
+package dev.tsnanh.vku.viewmodels.my_vku
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

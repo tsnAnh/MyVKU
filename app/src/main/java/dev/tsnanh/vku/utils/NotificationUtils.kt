@@ -4,14 +4,40 @@
 
 package dev.tsnanh.vku.utils
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
 import dev.tsnanh.vku.R
+import org.koin.java.KoinJavaComponent
 
 private const val NOTIFICATION_ID = 0
+
+/**
+ * Create a new notification channel
+ * @author tsnAnh
+ * @param channelId String
+ * @param channelName String
+ */
+fun createNotificationChannel(channelId: String, channelName: String) {
+    val manager by KoinJavaComponent.inject(NotificationManager::class.java)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val notificationChannel = NotificationChannel(
+            channelId,
+            channelName,
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            setShowBadge(false)
+            enableLights(false)
+            enableVibration(true)
+        }
+
+        manager.createNotificationChannel(notificationChannel)
+    }
+}
 
 fun NotificationManager.sendNotification(
     title: String,
@@ -64,6 +90,7 @@ fun NotificationManager.sendNotificationWithProgress(
 }
 
 fun NotificationManager.sendSchoolReminderNotification(
+    uid: Int,
     title: String,
     message: String,
     applicationContext: Context
@@ -77,7 +104,7 @@ fun NotificationManager.sendSchoolReminderNotification(
         .setContentText(message)
         .setAutoCancel(true)
 
-    notify(NOTIFICATION_ID, builder.build())
+    notify(uid, builder.build())
 }
 
 fun NotificationManager.sendCloudMessageNotification(

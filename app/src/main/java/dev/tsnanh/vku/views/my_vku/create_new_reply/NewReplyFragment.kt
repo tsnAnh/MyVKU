@@ -2,7 +2,7 @@
  * Copyright (c) 2020 My VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.views.my_vku.reply.createnewreply
+package dev.tsnanh.vku.views.my_vku.create_new_reply
 
 import android.Manifest
 import android.app.Activity
@@ -39,6 +39,7 @@ import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.Constants.Companion.RC_ADD_PHOTO
 import dev.tsnanh.vku.utils.Constants.Companion.RC_IMAGE_PICKER
 import dev.tsnanh.vku.utils.Constants.Companion.RC_PERMISSION
+import dev.tsnanh.vku.utils.convertTimestampToDateString
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.MainViewModel
 import dev.tsnanh.vku.viewmodels.my_vku.NewReplyViewModel
@@ -138,6 +139,8 @@ class NewReplyFragment : Fragment() {
                             progressBar.visibility = View.GONE
                             materialCardView.visibility = View.VISIBLE
                             reply = replyResource.data
+                            datetime.text =
+                                replyResource.data?.createdAt?.convertTimestampToDateString()
                         }
                     }
                 }

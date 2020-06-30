@@ -148,7 +148,7 @@
         android:label="ElearningMainActivity" />
     <fragment
         android:id="@+id/navigation_new_reply"
-        android:name="dev.tsnanh.vku.views.my_vku.reply.createnewreply.NewReplyFragment"
+        android:name="dev.tsnanh.vku.views.my_vku.create_new_reply.NewReplyFragment"
         android:label="NewReplyFragment">
         <argument
             android:name="threadId"
@@ -165,7 +165,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_list_replies"
-        android:name="dev.tsnanh.vku.views.my_vku.reply.list_replies.ListRepliesFragment"
+        android:name="dev.tsnanh.vku.views.my_vku.list_replies.ListRepliesFragment"
         android:label="ListRepliesFragment">
         <action
             android:id="@+id/action_navigation_list_replies_to_navigation_new_reply"

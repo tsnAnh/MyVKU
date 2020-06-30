@@ -132,8 +132,8 @@
                         android:gravity="top|start"
                         android:inputType="textMultiLine|textCapSentences"
                         android:maxLength="1000"
-                        android:maxLines="5"
-                        android:minLines="3"
+                        android:maxLines="@integer/maxLinesContent"
+                        android:minLines="@integer/minLinesContent"
                         android:scrollbars="vertical"
                         android:singleLine="false" />
                 </com.google.android.material.textfield.TextInputLayout>

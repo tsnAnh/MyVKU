@@ -61,7 +61,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:context=".views.my_vku.reply.createnewreply.NewReplyFragment">
+                tools:context=".views.my_vku.create_new_reply.NewReplyFragment">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/materialCardView"
@@ -114,6 +114,7 @@
                                 android:text="@{ reply.content }"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                 android:textIsSelectable="true"
+                                android:textStyle="italic"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="@+id/user_avatar"
@@ -126,6 +127,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="16dp"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                android:textStyle="italic"
                                 app:layout_constraintBottom_toBottomOf="@+id/user_avatar"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="@+id/user_display_name"
@@ -149,8 +151,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 android:layout_marginEnd="16dp"
-                                android:text="@{ reply.uid.displayName }"
+                                android:text="@{ @string/userSaid(reply.uid.displayName) }"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                                android:textStyle="italic"
                                 app:layout_constraintBottom_toTopOf="@+id/datetime"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/user_avatar"
@@ -185,8 +188,8 @@
                         android:gravity="top|start"
                         android:inputType="textMultiLine"
                         android:maxLength="1000"
-                        android:maxLines="5"
-                        android:minLines="3"
+                        android:maxLines="@integer/maxLinesContent"
+                        android:minLines="@integer/minLinesContent"
                         android:scrollbars="vertical"
                         android:singleLine="false" />
                 </com.google.android.material.textfield.TextInputLayout>

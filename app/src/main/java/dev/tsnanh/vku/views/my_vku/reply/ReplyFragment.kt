@@ -84,7 +84,6 @@ class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
 
         with(binding.viewPager) {
             offscreenPageLimit = 1
-            isUserInputEnabled = false
             animation = null
             // Maybe more
         }

@@ -95,7 +95,6 @@ object Libraries {
     const val flexbox = "com.google.android:flexbox:2.0.1"
     const val timber = "com.jakewharton.timber:timber:4.7.1"
     const val viewPager2 = "androidx.viewpager2:viewpager2:1.0.0"
-    const val firebaseUI = "com.firebaseui:firebase-ui-auth:6.2.0"
     const val playServicesAuth = "com.google.android.gms:play-services-auth:18.0.0"
     const val cloudMessaging = "com.google.firebase:firebase-messaging:20.2.1"
     const val collectionKtx = "androidx.collection:collection-ktx:1.1.0"
@@ -117,6 +116,6 @@ object TestLibraries {
 }
 
 object Version {
-    const val name = "0.1.2-dev02"
+    const val name = "0.1.2-dev03"
     const val code = 1
 }

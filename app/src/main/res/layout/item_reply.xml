@@ -201,7 +201,7 @@
                 android:text="@{ reply.uid.displayName }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 app:layout_constraintBottom_toTopOf="@+id/datetime"
-                app:layout_constraintEnd_toStartOf="@+id/reply"
+                app:layout_constraintEnd_toStartOf="@+id/reply_button"
                 app:layout_constraintStart_toEndOf="@+id/user_avatar"
                 app:layout_constraintTop_toTopOf="@+id/user_avatar"
                 tools:text="Anh Tran Si Nguyen" />

@@ -20,12 +20,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.iid.FirebaseInstanceId
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
 import dev.tsnanh.vku.utils.Constants
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
     NavController.OnDestinationChangedListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -47,11 +45,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         // Navigation Component things
         navController = findNavController(R.id.fragment)
         navController.addOnDestinationChangedListener(this)
-        binding.bottomNavView.setupWithNavController(navController)
-        binding.bottomNavView.setOnNavigationItemSelectedListener(this)
+        binding.bottomNavView.apply {
+            setupWithNavController(navController)
+            setOnNavigationItemSelectedListener(this@MainActivity)
+        }
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        preferences.registerOnSharedPreferenceChangeListener(this)
+        preferences = PreferenceManager.getDefaultSharedPreferences(this).also {
+            it.registerOnSharedPreferenceChangeListener(this)
+        }
 
         // create notification channel
         createNotificationChannel(
@@ -65,12 +66,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             getString(R.string.firebase_forum_notification_channel),
             "Forum Notification"
         )
-
-        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Timber.d(task.result?.token)
-            }
-        }
     }
 
     private fun createNotificationChannel(channelId: String, channelName: String) {
@@ -122,19 +117,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         arguments: Bundle?
     ) {
         when (destination.id) {
-            R.id.navigation_new_thread -> {
-                toggleBottomNav(true)
-            }
-            R.id.navigation_forum -> {
-                toggleBottomNav(true)
-            }
-            R.id.navigation_replies -> {
+            R.id.navigation_replies, R.id.navigation_image_viewer, R.id.navigation_new_reply ->
                 toggleBottomNav(false)
-            }
-            R.id.navigation_image_viewer -> toggleBottomNav(false)
-            else -> {
-                toggleBottomNav(true)
-            }
+            else -> toggleBottomNav(true)
         }
     }
 

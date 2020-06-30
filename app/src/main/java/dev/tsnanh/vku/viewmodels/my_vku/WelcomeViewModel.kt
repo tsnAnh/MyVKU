@@ -9,7 +9,7 @@ import org.koin.java.KoinJavaComponent.inject
 class WelcomeViewModel(application: Application) : AndroidViewModel(application) {
     private val checkHasUserUseCase by inject(LoginUseCase::class.java)
 
-    suspend fun login(idToken: String) = coroutineScope {
-        checkHasUserUseCase.execute(idToken)
+    suspend fun login(idToken: String, body: Any) = coroutineScope {
+        checkHasUserUseCase.execute(idToken, body)
     }
 }

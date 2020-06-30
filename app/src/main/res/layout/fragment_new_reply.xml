@@ -17,232 +17,251 @@
             type="Boolean" />
 
         <variable
-            name="post"
-            type="dev.tsnanh.vku.domain.entities.Reply" />
+            name="reply"
+            type="dev.tsnanh.vku.domain.entities.UserPopulatedNetworkReply" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".views.my_vku.replies.createnewreply.NewReplyFragment">
+        android:background="@color/background">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView"
-            android:layout_width="0dp"
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab_submit_reply"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_gravity="bottom|end"
             android:layout_marginEnd="16dp"
-            app:cardBackgroundColor="#26FBC02D"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
+            android:layout_marginBottom="16dp"
+            android:text="@string/text_create"
+            app:icon="@drawable/ic_round_add_24" />
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/actionBarSize"
+            android:backgroundTint="@color/background"
+            android:transitionGroup="false"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
+            app:liftOnScroll="true">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:buttonGravity="center_vertical"
+                app:navigationIcon="@drawable/ic_round_arrow_back_24" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                tools:context=".views.my_vku.reply.createnewreply.NewReplyFragment">
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyle"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/materialCardView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="#26FBC02D"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView12"
+                    tools:visibility="visible">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            style="?android:attr/progressBarStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/layout_post"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/post_content"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginBottom="16dp"
+                                android:ellipsize="end"
+                                android:maxLines="3"
+                                android:text="@{ reply.content }"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                android:textIsSelectable="true"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="@+id/user_avatar"
+                                app:layout_constraintTop_toBottomOf="@+id/user_avatar"
+                                tools:text="This is a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long content!" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/datetime"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="16dp"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                app:layout_constraintBottom_toBottomOf="@+id/user_avatar"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="@+id/user_display_name"
+                                app:layout_constraintTop_toBottomOf="@+id/user_display_name"
+                                tools:text="2020-04-14 - 15:18:20" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/user_avatar"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="16dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:setImage="@{ reply.uid.photoURL }"
+                                tools:srcCompat="@tools:sample/avatars[1]" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/user_display_name"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="16dp"
+                                android:text="@{ reply.uid.displayName }"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                                app:layout_constraintBottom_toTopOf="@+id/datetime"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/user_avatar"
+                                app:layout_constraintTop_toTopOf="@+id/user_avatar"
+                                tools:text="Anh Tran Si Nguyen" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:hint="@string/text_content"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="1000"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title_new_reply"
+                    app:startIconDrawable="@drawable/ic_round_subject_24">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top|start"
+                        android:inputType="textMultiLine"
+                        android:maxLength="1000"
+                        android:maxLines="5"
+                        android:minLines="3"
+                        android:scrollbars="vertical"
+                        android:singleLine="false" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/title_new_reply"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:text="@string/text_new_reply"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/materialCardView" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/list_image_upload"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:clipToPadding="false"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:scrollbars="vertical"
+                    app:hasImage="@{ pickerHasImage }"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView3"
+                    tools:visibility="visible" />
+
+                <Button
+                    android:id="@+id/choose_image"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_choose_image"
+                    app:icon="@drawable/ic_round_camera_alt_24"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/list_image_upload"
+                    app:layout_constraintHorizontal_bias="0.462"
+                    app:layout_constraintStart_toStartOf="@+id/list_image_upload"
+                    app:layout_constraintTop_toBottomOf="@+id/textView3"
+                    app:pickerHasImage="@{ pickerHasImage }" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/text_reply_image"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/text_create_new_reply"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_post"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/post_content"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:ellipsize="end"
-                        android:maxLines="3"
-                        android:text="@{ post.content }"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                        android:textIsSelectable="true"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/user_avatar"
-                        app:layout_constraintTop_toBottomOf="@+id/user_avatar"
-                        tools:text="This is a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long content!" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/datetime"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                        app:layout_constraintBottom_toBottomOf="@+id/user_avatar"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/user_display_name"
-                        app:layout_constraintTop_toBottomOf="@+id/user_display_name"
-                        tools:text="2020-04-14 - 15:18:20" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/user_avatar"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:postAvatar="@{ post }"
-                        tools:srcCompat="@tools:sample/avatars[1]" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/user_display_name"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:text=""
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                        app:layout_constraintBottom_toTopOf="@+id/datetime"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/user_avatar"
-                        app:layout_constraintTop_toTopOf="@+id/user_avatar"
-                        tools:text="Anh Tran Si Nguyen" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:hint="@string/text_content"
-            app:counterEnabled="true"
-            app:counterMaxLength="1000"
-            app:hintAnimationEnabled="true"
-            app:hintEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_new_reply"
-            app:startIconDrawable="@drawable/ic_round_subject_24">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="top|start"
-                android:inputType="textMultiLine"
-                android:maxLength="1000"
-                android:maxLines="5"
-                android:minLines="3"
-                android:scrollbars="vertical"
-                android:singleLine="false" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/title_new_reply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/text_new_reply"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_image_upload"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:clipToPadding="false"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:scrollbars="horizontal"
-            app:hasImage="@{ pickerHasImage }"
-            app:layout_constraintDimensionRatio="16:9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
-            tools:itemCount="10"
-            tools:listitem="@layout/item_image_chooser"
-            tools:visibility="visible" />
-
-        <Button
-            android:id="@+id/choose_image"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_choose_image"
-            app:icon="@drawable/ic_round_camera_alt_24"
-            app:layout_constraintBottom_toBottomOf="@+id/list_image_upload"
-            app:layout_constraintEnd_toEndOf="@+id/list_image_upload"
-            app:layout_constraintStart_toStartOf="@+id/list_image_upload"
-            app:layout_constraintTop_toTopOf="@+id/list_image_upload"
-            app:pickerHasImage="@{ pickerHasImage }" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/text_reply_image"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
-
-        <Button
-            android:id="@+id/submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/text_submit"
-            app:layout_constraintBottom_toBottomOf="@+id/cancel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cancel"
-            app:layout_constraintTop_toTopOf="@+id/cancel" />
-
-        <Button
-            android:id="@+id/cancel"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/text_cancel"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/submit"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/list_image_upload"
-            app:layout_constraintVertical_bias="0.0" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

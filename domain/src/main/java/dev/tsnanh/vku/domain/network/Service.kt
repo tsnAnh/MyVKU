@@ -8,6 +8,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.tsnanh.vku.domain.entities.*
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
@@ -76,7 +77,7 @@ interface VKUService {
     /**
      * Create new thread in specified forum
      * @param idToken String
-     * @param container CreateThreadContainer
+     * @param thread ForumThread
      * @param forumId String
      * @method POST
      * @return thread ForumThread
@@ -84,7 +85,7 @@ interface VKUService {
     @POST("api/thread/{forumId}")
     suspend fun createThread(
         @Header("gg-auth-token") idToken: String,
-        @Body container: CreateThreadContainer,
+        @Body thread: ForumThread,
         @Path("forumId") forumId: String
     ): ForumThread
 
@@ -102,7 +103,7 @@ interface VKUService {
      * Get a user by id from REST API
      * @param userId String
      * @method GET
-     * @return user User
+     * @return User
      */
     @GET("u/get/{userId}")
     suspend fun getUserById(@Path("userId") userId: String): User
@@ -124,29 +125,25 @@ interface VKUService {
     suspend fun getThreadById(@Path("threadId") threadId: String): Thread
 
     @Multipart
-    @POST("/p/upload/{uid}")
-    suspend fun uploadImage(
-        @Header("gg-auth-token") idToken: String,
-        @Path("uid") uid: String,
-        @Part image: MultipartBody.Part
-    ): String
-
-    @POST("/p/new")
+    @POST("api/reply/{threadId}")
     suspend fun newReply(
         @Header("gg-auth-token") idToken: String,
-        @Body reply: Reply
+        @Path("threadId") threadId: String,
+        @Part("content") content: RequestBody,
+        @Part images: Array<MultipartBody.Part>? = null,
+        @Part("quoted") quoted: RequestBody? = null
     ): Reply
 
-    @GET("/p/get/{id}")
-    suspend fun getReplyById(@Path("id") id: String): Reply
+    @GET("/api/reply/{idReply}")
+    suspend fun getReplyById(@Path("idReply") id: String): UserPopulatedNetworkReply
 
     /**
      * Login
      * @param idToken String
      * @return response LoginResponse
      */
-    @GET("api/user/auth")
-    suspend fun login(@Header("gg-auth-token") idToken: String): LoginResponse
+    @POST("api/user/auth")
+    suspend fun login(@Header("gg-auth-token") idToken: String, @Body body: Any): LoginResponse
 
     /**
      * Retrieve user's timetable

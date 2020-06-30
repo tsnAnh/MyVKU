@@ -21,8 +21,8 @@ class TimetableRepoImpl : TimetableRepo {
     override suspend fun getTimetable(url: String, email: String): Resource<List<Subject>> {
         return try {
             this.refresh(url, email)
-            Resource.Success(dao.getAllSubjects())
-        } catch (e: Throwable) {
+            Resource.Success(VKUServiceApi.network.getTimetable(url, email))
+        } catch (e: Exception) {
             ErrorHandler.handleError(e)
         }
     }

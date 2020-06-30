@@ -27,7 +27,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/actionBarSize"
-            android:backgroundTint="#00FFFFFF"
+            android:backgroundTint="@color/background"
             android:transitionGroup="false"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
             app:liftOnScroll="true">
@@ -156,7 +156,6 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="32dp"
                     android:text="@string/text_choose_image"
                     app:icon="@drawable/ic_round_camera_alt_24"
                     app:layout_constraintBottom_toBottomOf="parent"

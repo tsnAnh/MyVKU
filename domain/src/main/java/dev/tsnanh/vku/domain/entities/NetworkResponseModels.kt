@@ -30,7 +30,7 @@ data class UserContainer(
 
 @JsonClass(generateAdapter = true)
 data class ReplyContainer(
-    val replies: List<Reply>,
+    val replies: List<NetworkCustomReply>,
     val totalPages: Int,
     val currentPage: Int
 )

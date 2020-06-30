@@ -7,10 +7,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <variable
-            name="forum"
-            type="dev.tsnanh.vku.domain.entities.Forum" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -25,7 +21,7 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#00FFFFFF"
+            android:backgroundTint="@color/background"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
             app:liftOnScroll="true">
 
@@ -38,12 +34,19 @@
                 app:navigationIcon="@drawable/ic_round_arrow_back_24" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_thread"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeToRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            tools:listitem="@layout/item_thread" />
+            android:layout_height="wrap_content"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_thread"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_thread" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_new"

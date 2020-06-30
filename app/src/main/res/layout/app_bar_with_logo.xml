@@ -7,7 +7,7 @@
     android:id="@+id/app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/actionBarSize"
-    android:backgroundTint="#00FFFFFF"
+    android:backgroundTint="@color/background"
     android:elevation="0dp"
     android:transitionGroup="false"
     app:elevation="0dp"

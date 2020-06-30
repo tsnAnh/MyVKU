@@ -100,6 +100,7 @@ object Libraries {
     const val cloudMessaging = "com.google.firebase:firebase-messaging:20.2.1"
     const val collectionKtx = "androidx.collection:collection-ktx:1.1.0"
     const val activityKtx = "androidx.activity:activity-ktx:1.1.0"
+    const val recyclerView = "androidx.recyclerview:recyclerview:1.2.0-alpha04"
 }
 
 object TestLibraries {
@@ -116,6 +117,6 @@ object TestLibraries {
 }
 
 object Version {
-    const val name = "0.1.2-dev01"
+    const val name = "0.1.2-dev02"
     const val code = 1
 }

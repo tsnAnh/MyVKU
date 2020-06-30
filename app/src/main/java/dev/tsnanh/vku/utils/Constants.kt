@@ -2,6 +2,8 @@ package dev.tsnanh.vku.utils
 
 class Constants {
     companion object {
+        const val QUOTED_REPLY = "quoted_reply"
+
         // Display mode
         const val MODE_SYSTEM = "system"
         const val MODE_DARK = "dark"
@@ -26,17 +28,17 @@ class Constants {
 
         // WakeLock tag
         const val WAKE_LOCK_TAG = "vku:wakeLock"
-        const val POST_TAG = "create_post"
+        const val POST_TAG = "dev.tsnanh.newreply"
         const val BOTTOM_SHEET_TAG = "new_reply"
         const val POST = "post"
 
         // Key
         const val THREAD_ID_KEY = "threadId"
         const val THREAD_TITLE_KEY = "threadTitle"
-        const val CONTAINER_KEY = "container"
+        const val THREAD_WORK_KEY = "container"
         const val TOKEN_KEY = "token"
         const val UNIQUE_ID_KEY = "uid"
-        const val IMAGE_KEY = "image"
+        const val IMAGES_KEY = "images"
         const val REPLY_KEY = "reply"
 
         // Worker key
@@ -51,5 +53,6 @@ class Constants {
 
         // Shared elements key
         const val FAB_TRANSFORM_TO_NEW_THREAD = "view"
+        const val FAB_TRANSFORM_TO_NEW_REPLY = "view2"
     }
 }

@@ -72,6 +72,9 @@
             android:name="forumTitle"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_navigation_new_thread_to_navigation_replies"
+            app:destination="@id/navigation_replies" />
     </fragment>
     <fragment
         android:id="@+id/navigation_thread"
@@ -100,17 +103,21 @@
         android:label="@string/text_notification" />
     <fragment
         android:id="@+id/navigation_replies"
-        android:name="dev.tsnanh.vku.views.my_vku.replies.RepliesFragment"
+        android:name="dev.tsnanh.vku.views.my_vku.reply.ReplyFragment"
         android:label="Replies">
         <argument
             android:name="threadId"
             app:argType="string" />
-        <argument
-            android:name="threadTitle"
-            app:argType="string" />
         <action
             android:id="@+id/action_navigation_replies_to_navigation_image_viewer"
             app:destination="@id/navigation_image_viewer" />
+        <action
+            android:id="@+id/action_navigation_replies_to_newReplyFragment"
+            app:destination="@id/navigation_new_reply" />
+        <argument
+            android:name="hasCreatedReply"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/navigation_image_viewer"
@@ -139,4 +146,29 @@
         android:id="@+id/elearningMainActivity"
         android:name="dev.tsnanh.vku.activities.ElearningMainActivity"
         android:label="ElearningMainActivity" />
+    <fragment
+        android:id="@+id/navigation_new_reply"
+        android:name="dev.tsnanh.vku.views.my_vku.reply.createnewreply.NewReplyFragment"
+        android:label="NewReplyFragment">
+        <argument
+            android:name="threadId"
+            app:argType="string" />
+        <argument
+            android:name="quotedReplyId"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_newReplyFragment_to_navigation_replies"
+            app:destination="@id/navigation_replies"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_replies" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_list_replies"
+        android:name="dev.tsnanh.vku.views.my_vku.reply.list_replies.ListRepliesFragment"
+        android:label="ListRepliesFragment">
+        <action
+            android:id="@+id/action_navigation_list_replies_to_navigation_new_reply"
+            app:destination="@id/navigation_new_reply" />
+    </fragment>
 </navigation>

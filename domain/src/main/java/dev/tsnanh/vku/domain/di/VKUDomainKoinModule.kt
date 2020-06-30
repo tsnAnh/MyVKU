@@ -34,6 +34,9 @@ val module = module {
     single<UserRepo> {
         UserRepoImpl()
     }
+    single<ReplyRepo> {
+        ReplyRepoImpl()
+    }
     single<RetrieveNewsUseCase> {
         RetrieveNewsUseCaseImpl()
     }
@@ -43,8 +46,14 @@ val module = module {
     single<RetrieveThreadsUseCase> {
         RetrieveThreadsUseCaseImpl()
     }
-    single<RetrieveRepliesLiveDataUseCase> {
-        RetrieveRepliesLiveDataUseCaseImpl()
+    single<RetrieveRepliesUseCase> {
+        RetrieveRepliesUseCaseImpl()
+    }
+    single<RetrieveReplyByIdUseCase> {
+        RetrieveReplyByIdUseCaseImpl()
+    }
+    single<RetrievePageCountOfThreadUseCase> {
+        RetrievePageCountOfThreadUseCaseImpl()
     }
     single<LoginUseCase> {
         LoginUseCaseImpl()
@@ -63,5 +72,11 @@ val module = module {
     }
     single<RetrieveSingleForumUseCase> {
         RetrieveSingleForumUseCaseImpl()
+    }
+    single<CreateNewThreadUseCase> {
+        CreateNewThreadUseCaseImpl()
+    }
+    single<CreateNewReplyUseCase> {
+        CreateNewReplyUseCaseImpl()
     }
 }

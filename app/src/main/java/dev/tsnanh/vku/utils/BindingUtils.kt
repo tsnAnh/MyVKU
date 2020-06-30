@@ -25,10 +25,10 @@ import com.google.android.flexbox.FlexboxLayout
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.chip.Chip
 import dev.tsnanh.vku.R
+import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
-import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.network.BASE_URL
-import dev.tsnanh.vku.views.my_vku.replies.RepliesFragmentDirections
+import dev.tsnanh.vku.views.my_vku.reply.ReplyFragmentDirections
 import timber.log.Timber
 
 fun progressBar(context: Context) = CircularProgressDrawable(context).apply {
@@ -68,7 +68,6 @@ fun ImageView.setChooserImage(uri: Uri?) {
         Glide
             .with(this.context)
             .load(it)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(progressBar(this.context))
             .into(this)
     }
@@ -102,12 +101,12 @@ fun ImageView.setItemThreadAvatar(thread: NetworkForumThreadCustom) {
         .into(this)
 }
 
-@BindingAdapter("postAvatar")
-fun ImageView.setPostAvatar(reply: Reply?) {
-    reply?.let {
+@BindingAdapter("setImage")
+fun ImageView.setImage(url: String?) {
+    url?.let {
         Glide
             .with(this.context)
-            .load(/*reply.userAvatar*/"")
+            .load(url)
             .placeholder(progressBar(this.context))
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()
@@ -117,7 +116,7 @@ fun ImageView.setPostAvatar(reply: Reply?) {
 }
 
 @BindingAdapter("postImages")
-fun FlexboxLayout.setImages(reply: Reply?) {
+fun FlexboxLayout.setImages(reply: NetworkCustomReply?) {
     this.removeAllViews()
     reply?.let {
         val imageCount = it.images.size
@@ -145,7 +144,7 @@ fun FlexboxLayout.setImages(reply: Reply?) {
             imageView.layoutParams = params
             Glide
                 .with(imageView)
-                .load("$BASE_URL/$image")
+                .load("$BASE_URL/images/$image")
                 .placeholder(progressBar(this.context))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
@@ -154,7 +153,7 @@ fun FlexboxLayout.setImages(reply: Reply?) {
                 val extras =
                     FragmentNavigatorExtras(imageView to transitionName)
                 this.findNavController().navigate(
-                    RepliesFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
+                    ReplyFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
                         reply.images.toTypedArray(),
                         i
                     ),
@@ -169,13 +168,13 @@ fun FlexboxLayout.setImages(reply: Reply?) {
 @BindingAdapter("image")
 fun ImageView.setImageByURL(url: String?) {
     url?.let {
-        Timber.d("$BASE_URL/$url")
         Glide
             .with(this.context)
-            .load("$BASE_URL/$url")
+            .load("$BASE_URL/images/$url")
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(progressBar(this.context))
             .into(this)
+        Timber.d("$BASE_URL/images/$url")
     }
 }
 

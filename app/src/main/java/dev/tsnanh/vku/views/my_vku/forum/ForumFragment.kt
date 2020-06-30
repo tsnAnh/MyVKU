@@ -29,6 +29,7 @@ import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.ForumViewModel
+import timber.log.Timber
 
 class ForumFragment : Fragment() {
 
@@ -58,14 +59,17 @@ class ForumFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.listTopics.setHasFixedSize(true)
-        val rotation =
-            (requireContext()
-                .getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.rotation
-        if (rotation == 0) {
-            binding.listTopics.layoutManager = LinearLayoutManager(requireContext())
-        } else {
-            binding.listTopics.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.listTopics.apply {
+            setHasFixedSize(true)
+            val rotation =
+                (requireContext()
+                    .getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.rotation
+            layoutManager = if (rotation == 0) {
+                LinearLayoutManager(requireContext())
+            } else {
+                GridLayoutManager(requireContext(), 2)
+            }
+            itemAnimator = null
         }
 
         val adapter = ForumAdapter(emptyList(), ForumClickListener { forum, imageView ->
@@ -81,6 +85,7 @@ class ForumFragment : Fragment() {
                     is Resource.Success -> {
                         adapter.updateForums(it.data!!)
                         binding.progressBar.visibility = View.GONE
+                        Timber.i("Forum Refreshed")
                     }
                     is Resource.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
@@ -127,12 +132,10 @@ class ForumFragment : Fragment() {
             )
         }
 
-//        binding.swipeToRefresh.setOnRefreshListener {
-//            lifecycleScope.launch {
-//                viewModel.refreshForums()
-//                binding.swipeToRefresh.isRefreshing = false
-//            }
-//        }
+        binding.swipeToRefresh.setOnRefreshListener {
+            viewModel.refreshForums()
+//            binding.swipeToRefresh.isRefreshing = false
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding.listTopics.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
@@ -148,6 +151,7 @@ class ForumFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         binding.fabNewThread.show()
+        viewModel.refreshForums()
     }
 
 }

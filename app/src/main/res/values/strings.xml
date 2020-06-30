@@ -120,4 +120,9 @@
     <string name="threadNameTime" translatable="false">%s - %s</string>
     <string name="threadDetails" translatable="true">Threads: %d Replies: %d</string>
     <string name="title_and_full_name" translatable="false">%s. %s</string>
+    <string name="emptyLatestThread">The forum is currently empty!</string>
+    <string name="text_processing">Processing</string>
+    <string name="text_create">Create</string>
+    <string name="text_create_new_reply">Create New Reply</string>
+    <string name="userSaid">%s said:</string>
 </resources>

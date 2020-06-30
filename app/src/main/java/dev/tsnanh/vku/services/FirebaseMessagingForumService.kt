@@ -10,7 +10,7 @@ import timber.log.Timber
 class FirebaseMessagingForumService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         // TODO: send token to server
-        Timber.d(token)
+
     }
 
     override fun onMessageReceived(message: RemoteMessage) {

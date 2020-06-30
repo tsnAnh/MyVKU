@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.material.card.MaterialCardView
 import dev.tsnanh.vku.domain.entities.NetworkCustomForum
+import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.usecases.RetrieveForumsUseCase
 import org.koin.java.KoinJavaComponent.inject
 
@@ -20,7 +21,9 @@ class ForumViewModel : ViewModel() {
 
     private val retrieveForumsUseCase by inject(RetrieveForumsUseCase::class.java)
 
-    val forums = retrieveForumsUseCase.execute()
+    private var _forums = retrieveForumsUseCase.execute()
+    val forums: LiveData<Resource<List<NetworkCustomForum>>>
+        get() = _forums
 
     fun onItemClick(forum: Pair<NetworkCustomForum, MaterialCardView>) {
         _navigateToListThread.value = forum
@@ -28,5 +31,9 @@ class ForumViewModel : ViewModel() {
 
     fun onItemClicked() {
         _navigateToListThread.value = null
+    }
+
+    fun refreshForums() {
+        _forums = retrieveForumsUseCase.execute()
     }
 }

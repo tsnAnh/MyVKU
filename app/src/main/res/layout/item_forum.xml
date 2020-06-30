@@ -71,7 +71,7 @@
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="@{ forum.latestThread.title }"
+                android:text="@{ forum.latestThread.title ?? @string/emptyLatestThread }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

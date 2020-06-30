@@ -6,8 +6,6 @@ package dev.tsnanh.vku.views.my_vku.create_new_thread
 
 import android.Manifest
 import android.app.Activity
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -32,8 +30,6 @@ import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
@@ -43,8 +39,6 @@ import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.Constants.Companion.THREAD_KEY
-import dev.tsnanh.vku.utils.sendNotification
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.MainViewModel
 import dev.tsnanh.vku.viewmodels.my_vku.NewThreadViewModel
@@ -64,7 +58,6 @@ class NewThreadFragment : Fragment() {
             .setView(
                 progressBarLayoutBinding.root
             )
-            .setTitle(requireContext().getString(R.string.msg_creating_your_thread))
             .setCancelable(false)
             .create()
     }
@@ -136,7 +129,7 @@ class NewThreadFragment : Fragment() {
             }
         ))
         binding.listImageUpload.apply {
-            setHasFixedSize(true)
+            setHasFixedSize(false)
             isNestedScrollingEnabled = false
             layoutManager =
                 LinearLayoutManager(
@@ -151,7 +144,7 @@ class NewThreadFragment : Fragment() {
             }
         })
 
-        viewModel.createThreadWorkerLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.newReplyWorkLiveData.observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
                 return@Observer
             }
@@ -167,26 +160,20 @@ class NewThreadFragment : Fragment() {
 
             if (workInfo.state.isFinished) {
                 progressDialog.dismiss()
-                val jsonAdapter =
-                    Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-                        .adapter(ForumThread::class.java)
-                val json = workInfo.outputData.getString(THREAD_KEY)
-                if (json != null && json.isNotEmpty()) {
-                    val thread = jsonAdapter.fromJson(json)
-                    thread?.let {
-                        (requireContext()
-                            .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                            .sendNotification(
-                                thread.title,
-                                thread.title + requireContext().getString(R.string.msg_successfully_created),
-                                thread.id,
-                                thread.title,
-                                requireContext()
-                            )
-                    }
-                }
+                val threadId = workInfo.outputData.getString("threadId")
+                Timber.d(threadId)
                 WorkManager.getInstance(requireContext()).pruneWork()
+//                viewModel.onNavigateToReplyFragment(threadId)
                 findNavController().navigateUp()
+            }
+        })
+
+        viewModel.navigateToReplyFragment.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                findNavController().navigate(
+                    NewThreadFragmentDirections.actionNavigationNewThreadToNavigationReplies(it)
+                )
+                viewModel.onNavigatedToReplyFragment()
             }
         })
 
@@ -278,25 +265,16 @@ class NewThreadFragment : Fragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == Constants.RC_PERMISSION &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            pickImage(Constants.RC_IMAGE_PICKER)
-        }
-        Timber.d("YOoooooooooooooooooooooooooooooooo")
-    }
-
     // region Pick Image
     private fun pickImage(requestCode: Int) {
-        val intent = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        startActivityForResult(intent, requestCode)
+        startActivityForResult(
+            Intent(
+                Intent.ACTION_GET_CONTENT,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            ).apply {
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            }, requestCode
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -306,14 +284,34 @@ class NewThreadFragment : Fragment() {
         if (requestCode == Constants.RC_IMAGE_PICKER) {
             if (resultCode == Activity.RESULT_OK) {
                 pickerAdapter.submitList(emptyList())
+
                 data?.let {
                     if (data.clipData != null) {
+                        // check if user has selected more than 5 images
+                        if (data.clipData!!.itemCount > 5) {
+                            showSnackbarWithAction(
+                                requireView(),
+                                "Maximum 5 images",
+                                "HIDE"
+                            )
+                            return@let
+                        }
+
                         val clipData = data.clipData!!
                         for (index in 0 until clipData.itemCount) {
                             listImage.add(clipData.getItemAt(index).uri)
                         }
                     } else {
-                        data.data?.let { it1 -> listImage.add(it1) }
+                        if (pickerAdapter.currentList.size < 5) {
+                            data.data?.let { it1 -> listImage.add(it1) }
+                        } else {
+                            showSnackbarWithAction(
+                                requireView(),
+                                "Maximum 5 images",
+                                "HIDE"
+                            )
+                            return@let
+                        }
                     }
                     pickerAdapter.submitList(listImage)
 
@@ -326,12 +324,29 @@ class NewThreadFragment : Fragment() {
             if (resultCode == Activity.RESULT_OK) {
                 data?.let {
                     if (data.clipData != null) {
+                        if (data.clipData!!.itemCount + pickerAdapter.currentList.size > 5) {
+                            showSnackbarWithAction(
+                                requireView(),
+                                "Maximum 5 images",
+                                "HIDE"
+                            )
+                            return@let
+                        }
                         val clipData = data.clipData!!
                         for (index in 0 until clipData.itemCount) {
                             listImage.add(clipData.getItemAt(index).uri)
                         }
                     } else {
-                        data.data?.let { it1 -> listImage.add(it1) }
+                        if (pickerAdapter.currentList.size < 5) {
+                            data.data?.let { it1 -> listImage.add(it1) }
+                        } else {
+                            showSnackbarWithAction(
+                                requireView(),
+                                "Maximum 5 images",
+                                "HIDE"
+                            )
+                            return@let
+                        }
                     }
                     val list = pickerAdapter.currentList.toMutableList()
                     list.addAll(listImage)
@@ -344,6 +359,19 @@ class NewThreadFragment : Fragment() {
                     requireContext().getString(R.string.text_hide)
                 )
             }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Constants.RC_PERMISSION &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            pickImage(Constants.RC_IMAGE_PICKER)
         }
     }
     // endregion

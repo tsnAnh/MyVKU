@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
-        tools:context=".views.my_vku.replies.RepliesFragment">
+        tools:context=".views.my_vku.reply.ReplyFragment">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"
@@ -20,18 +20,20 @@
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_app_bar"
-            style="@style/Widget.MaterialComponents.BottomAppBar.PrimarySurface"
+            style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:theme="@style/Widget.MaterialComponents.BottomAppBar.PrimarySurface"
+            app:buttonGravity="center_vertical"
             app:fabAlignmentMode="end"
-            app:fabAnimationMode="scale"
+            app:fabAnimationMode="slide"
             app:fabCradleMargin="0dp"
             app:fabCradleRoundedCornerRadius="0dp"
             app:hideOnScroll="true"
             app:layout_behavior="com.google.android.material.bottomappbar.BottomAppBar$Behavior"
             app:menu="@menu/replies_menu"
-            app:navigationIcon="@drawable/ic_round_arrow_back_24" />
+            app:navigationIcon="@drawable/ic_round_arrow_back_v2" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_reply"

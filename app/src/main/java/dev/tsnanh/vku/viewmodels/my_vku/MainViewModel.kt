@@ -4,79 +4,118 @@
 
 package dev.tsnanh.vku.viewmodels.my_vku
 
-import android.app.Application
-import android.app.NotificationManager
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.work.*
-import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.common.api.ApiException
 import com.squareup.moshi.Moshi
-import dev.tsnanh.vku.R
-import dev.tsnanh.vku.domain.entities.CreateThreadContainer
+import com.squareup.moshi.Types
 import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.sendNotificationWithProgress
+import dev.tsnanh.vku.utils.toListStringUri
+import dev.tsnanh.vku.workers.CreateNewReplyWorker
 import dev.tsnanh.vku.workers.CreateNewThreadWorker
-import dev.tsnanh.vku.workers.UploadPostImageWorker
 import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val workManager = WorkManager.getInstance(application)
-    private val account = GoogleSignIn.getLastSignedInAccount(getApplication())
-    private val notificationManager by inject(NotificationManager::class.java)
+class MainViewModel : ViewModel() {
+    private val workManager by inject(WorkManager::class.java)
+    private val mGoogleSignInClient by inject(GoogleSignInClient::class.java)
+//    private val notificationManager by inject(NotificationManager::class.java)
+
+    // Get Moshi instance from DI
+    private val moshi by inject(Moshi::class.java)
+
+    // Create JsonAdapter
+    private val threadJsonAdapter =
+        moshi.adapter(ForumThread::class.java)
+    private val replyJsonAdapter =
+        moshi.adapter(Reply::class.java)
+    private val type =
+        Types.newParameterizedType(List::class.java, String::class.java)
+    private val uriAdapter = moshi.adapter<List<String>>(type)
+
+    // Work Constraint
+    private val constraint = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .build()
 
     // TODO: Create Notifications LiveData
 
-    fun createNewThread(list: List<Uri>, thread: ForumThread, post: Reply) {
-        account?.idToken?.let {
-            it.let { token ->
-                val moshi = Moshi.Builder().build()
-                val jsonAdapter =
-                    moshi.adapter(CreateThreadContainer::class.java)
+    fun createNewThread(list: List<Uri>, thread: ForumThread, reply: Reply) {
+        mGoogleSignInClient.silentSignIn().addOnCompleteListener {
+            if (it.isComplete) {
+                try {
+                    // Get token and uid from Google Sign In
+                    val token = it.getResult(ApiException::class.java)!!.idToken!!
 
-                val container =
-                    CreateThreadContainer(thread, post)
-                val json = jsonAdapter.toJson(container)
-                val constraint = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
-                val threadData = workDataOf(
-                    Constants.CONTAINER_KEY to json,
-                    Constants.TOKEN_KEY to token
-                )
-                val createThreadRequest =
-                    OneTimeWorkRequestBuilder<CreateNewThreadWorker>()
-                        .setConstraints(constraint)
-                        .setInputMerger(ArrayCreatingInputMerger::class)
-                        .setInputData(threadData)
-                        .addTag(TAG_NEW_THREAD)
-                        .build()
+                    // Prepare WorkData
+                    val threadData = workDataOf(
+                        Constants.THREAD_WORK_KEY to threadJsonAdapter.toJson(thread),
+                        Constants.TOKEN_KEY to token
+                    )
+                    val replyData = workDataOf(
+                        Constants.REPLY_KEY to replyJsonAdapter.toJson(reply),
+                        Constants.TOKEN_KEY to token,
+                        Constants.IMAGES_KEY to uriAdapter.toJson(list.toListStringUri())
+                    )
 
-                if (list.isEmpty()) {
-                    workManager.enqueue(
-                        createThreadRequest
-                    )
-                } else {
-                    notificationManager.sendNotificationWithProgress(
-                        getApplication<Application>().getString(R.string.text_uploading),
-                        "",
-                        getApplication()
-                    )
-                    val requests = list.map { uri ->
-                        OneTimeWorkRequestBuilder<UploadPostImageWorker>()
+                    // Create WorkRequest
+                    val createThreadRequest =
+                        OneTimeWorkRequestBuilder<CreateNewThreadWorker>()
                             .setConstraints(constraint)
-                            .setInputData(
-                                workDataOf(
-                                    Constants.IMAGE_KEY to uri.toString(),
-                                    Constants.TOKEN_KEY to token,
-                                    Constants.UNIQUE_ID_KEY to account.id
-                                )
-                            )
+                            .setInputData(threadData)
                             .build()
-                    }
+                    val createReplyRequest =
+                        OneTimeWorkRequestBuilder<CreateNewReplyWorker>()
+                            .setConstraints(constraint)
+                            .setInputData(replyData)
+                            .addTag("dev.tsnanh.newreply")
+                            .build()
 
-                    workManager.beginWith(requests).then(createThreadRequest).enqueue()
+                    // Enqueue Work Process
+                    workManager.beginWith(createThreadRequest).then(createReplyRequest)
+                        .enqueue()
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    // TODO: Handle token exception
+                }
+            }
+        }
+    }
+
+    fun createNewReply(
+        threadId: String,
+        reply: Reply,
+        images: List<Uri>,
+        quotedReplyId: String?
+    ) {
+        mGoogleSignInClient.silentSignIn().addOnCompleteListener {
+            if (it.isComplete) {
+                try {
+                    val token = it.getResult(ApiException::class.java)!!.idToken
+
+                    val replyData = workDataOf(
+                        Constants.REPLY_KEY to replyJsonAdapter.toJson(reply),
+                        Constants.TOKEN_KEY to token,
+                        Constants.IMAGES_KEY to uriAdapter.toJson(images.toListStringUri()),
+                        Constants.QUOTED_REPLY to quotedReplyId,
+                        "threadId" to threadId
+                    )
+
+                    val createReplyRequest =
+                        OneTimeWorkRequestBuilder<CreateNewReplyWorker>()
+                            .setConstraints(constraint)
+                            .setInputData(replyData)
+                            .addTag("dev.tsnanh.newreply")
+                            .build()
+
+                    workManager.enqueue(createReplyRequest)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    // TODO: Handle exception
                 }
             }
         }

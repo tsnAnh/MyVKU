@@ -10,7 +10,7 @@ import java.net.SocketTimeoutException
 
 class ErrorHandler {
     companion object {
-        fun <T> handleError(e: Throwable): Resource.Error<T> {
+        fun <T> handleError(e: Exception): Resource.Error<T> {
             Log.e("ERROR", e.message!!)
             return when (e) {
                 is HttpException -> {

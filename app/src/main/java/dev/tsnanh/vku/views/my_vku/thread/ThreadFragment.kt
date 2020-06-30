@@ -40,7 +40,6 @@ class ThreadFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-        sharedElementReturnTransition = MaterialContainerTransform()
         exitTransition = Hold()
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -64,7 +63,6 @@ class ThreadFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -87,8 +85,11 @@ class ThreadFragment : Fragment() {
             it?.let {
                 when (it) {
                     is Resource.Success -> {
-                        adapter.submitList(it.data!!)
+                        binding.swipeToRefresh.isRefreshing = false
                         binding.progressBar.visibility = View.GONE
+                        adapter.submitList(it.data!!.sortedByDescending { forum ->
+                            forum.createdAt
+                        })
                     }
                     is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
                     is Resource.Error -> {
@@ -101,12 +102,6 @@ class ThreadFragment : Fragment() {
             }
         })
 
-        viewModel.forum.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                binding.forum = it.data
-            }
-        })
-
         viewModel.navigateToReplies.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val extras = FragmentNavigatorExtras(
@@ -114,8 +109,7 @@ class ThreadFragment : Fragment() {
                 )
                 findNavController().navigate(
                     ThreadFragmentDirections.actionNavigationThreadToNavigationReplies(
-                        it.first.id,
-                        it.first.title
+                        it.first.id
                     ),
                     extras
                 )
@@ -136,6 +130,10 @@ class ThreadFragment : Fragment() {
             )
         }
 
+        binding.swipeToRefresh.setOnRefreshListener {
+            viewModel.refreshThreads()
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding.listThread.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
                 if (scrollY <= oldScrollY) {
@@ -148,8 +146,16 @@ class ThreadFragment : Fragment() {
     }
 
     private fun configureList() {
-        binding.listThread.setHasFixedSize(true)
-        binding.listThread.layoutManager = LinearLayoutManager(requireContext())
+        binding.listThread.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(requireContext())
+            itemAnimator = null
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshThreads()
     }
 
 }

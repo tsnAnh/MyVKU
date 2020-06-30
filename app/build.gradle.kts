@@ -117,6 +117,7 @@ dependencies {
     implementation(Libraries.playServicesAuth)
 
     implementation(Libraries.cloudMessaging)
+    implementation(Libraries.recyclerView)
 }
 ktlint {
     android.set(true)

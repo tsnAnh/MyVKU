@@ -56,11 +56,17 @@ fun String.checkValidWeek(): Boolean = length >= 3
 fun showSnackbarWithAction(
     view: View,
     msg: String,
-    actionButton: String,
+    actionButton: String? = null,
     action: ((View) -> Unit)? = null
 ) {
     val bar = Snackbar
-        .make(view, msg, Snackbar.LENGTH_INDEFINITE)
+        .make(
+            view, msg, if (!actionButton.isNullOrBlank()) {
+                Snackbar.LENGTH_INDEFINITE
+            } else {
+                Snackbar.LENGTH_LONG
+            }
+        )
 
     bar.setAction(actionButton, if (action != null) {
         action
@@ -68,4 +74,10 @@ fun showSnackbarWithAction(
         { bar.dismiss() }
     })
     bar.show()
+}
+
+fun List<Uri>.toListStringUri(): List<String> {
+    return map {
+        it.toString()
+    }
 }

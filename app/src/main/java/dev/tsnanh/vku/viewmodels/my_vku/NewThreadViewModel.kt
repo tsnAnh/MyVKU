@@ -4,26 +4,27 @@
 
 package dev.tsnanh.vku.viewmodels.my_vku
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.work.WorkManager
 import dev.tsnanh.vku.domain.usecases.RetrieveForumsUseCase
 import org.koin.java.KoinJavaComponent.inject
 
-const val TAG_NEW_THREAD = "dev.tsnanh.newthread"
-
-class NewThreadViewModel(application: Application) : AndroidViewModel(application) {
+class NewThreadViewModel : ViewModel() {
     private val retrieveForumsUseCase by inject(RetrieveForumsUseCase::class.java)
     val forums = retrieveForumsUseCase.execute()
 
-    val createThreadWorkerLiveData =
-        WorkManager.getInstance(getApplication()).getWorkInfosByTagLiveData(TAG_NEW_THREAD)
+    private val workManager by inject(WorkManager::class.java)
+    val newReplyWorkLiveData = workManager.getWorkInfosByTagLiveData("dev.tsnanh.newreply")
 
     private val _pickerHasImage = MutableLiveData(false)
     val pickerHasImage: LiveData<Boolean>
         get() = _pickerHasImage
+
+    private val _navigateToReplyFragment = MutableLiveData<String>()
+    val navigateToReplyFragment: LiveData<String>
+        get() = _navigateToReplyFragment
 
     fun onPickerHasImage() {
         _pickerHasImage.value = true
@@ -31,5 +32,13 @@ class NewThreadViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun onPickerHasNoImage() {
         _pickerHasImage.value = false
+    }
+
+    fun onNavigateToReplyFragment(threadId: String?) {
+        _navigateToReplyFragment.value = threadId
+    }
+
+    fun onNavigatedToReplyFragment() {
+        _navigateToReplyFragment.value = null
     }
 }

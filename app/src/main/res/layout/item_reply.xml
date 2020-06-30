@@ -10,7 +10,7 @@
 
         <variable
             name="reply"
-            type="dev.tsnanh.vku.domain.entities.Reply" />
+            type="dev.tsnanh.vku.domain.entities.NetworkCustomReply" />
 
         <variable
             name="timeCreated"
@@ -18,11 +18,15 @@
 
         <variable
             name="quotedReply"
-            type="dev.tsnanh.vku.domain.entities.Reply" />
+            type="dev.tsnanh.vku.domain.entities.PopulatedQuotedReply" />
 
         <variable
             name="quotedTimeCreated"
             type="String" />
+
+        <variable
+            name="listener"
+            type="dev.tsnanh.vku.adapters.ReplyClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -70,9 +74,10 @@
                         android:layout_marginBottom="16dp"
                         android:ellipsize="end"
                         android:maxLines="3"
-                        android:text="@{ quotedReply.content }"
+                        android:text="@{ quotedReply.replyId.content }"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                         android:textIsSelectable="true"
+                        android:textStyle="italic"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/user_avatar_quoted"
@@ -86,6 +91,7 @@
                         android:layout_marginEnd="16dp"
                         android:text="@{ quotedTimeCreated }"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:textStyle="italic"
                         app:layout_constraintBottom_toBottomOf="@+id/user_avatar_quoted"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/user_display_name_quoted"
@@ -100,7 +106,7 @@
                         android:layout_marginTop="16dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:postAvatar="@{ quotedReply }"
+                        app:setImage="@{ quotedReply.replyId.uid.photoURL }"
                         tools:srcCompat="@tools:sample/avatars[1]" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -109,8 +115,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="16dp"
-                        android:text=""
+                        android:text="@{ @string/userSaid(quotedReply.replyId.uid.displayName) }"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                        android:textStyle="italic"
                         app:layout_constraintBottom_toTopOf="@+id/datetime_quoted"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/user_avatar_quoted"
@@ -125,12 +132,27 @@
                 android:layout_height="0dp"
                 android:layout_marginEnd="16dp"
                 android:background="@null"
+                android:onClick="@{ () -> listener.onShare(reply) }"
                 android:contentDescription="@string/text_share"
                 android:tint="?android:attr/textColorPrimary"
                 app:layout_constraintBottom_toBottomOf="@+id/user_display_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/user_display_name"
                 app:srcCompat="@drawable/ic_round_share_24" />
+
+            <ImageButton
+                android:id="@+id/reply_button"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:background="@null"
+                android:contentDescription="@string/text_share"
+                android:onClick="@{ () -> listener.onReply(reply) }"
+                android:tint="?android:attr/textColorPrimary"
+                app:layout_constraintBottom_toBottomOf="@+id/share"
+                app:layout_constraintEnd_toStartOf="@+id/share"
+                app:layout_constraintTop_toTopOf="@+id/share"
+                app:srcCompat="@drawable/ic_round_reply_24" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/post_content"
@@ -167,7 +189,7 @@
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/materialCardView"
-                app:postAvatar="@{ reply }"
+                app:setImage="@{ reply.uid.photoURL }"
                 tools:srcCompat="@tools:sample/avatars[1]" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -176,10 +198,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text=""
+                android:text="@{ reply.uid.displayName }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 app:layout_constraintBottom_toTopOf="@+id/datetime"
-                app:layout_constraintEnd_toStartOf="@+id/share"
+                app:layout_constraintEnd_toStartOf="@+id/reply"
                 app:layout_constraintStart_toEndOf="@+id/user_avatar"
                 app:layout_constraintTop_toTopOf="@+id/user_avatar"
                 tools:text="Anh Tran Si Nguyen" />

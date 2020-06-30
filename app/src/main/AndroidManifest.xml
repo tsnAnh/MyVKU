@@ -30,9 +30,13 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/firebase_forum_notification_channel" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
         <!-- <service -->
         <!-- android:name=".services.SchoolReminderService" -->
         <!-- android:enabled="true" -->

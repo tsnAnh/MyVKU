@@ -15,7 +15,7 @@ class RetrieveUserTimetableUseCaseImpl : RetrieveUserTimetableUseCase {
     override suspend fun invoke(url: String, email: String): Resource<List<Subject>> {
         return try {
             timetableRepo.getTimetable(url, email)
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
             ErrorHandler.handleError(e)
         }
     }

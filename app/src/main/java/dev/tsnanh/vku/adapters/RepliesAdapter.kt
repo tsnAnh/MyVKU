@@ -7,23 +7,34 @@ package dev.tsnanh.vku.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import dev.tsnanh.vku.domain.entities.Reply
+import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.viewholders.ReplyViewHolder
 
-class RepliesAdapter : ListAdapter<Reply, ReplyViewHolder>(ReplyDiffUtil()) {
+class RepliesAdapter(
+    private val listener: ReplyClickListener
+) : ListAdapter<NetworkCustomReply, ReplyViewHolder>(ReplyDiffUtil()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): ReplyViewHolder = ReplyViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: ReplyViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), listener)
     }
 }
 
+class ReplyClickListener(
+    val reply: (NetworkCustomReply) -> Unit,
+    val share: (NetworkCustomReply) -> Unit
+) {
+    fun onReply(reply: NetworkCustomReply) = reply(reply)
+    fun onShare(reply: NetworkCustomReply) = share(reply)
+}
 
-class ReplyDiffUtil : DiffUtil.ItemCallback<Reply>() {
-    override fun areItemsTheSame(oldItem: Reply, newItem: Reply) = oldItem === newItem
+class ReplyDiffUtil : DiffUtil.ItemCallback<NetworkCustomReply>() {
+    override fun areItemsTheSame(oldItem: NetworkCustomReply, newItem: NetworkCustomReply) =
+        oldItem === newItem
 
-    override fun areContentsTheSame(oldItem: Reply, newItem: Reply) = oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: NetworkCustomReply, newItem: NetworkCustomReply) =
+        oldItem.id == newItem.id
 }

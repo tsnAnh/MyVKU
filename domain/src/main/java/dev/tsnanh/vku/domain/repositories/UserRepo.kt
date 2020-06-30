@@ -7,14 +7,14 @@ import dev.tsnanh.vku.domain.network.VKUServiceApi
 
 interface UserRepo {
     //    suspend fun getUser(userId: String): Resource<User>
-    suspend fun login(idToken: String): Resource<LoginResponse>
+    suspend fun login(idToken: String, body: Any): Resource<LoginResponse>
 }
 
 class UserRepoImpl : UserRepo {
-    override suspend fun login(idToken: String): Resource<LoginResponse> =
+    override suspend fun login(idToken: String, body: Any): Resource<LoginResponse> =
         try {
-            Resource.Success(VKUServiceApi.network.login(idToken))
-        } catch (e: Throwable) {
+            Resource.Success(VKUServiceApi.network.login(idToken, body))
+        } catch (e: Exception) {
             ErrorHandler.handleError(e)
         }
 }

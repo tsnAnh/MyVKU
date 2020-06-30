@@ -102,10 +102,11 @@ class NewsFragment : Fragment() {
 
         viewModel.shareAction.observe(viewLifecycleOwner, Observer {
             it?.let {
-                val intent = Intent()
-                intent.action = Intent.ACTION_SEND
-                intent.putExtra(Intent.EXTRA_TEXT, "${it.title}\n${addDomain(it.url)}")
-                intent.type = "text/plain"
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, "${it.title}\n${addDomain(it.url)}")
+                    type = "text/plain"
+                }
                 startActivity(intent)
                 viewModel.onShareButtonClicked()
             }
@@ -113,6 +114,10 @@ class NewsFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
             it?.let {
+                binding.apply {
+                    swipeToRefresh.isRefreshing = false
+                    chipsFilterNews.clearCheck()
+                }
                 showSnackbarWithAction(
                     requireView(),
                     it,

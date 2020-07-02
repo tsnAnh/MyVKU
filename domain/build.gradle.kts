@@ -71,4 +71,6 @@ dependencies {
     kapt(Libraries.kaptRoomCompiler)
     implementation(Libraries.roomKtx)
     testImplementation(Libraries.testRoom)
+
+    implementation(Libraries.timber)
 }

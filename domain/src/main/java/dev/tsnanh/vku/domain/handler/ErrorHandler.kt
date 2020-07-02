@@ -1,8 +1,8 @@
 package dev.tsnanh.vku.domain.handler
 
-import android.util.Log
 import dev.tsnanh.vku.domain.entities.Resource
 import retrofit2.HttpException
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.SocketException
@@ -11,7 +11,7 @@ import java.net.SocketTimeoutException
 class ErrorHandler {
     companion object {
         fun <T> handleError(e: Exception): Resource.Error<T> {
-            Log.e("ERROR", e.message!!)
+            Timber.e("Error: e.message!!")
             return when (e) {
                 is HttpException -> {
                     when (e.code()) {

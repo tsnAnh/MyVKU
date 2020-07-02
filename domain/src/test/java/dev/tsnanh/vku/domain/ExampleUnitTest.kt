@@ -1,5 +1,8 @@
 package dev.tsnanh.vku.domain
 
+import dev.tsnanh.vku.domain.network.VKUServiceApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -10,7 +13,10 @@ import org.junit.Test
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun `is forum name equal "Cat"`() {
+        GlobalScope.launch {
+            val firstForum = VKUServiceApi.network.getForums()[0]
+            assertEquals("Cat", firstForum.title)
+        }
     }
 }

@@ -20,7 +20,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -43,6 +42,7 @@ import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.MainViewModel
 import dev.tsnanh.vku.viewmodels.my_vku.NewThreadViewModel
 import dev.tsnanh.vku.workers.WorkUtil
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class NewThreadFragment : Fragment() {
@@ -50,7 +50,7 @@ class NewThreadFragment : Fragment() {
     private val viewModel: NewThreadViewModel by viewModels()
     private lateinit var binding: FragmentNewThreadBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
-    private val activityViewModel: MainViewModel by activityViewModels()
+    private val activityViewModel: MainViewModel by viewModel()
 
     private lateinit var progressBarLayoutBinding: ProgressDialogLayoutBinding
     private val progressDialog by lazy {

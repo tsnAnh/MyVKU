@@ -5,12 +5,18 @@
 package dev.tsnanh.vku.activities
 
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.animation.doOnEnd
+import androidx.core.content.edit
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -23,12 +29,14 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.createNotificationChannel
+import timber.log.Timber
+import kotlin.math.hypot
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
     NavController.OnDestinationChangedListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-    private lateinit var preferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -50,7 +58,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             setOnNavigationItemSelectedListener(this@MainActivity)
         }
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this).also {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this).also {
             it.registerOnSharedPreferenceChangeListener(this)
         }
 
@@ -135,5 +143,43 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 )
             }
         }
+    }
+
+    private fun setTheme(mode: String) {
+        if (binding.imageOverlay.isVisible) {
+            return
+        }
+
+        val w = binding.container.measuredWidth
+        Timber.i("$w")
+        val h = binding.container.measuredHeight
+
+        val bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        binding.container.draw(canvas)
+
+        binding.imageOverlay.setImageBitmap(bitmap)
+        // Glide.with(binding.imageOverlay).load(R.drawable.vku_logo_official).into(binding.imageOverlay)
+        binding.imageOverlay.isVisible = true
+
+        val finalRadius = hypot(w.toFloat(), h.toFloat())
+
+        sharedPreferences.edit {
+            putString(getString(R.string.night_mode_key), mode)
+        }
+
+        val anim = ViewAnimationUtils.createCircularReveal(
+            binding.imageOverlay,
+            w / 2,
+            h / 2,
+            0f,
+            finalRadius
+        )
+        anim.duration = 400L
+        anim.doOnEnd {
+            binding.imageOverlay.setImageDrawable(null)
+            binding.imageOverlay.isVisible = false
+        }
+        anim.start()
     }
 }

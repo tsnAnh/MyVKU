@@ -100,6 +100,8 @@ object Libraries {
     const val collectionKtx = "androidx.collection:collection-ktx:1.1.0"
     const val activityKtx = "androidx.activity:activity-ktx:1.1.0"
     const val recyclerView = "androidx.recyclerview:recyclerview:1.2.0-alpha04"
+    const val firebaseCrashlytics = "com.google.firebase:firebase-crashlytics:17.1.0"
+    const val firebaseAnalytics = "com.google.firebase:firebase-analytics-ktx:17.4.3"
 }
 
 object TestLibraries {

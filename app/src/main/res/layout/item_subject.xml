@@ -121,17 +121,6 @@
                 app:layout_constraintStart_toStartOf="@+id/chip_group_scroll"
                 app:layout_constraintTop_toBottomOf="@+id/chip_group_scroll" />
 
-            <Button
-                android:id="@+id/attendance"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/text_attendance"
-                app:icon="@drawable/ic_baseline_person_pin_24"
-                app:layout_constraintBottom_toBottomOf="@+id/set_alarm"
-                app:layout_constraintStart_toEndOf="@+id/set_alarm"
-                app:layout_constraintTop_toTopOf="@+id/set_alarm" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

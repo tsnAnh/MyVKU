@@ -19,7 +19,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -44,12 +43,13 @@ import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.MainViewModel
 import dev.tsnanh.vku.viewmodels.my_vku.NewReplyViewModel
 import dev.tsnanh.vku.viewmodels.my_vku.NewReplyViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
 class NewReplyFragment : Fragment() {
     private lateinit var viewModel: NewReplyViewModel
-    private val activityViewModel: MainViewModel by activityViewModels()
+    private val activityViewModel: MainViewModel by viewModel()
 
     private val navArgs: NewReplyFragmentArgs by navArgs()
 

@@ -40,6 +40,7 @@ class SchoolReminderReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val sharedPreferences by inject(SharedPreferences::class.java)
+        // Kotlin Coroutines global scope
         GlobalScope.launch {
             val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
             val wakeLock =
@@ -53,7 +54,7 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val email = intent.getStringExtra("email")
 
-            // 0 -> 11 Morning, 12 -> 18 Afternoon, 19 -> 23 Night
+            // return part of the day, 0 -> 11 Morning, 12 -> 18 Afternoon, 19 -> 23 Night
             val partOfTheDay = when (Calendar.getInstance()[Calendar.HOUR_OF_DAY]) {
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 -> 0
                 12, 13, 14, 15, 16, 17, 18 -> 1
@@ -113,7 +114,7 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                                     morningSubjects.forEach { subject ->
                                         notificationManager.sendSchoolReminderNotification(
                                             subject.dayOfWeek.getHourFromStringLesson(),
-                                            subject.title,
+                                            subject.className,
                                             "You have ${subject.className} at " +
                                                 "${subject.lesson.getHourFromStringLesson()} at " +
                                                 "${subject.room} in this morning!",
@@ -145,7 +146,7 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                                     afternoonSubjects.forEach { subject ->
                                         notificationManager.sendSchoolReminderNotification(
                                             subject.lesson.getHourFromStringLesson(),
-                                            subject.title,
+                                            subject.className,
                                             "You have ${subject.className} at " +
                                                 "${subject.lesson.getHourFromStringLesson()} at " +
                                                 "${subject.room} in this afternoon!",
@@ -202,25 +203,57 @@ class SchoolReminderReceiver : BroadcastReceiver() {
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendarMorning.timeInMillis + AlarmManager.INTERVAL_DAY,
-            morningIntent
-        )
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendarAfternoon.timeInMillis + AlarmManager.INTERVAL_DAY,
-            afternoonIntent
-        )
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendarEvening.timeInMillis + AlarmManager.INTERVAL_DAY,
-            eveningIntent
-        )
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendarNight.timeInMillis + AlarmManager.INTERVAL_DAY,
-            nightIntent
-        )
+        when (Calendar.getInstance()[Calendar.HOUR_OF_DAY]) {
+            in 0..6 -> {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendarMorning.timeInMillis + AlarmManager.INTERVAL_DAY,
+                    morningIntent
+                )
+            }
+            in 6..12 -> {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendarAfternoon.timeInMillis + AlarmManager.INTERVAL_DAY,
+                    afternoonIntent
+                )
+            }
+            in 12..18 -> {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendarEvening.timeInMillis + AlarmManager.INTERVAL_DAY,
+                    eveningIntent
+                )
+            }
+            in 18..21 -> {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendarNight.timeInMillis + AlarmManager.INTERVAL_DAY,
+                    nightIntent
+                )
+            }
+            else -> {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendarMorning.timeInMillis + AlarmManager.INTERVAL_DAY,
+                    morningIntent
+                )
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendarAfternoon.timeInMillis + AlarmManager.INTERVAL_DAY,
+                    afternoonIntent
+                )
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendarEvening.timeInMillis + AlarmManager.INTERVAL_DAY,
+                    eveningIntent
+                )
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendarNight.timeInMillis + AlarmManager.INTERVAL_DAY,
+                    nightIntent
+                )
+            }
+        }
     }
 }

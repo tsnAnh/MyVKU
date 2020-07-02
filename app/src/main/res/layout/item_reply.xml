@@ -31,7 +31,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         android:checkable="true"
         android:clickable="true"
@@ -42,7 +42,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/materialCardView"
@@ -132,8 +132,8 @@
                 android:layout_height="0dp"
                 android:layout_marginEnd="16dp"
                 android:background="@null"
-                android:onClick="@{ () -> listener.onShare(reply) }"
                 android:contentDescription="@string/text_share"
+                android:onClick="@{ () -> listener.onShare(reply) }"
                 android:tint="?android:attr/textColorPrimary"
                 app:layout_constraintBottom_toBottomOf="@+id/user_display_name"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -201,7 +201,7 @@
                 android:text="@{ reply.uid.displayName }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 app:layout_constraintBottom_toTopOf="@+id/datetime"
-                app:layout_constraintEnd_toStartOf="@+id/reply_button"
+                app:layout_constraintEnd_toStartOf="@+id/favorite_button"
                 app:layout_constraintStart_toEndOf="@+id/user_avatar"
                 app:layout_constraintTop_toTopOf="@+id/user_avatar"
                 tools:text="Anh Tran Si Nguyen" />
@@ -210,16 +210,29 @@
                 android:id="@+id/image_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 app:alignContent="space_between"
                 app:alignItems="stretch"
                 app:flexDirection="row"
                 app:flexWrap="wrap"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/post_content"
                 app:postImages="@{ reply }" />
+
+            <ImageButton
+                android:id="@+id/favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:background="@null"
+                android:tint="?android:attr/textColorPrimary"
+                app:layout_constraintBottom_toBottomOf="@+id/reply_button"
+                app:layout_constraintEnd_toStartOf="@+id/reply_button"
+                app:layout_constraintTop_toTopOf="@+id/reply_button"
+                app:srcCompat="@drawable/ic_round_favorite_border_24" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>

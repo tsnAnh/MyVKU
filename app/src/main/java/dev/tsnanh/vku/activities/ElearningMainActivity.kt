@@ -11,6 +11,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainElearningBinding
 
+/**
+ * Elearning Activity
+ * @author tsnAnh
+ */
 class ElearningMainActivity : AppCompatActivity(),
     BottomNavigationView.OnNavigationItemSelectedListener {
     private lateinit var navController: NavController

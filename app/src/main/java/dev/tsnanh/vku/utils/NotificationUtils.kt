@@ -102,6 +102,7 @@ fun NotificationManager.sendSchoolReminderNotification(
         .setContentTitle(title)
         .setSmallIcon(R.mipmap.ic_launcher)
         .setContentText(message)
+        .setStyle(NotificationCompat.BigTextStyle().bigText(message))
         .setAutoCancel(true)
 
     notify(uid, builder.build())
@@ -115,8 +116,8 @@ fun NotificationManager.sendCloudMessageNotification(
         applicationContext,
         applicationContext.getString(R.string.firebase_forum_notification_channel)
     ).apply {
-        setContentTitle("casdasdasd")
-        setContentText("cccsadasd")
+        setContentText("${payload["user"]} ${payload["title"]}")
+        setContentTitle("Jimmy lol")
         setAutoCancel(true)
         setSmallIcon(R.mipmap.ic_launcher)
     }

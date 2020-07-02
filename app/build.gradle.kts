@@ -12,6 +12,7 @@ plugins {
     id(BuildPlugins.navigationSafeArgsKotlin)
     id(BuildPlugins.googleServices)
     id(BuildPlugins.koin)
+    id("com.google.firebase.crashlytics")
 }
 apply(plugin = "name.remal.check-dependency-updates")
 
@@ -121,6 +122,8 @@ dependencies {
 
     implementation(Libraries.cloudMessaging)
     implementation(Libraries.recyclerView)
+    implementation(Libraries.firebaseCrashlytics)
+    implementation(Libraries.firebaseAnalytics)
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"

@@ -5,8 +5,14 @@
 package dev.tsnanh.vku.viewmodels.my_vku
 
 import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.squareup.moshi.Moshi
@@ -41,6 +47,30 @@ class MainViewModel : ViewModel() {
     private val constraint = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.CONNECTED)
         .build()
+
+    private val _notificationCount = MutableLiveData<Int>()
+    val notificationCount: LiveData<Int>
+        get() = _notificationCount
+
+    fun setNotificationCount(count: Int) {
+        _notificationCount.value = count
+    }
+
+    fun onNotificationCountCount() {
+        _notificationCount.value = null
+    }
+
+    private val _displayMode = MutableLiveData<String>()
+    val displayMode: LiveData<String>
+        get() = _displayMode
+
+    fun setTheme(mode: String) {
+        _displayMode.value = mode
+    }
+
+    fun onSetThemeDone() {
+        _displayMode.value = null
+    }
 
     // TODO: Create Notifications LiveData
 

@@ -5,13 +5,34 @@ package dev.tsnanh.vku.domain.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dev.tsnanh.vku.domain.entities.*
+import dev.tsnanh.vku.domain.entities.Forum
+import dev.tsnanh.vku.domain.entities.ForumThread
+import dev.tsnanh.vku.domain.entities.LoginBody
+import dev.tsnanh.vku.domain.entities.LoginResponse
+import dev.tsnanh.vku.domain.entities.NetworkCustomForum
+import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
+import dev.tsnanh.vku.domain.entities.NewsContainer
+import dev.tsnanh.vku.domain.entities.Reply
+import dev.tsnanh.vku.domain.entities.ReplyContainer
+import dev.tsnanh.vku.domain.entities.Subject
+import dev.tsnanh.vku.domain.entities.User
+import dev.tsnanh.vku.domain.entities.UserPopulatedNetworkReply
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Query
+import retrofit2.http.Url
 import java.util.concurrent.TimeUnit
 
 /**
@@ -51,7 +72,7 @@ interface VKUService {
     /**
      * Get latest news from REST API
      * @method GET
-     * @return news NewsContainer
+     * @return NewsContainer
      */
     @GET("n")
     suspend fun getLatestNews(): NewsContainer
@@ -110,7 +131,9 @@ interface VKUService {
 
     /**
      * Get all replies in specified thread
-     * @param threadId String, page Int, limit Int
+     * @param threadId String
+     * @param page Int
+     * @param limit Int
      * @method GET
      * @return replyContainer ReplyContainer
      */
@@ -121,9 +144,25 @@ interface VKUService {
         @Query("limit") limit: Int
     ): ReplyContainer
 
+    /**
+     * Get specific thread by id
+     * @author tsnAnh
+     * @param threadId String
+     * @return Thread
+     */
     @GET("api/thread/{threadId}")
     suspend fun getThreadById(@Path("threadId") threadId: String): Thread
 
+    /**
+     * Create a new reply
+     * @author tsnAnh
+     * @param idToken String
+     * @param threadId String
+     * @param content RequestBody
+     * @param images Array<MultipartBody.Part>
+     * @param quoted RequestBody
+     * @return Reply
+     */
     @Multipart
     @POST("api/reply/{threadId}")
     suspend fun newReply(
@@ -134,19 +173,30 @@ interface VKUService {
         @Part("quoted") quoted: RequestBody? = null
     ): Reply
 
+    /**
+     * Get a reply by id
+     * @author tsnAnh
+     * @param id String
+     * @return UserPopulatedNetworkReply
+     */
     @GET("/api/reply/{idReply}")
     suspend fun getReplyById(@Path("idReply") id: String): UserPopulatedNetworkReply
 
     /**
      * Login
+     * @author tsnAnh
      * @param idToken String
      * @return response LoginResponse
      */
     @POST("api/user/auth")
-    suspend fun login(@Header("gg-auth-token") idToken: String, @Body body: Any): LoginResponse
+    suspend fun login(
+        @Header("gg-auth-token") idToken: String,
+        @Body body: LoginBody
+    ): LoginResponse
 
     /**
      * Retrieve user's timetable
+     * @author tsnAnh
      * @param email String
      * @return subjects List<Subject>
      */
@@ -156,6 +206,7 @@ interface VKUService {
     /**
      * Delete thread
      * @param threadId String
+     * @author tsnAnh
      */
     @DELETE("api/thread/{threadId}")
     suspend fun deleteThread(
@@ -166,6 +217,7 @@ interface VKUService {
     /**
      * Edit thread
      * @param threadId String
+     * @author tsnAnh
      */
     @PUT("api/thread/{threadId}")
     suspend fun editThread(
@@ -176,6 +228,7 @@ interface VKUService {
 
 /**
  * VKUServiceApi Singleton Object
+ * @author tsnAnh
  */
 object VKUServiceApi {
     val network: VKUService by lazy {

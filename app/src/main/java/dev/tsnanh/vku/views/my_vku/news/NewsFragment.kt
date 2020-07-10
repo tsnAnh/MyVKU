@@ -4,7 +4,6 @@
 
 package dev.tsnanh.vku.views.my_vku.news
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,6 +29,7 @@ import dev.tsnanh.vku.databinding.FragmentNewsBinding
 import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.CustomTabHelper
+import dev.tsnanh.vku.utils.SecretConstants
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.NewsViewModel
 import kotlinx.coroutines.launch
@@ -78,37 +78,9 @@ class NewsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        viewModel.news.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                binding.listNews.adapter = adapter
-                adapter.submitList(it)
-                binding.swipeToRefresh.isRefreshing = false
-            }
-        })
-
         viewModel.navigateToView.observe(viewLifecycleOwner, Observer {
             it?.let {
                 launchNews(it)
-            }
-        })
-
-        viewModel.filterData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                adapter.submitList(viewModel.listNewsLocal?.filter { news ->
-                    news.category == it
-                })
-            }
-        })
-
-        viewModel.shareAction.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, "${it.title}\n${addDomain(it.url)}")
-                    type = "text/plain"
-                }
-                startActivity(intent)
-                viewModel.onShareButtonClicked()
             }
         })
 
@@ -151,7 +123,7 @@ class NewsFragment : Fragment() {
     }
 
     private fun launchNews(news: News) {
-        val url = addDomain(news.url)
+        val url = addDomain(SecretConstants.SINGLE_NEWS_URL(news.cmsId))
         val builder = CustomTabsIntent.Builder()
         builder.setToolbarColor(ContextCompat.getColor(requireContext(), R.color.primaryColor))
         builder.addDefaultShareMenuItem()
@@ -184,7 +156,7 @@ class NewsFragment : Fragment() {
         if (packageName == null) {
             findNavController().navigate(
                 NewsFragmentDirections.actionNavigationNewsToActivityNews(
-                    news.url, news.title
+                    SecretConstants.SINGLE_NEWS_URL(news.cmsId), news.title
                 )
             )
         } else {

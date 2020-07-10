@@ -61,9 +61,15 @@ class ForumFragment : Fragment() {
 
         binding.listTopics.apply {
             setHasFixedSize(true)
-            val rotation =
+            val rotation = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+                @Suppress("DEPRECATION")
                 (requireContext()
-                    .getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.rotation
+                    .getSystemService(Context.WINDOW_SERVICE) as WindowManager)
+                    .defaultDisplay
+                    .rotation
+            } else {
+                requireContext().display?.rotation
+            }
             layoutManager = if (rotation == 0) {
                 LinearLayoutManager(requireContext())
             } else {
@@ -153,5 +159,4 @@ class ForumFragment : Fragment() {
         binding.fabNewThread.show()
         viewModel.refreshForums()
     }
-
 }

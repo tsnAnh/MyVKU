@@ -148,7 +148,7 @@
         android:label="ElearningMainActivity" />
     <fragment
         android:id="@+id/navigation_new_reply"
-        android:name="dev.tsnanh.vku.views.my_vku.create_new_reply.NewReplyFragment"
+        android:name="dev.tsnanh.vku.views.my_vku.create_new_reply.CreateNewReplyFragment"
         android:label="NewReplyFragment">
         <argument
             android:name="threadId"

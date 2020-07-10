@@ -114,7 +114,7 @@
     <string name="msg_alarm_set">Alarm set!</string>
     <string name="text_show_all_subjects">Show all subjects</string>
     <string name="text_show_all_subject_summary">Display all subjects in your timetable</string>
-    <string name="show_all_subjects_key" translatable="false">dev.tsnanh.vku.show_all_subjects</string>
+    <string name="show_all_subjects_key" translatable="false">dev.tsnanh.vku.showallsubjects</string>
 
     <!-- String template -->
     <string name="threadNameTime" translatable="false">%s - %s</string>
@@ -125,4 +125,11 @@
     <string name="text_create">Create</string>
     <string name="text_create_new_reply">Create New Reply</string>
     <string name="userSaid"><u>%s said:</u></string>
+    <string name="text_love">Love</string>
+    <string name="text_message_like">has loved your reply!</string>
+    <string name="text_message_to_owner">has replied your thread!</string>
+    <string name="text_message_to_quoted_user">has quoted your reply!</string>
+    <string name="text_message_to_owner_custom">has quoted your reply in your thread!</string>
+    <string name="text_message_to_all_subscribers">has replied in your thread you are following!</string>
+    <string name="notificationMessage" translatable="false"><b>%s</b> %s</string>
 </resources>

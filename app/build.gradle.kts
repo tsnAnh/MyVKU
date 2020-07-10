@@ -18,7 +18,7 @@ apply(plugin = "name.remal.check-dependency-updates")
 
 android {
     compileSdkVersion(AndroidSdk.compile)
-    buildToolsVersion = "29.0.3"
+    buildToolsVersion = "30.0.0"
 
     defaultConfig {
         applicationId = "dev.tsnanh.vku"

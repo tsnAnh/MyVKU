@@ -7,7 +7,6 @@ import dev.tsnanh.vku.utils.sendCloudMessageNotification
 import org.koin.java.KoinJavaComponent.inject
 
 class FirebaseMessagingForumService : FirebaseMessagingService() {
-    // private val mainViewModel: MainViewModel by viewModel()
     private val notificationManager by inject(NotificationManager::class.java)
     override fun onNewToken(token: String) {
         // TODO: send token to server

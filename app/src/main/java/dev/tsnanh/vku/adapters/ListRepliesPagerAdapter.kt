@@ -12,9 +12,15 @@ class ListRepliesPagerAdapter(
 
     override fun getItemCount() = totalPage
 
-    override fun createFragment(position: Int) =
+    override fun createFragment(position: Int) = if (position != totalPage) {
         ListRepliesFragment(
             threadId,
-            position + 1
+            position + 1,
+            false
         )
+    } else {
+        ListRepliesFragment(
+            threadId, position + 1, position != 1
+        )
+    }
 }

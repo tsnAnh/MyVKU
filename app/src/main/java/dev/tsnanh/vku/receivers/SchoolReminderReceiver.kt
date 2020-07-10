@@ -86,6 +86,7 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                                 .getString(R.string.title_notification_school_reminder_no_subject),
                             context
                                 .getString(R.string.content_notification_school_reminder_no_subject),
+                            null,
                             context
                         )
                         sharedPreferences.edit {
@@ -108,6 +109,7 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                                             .getString(R.string.title_notification_school_reminder_no_subject_morning),
                                         context
                                             .getString(R.string.content_notification_school_reminder_no_subject_morning),
+                                        null,
                                         context
                                     )
                                 } else {
@@ -118,6 +120,7 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                                             "You have ${subject.className} at " +
                                                 "${subject.lesson.getHourFromStringLesson()} at " +
                                                 "${subject.room} in this morning!",
+                                            subject.className,
                                             context
                                         )
                                     }
@@ -140,6 +143,7 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                                             .getString(R.string.title_notification_school_reminder_no_subject_afternoon),
                                         context
                                             .getString(R.string.content_notification_school_reminder_no_subject_afternoon),
+                                        null,
                                         context
                                     )
                                 } else {
@@ -150,6 +154,7 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                                             "You have ${subject.className} at " +
                                                 "${subject.lesson.getHourFromStringLesson()} at " +
                                                 "${subject.room} in this afternoon!",
+                                            subject.className,
                                             context
                                         )
                                     }

@@ -5,12 +5,16 @@
 package dev.tsnanh.vku.viewmodels.my_vku
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.work.WorkManager
 import dev.tsnanh.vku.domain.usecases.RetrieveReplyByIdUseCase
 import org.koin.java.KoinJavaComponent.inject
 
-class NewReplyViewModel(quotedReplyId: String?, application: Application) :
+class CreateNewReplyViewModel(quotedReplyId: String?, application: Application) :
     AndroidViewModel(application) {
     private val retrieveReplyUseCase by inject(RetrieveReplyByIdUseCase::class.java)
 
@@ -33,13 +37,13 @@ class NewReplyViewModel(quotedReplyId: String?, application: Application) :
 }
 
 @Suppress("UNCHECKED_CAST")
-class NewReplyViewModelFactory(
+class CreateNewReplyViewModelFactory(
     private val quotedReplyId: String? = null,
     private val application: Application
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NewReplyViewModel::class.java)) {
-            return NewReplyViewModel(quotedReplyId, application) as T
+        if (modelClass.isAssignableFrom(CreateNewReplyViewModel::class.java)) {
+            return CreateNewReplyViewModel(quotedReplyId, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel")
     }

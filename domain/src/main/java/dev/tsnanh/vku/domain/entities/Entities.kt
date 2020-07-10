@@ -26,10 +26,20 @@ data class LoginBody(
 @Entity(tableName = "news")
 data class News(
     @PrimaryKey
-    val url: String,
+    @field:Json(name = "CmsID")
+    val cmsId: String,
+    @field:Json(name = "CategoryName")
+    val categoryName: String,
+    @field:Json(name = "Title")
     val title: String,
-    val category: String,
-    val date: String
+    @field:Json(name = "Content")
+    val content: String,
+    @field:Json(name = "CreatedDate")
+    val createdDate: String,
+    @field:Json(name = "UpdatedDate")
+    val updatedDate: String,
+    @field:Json(name = "Slug")
+    val slug: String
 )
 
 @JsonClass(generateAdapter = true)
@@ -198,3 +208,48 @@ data class Subject(
     @field:Json(name = "phong")
     val room: String
 ) : Parcelable
+
+@Entity(tableName = "subjectNotifications")
+data class SubjectNotification(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
+    val className: String,
+    val room: String,
+    val title: String,
+    val fullName: String,
+    val week: String,
+    val dayOfWeek: String,
+    val lesson: String,
+    val timeNotify: Long
+)
+
+@JsonClass(generateAdapter = true)
+data class Notification(
+    @field:Json(name = "_id")
+    val id: String,
+    val uid: User,
+    val createdAt: Long,
+    val message: NotificationMessageContainer,
+    val hasSeen: Boolean
+)
+
+@JsonClass(generateAdapter = true)
+data class NotificationMessageContainer(
+    val data: NotificationMessage
+)
+
+@JsonClass(generateAdapter = true)
+data class NotificationMessage(
+    val uid: User,
+    val userDisplayName: String,
+    val title: String,
+    val content: String
+)
+
+enum class NotificationTitle(val value: String) {
+    MESSAGE_LIKE("messageLike"),
+    MESSAGE_TO_OWNER("messageToOwner"),
+    MESSAGE_TO_QUOTED_USER("messageToQuotedUser"),
+    MESSAGE_TO_OWNER_CUSTOM("messageToOwnerCustom"),
+    MESSAGE_TO_ALL_SUBSCRIBERS("messageToAllSubscribers")
+}

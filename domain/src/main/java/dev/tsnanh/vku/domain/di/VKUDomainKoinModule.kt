@@ -7,6 +7,8 @@ import dev.tsnanh.vku.domain.repositories.ForumRepo
 import dev.tsnanh.vku.domain.repositories.ForumRepoImpl
 import dev.tsnanh.vku.domain.repositories.NewsRepo
 import dev.tsnanh.vku.domain.repositories.NewsRepoImpl
+import dev.tsnanh.vku.domain.repositories.NotificationRepo
+import dev.tsnanh.vku.domain.repositories.NotificationRepoImpl
 import dev.tsnanh.vku.domain.repositories.ReplyRepo
 import dev.tsnanh.vku.domain.repositories.ReplyRepoImpl
 import dev.tsnanh.vku.domain.repositories.ThreadRepo
@@ -25,6 +27,8 @@ import dev.tsnanh.vku.domain.usecases.RetrieveForumsUseCase
 import dev.tsnanh.vku.domain.usecases.RetrieveForumsUseCaseImpl
 import dev.tsnanh.vku.domain.usecases.RetrieveNewsUseCase
 import dev.tsnanh.vku.domain.usecases.RetrieveNewsUseCaseImpl
+import dev.tsnanh.vku.domain.usecases.RetrieveNotificationsUseCase
+import dev.tsnanh.vku.domain.usecases.RetrieveNotificationsUseCaseImpl
 import dev.tsnanh.vku.domain.usecases.RetrievePageCountOfThreadUseCase
 import dev.tsnanh.vku.domain.usecases.RetrievePageCountOfThreadUseCaseImpl
 import dev.tsnanh.vku.domain.usecases.RetrieveRepliesUseCase
@@ -112,5 +116,11 @@ val module = module {
     }
     single<CreateNewReplyUseCase> {
         CreateNewReplyUseCaseImpl()
+    }
+    single<NotificationRepo> {
+        NotificationRepoImpl()
+    }
+    single<RetrieveNotificationsUseCase> {
+        RetrieveNotificationsUseCaseImpl()
     }
 }

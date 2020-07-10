@@ -31,6 +31,9 @@ interface ReplyRepo {
     fun getReplyById(replyId: String): Flow<Resource<UserPopulatedNetworkReply>>
 
     fun getPageCount(threadId: String, limit: Int): Flow<Resource<ReplyContainer>>
+
+    @Throws(Exception::class)
+    fun likeOrUnlikeReply(idToken: String, replyId: String): Flow<List<String>>
 }
 
 class ReplyRepoImpl : ReplyRepo {
@@ -98,6 +101,17 @@ class ReplyRepoImpl : ReplyRepo {
             )
         } catch (e: Exception) {
             emit(ErrorHandler.handleError(e))
+        }
+    }
+
+    @Throws(Exception::class)
+    override fun likeOrUnlikeReply(idToken: String, replyId: String): Flow<List<String>> = flow {
+        emit(emptyList())
+        try {
+            emit(VKUServiceApi.network.likeOrUnlikeReply(idToken, replyId))
+        } catch (e: Exception) {
+            // emit(e)
+            throw e
         }
     }
 }

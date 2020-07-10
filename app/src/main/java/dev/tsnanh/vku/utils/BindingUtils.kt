@@ -4,10 +4,8 @@
 
 package dev.tsnanh.vku.utils
 
-import android.app.Activity
 import android.content.Context
 import android.net.Uri
-import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -124,10 +122,7 @@ fun FlexboxLayout.setImages(reply: NetworkCustomReply?) {
         it.images.mapIndexed { i, image ->
             val imageView = AppCompatImageView(this.context)
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            val metrics = DisplayMetrics()
-            (this.context as Activity).windowManager
-                .defaultDisplay
-                .getMetrics(metrics)
+            val metrics = context.resources.displayMetrics
             val params = FlexboxLayout.LayoutParams(
                 when (imageCount) {
                     1, 2 -> metrics.widthPixels / imageCount

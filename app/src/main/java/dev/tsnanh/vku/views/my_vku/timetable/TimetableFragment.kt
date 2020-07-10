@@ -33,7 +33,7 @@ import dev.tsnanh.vku.utils.getDayOfWeekFromString
 import dev.tsnanh.vku.utils.getHourFromStringLesson
 import dev.tsnanh.vku.utils.getMinutesFromStringLesson
 import dev.tsnanh.vku.viewmodels.my_vku.TimetableViewModel
-import java.util.*
+import java.util.Calendar
 
 class TimetableFragment : Fragment() {
 
@@ -56,13 +56,14 @@ class TimetableFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_timetable, container, false)
+
         setHasOptionsMenu(true)
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -108,6 +109,14 @@ class TimetableFragment : Fragment() {
                             }
                         }
                         timetableAdapter.updateSubjects(list)
+                        // requireArguments().getString("subject", null)?.let {
+                        //     var position = 0
+                        //     list.filterIndexed { index, subject ->
+                        //         position = index
+                        //         subject.className == it
+                        //     }
+                        //     binding.listSubjects.scrollToPosition(position)
+                        // }
                     })
                 viewModel.refreshSubjects(it.getResult(ApiException::class.java)!!.email!!)
             }

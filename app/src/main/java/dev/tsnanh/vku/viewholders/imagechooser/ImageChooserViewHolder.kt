@@ -40,7 +40,7 @@ class ImageChooserViewHolder private constructor(
                 return@setOnClickListener
             }
             lastClickTime = now
-            listener.onClick(adapterPosition)
+            listener.onClick(absoluteAdapterPosition)
         }
         binding.executePendingBindings()
     }

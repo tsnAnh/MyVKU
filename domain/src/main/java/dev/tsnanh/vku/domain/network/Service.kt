@@ -11,7 +11,8 @@ import dev.tsnanh.vku.domain.entities.LoginBody
 import dev.tsnanh.vku.domain.entities.LoginResponse
 import dev.tsnanh.vku.domain.entities.NetworkCustomForum
 import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
-import dev.tsnanh.vku.domain.entities.NewsContainer
+import dev.tsnanh.vku.domain.entities.News
+import dev.tsnanh.vku.domain.entities.Notification
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.ReplyContainer
 import dev.tsnanh.vku.domain.entities.Subject
@@ -39,7 +40,7 @@ import java.util.concurrent.TimeUnit
  * Base URL
  */
 // Google Cloud VM Instance Server
-const val BASE_URL = "http://34.87.151.214:5000"
+const val BASE_URL = "http://34.87.151.214:5001"
 
 /**
  * OkHttp client
@@ -67,16 +68,6 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface VKUService {
-
-    // region News routes
-    /**
-     * Get latest news from REST API
-     * @method GET
-     * @return NewsContainer
-     */
-    @GET("n")
-    suspend fun getLatestNews(): NewsContainer
-    // endregion
 
     // region Forum routes
     /**
@@ -224,6 +215,24 @@ interface VKUService {
         @Header("gg-auth-token") idToken: String,
         @Path("threadId") threadId: String
     )
+
+    @GET("api/notification")
+    suspend fun getNotifications(@Header("gg-auth-token") idToken: String): List<Notification>
+
+    @PUT("/api/reply/like/{replyId}")
+    suspend fun likeOrUnlikeReply(
+        @Header("gg-auth-token") idToken: String,
+        @Path("replyId") replyId: String
+    ): List<String>
+
+    /**
+     * Get all news from daotao.sict.udn.vn
+     * @param url String
+     * @param time String
+     * @return List<News>
+     */
+    @GET
+    suspend fun getNews(@Url url: String, @Query("time") time: String): List<News>
 }
 
 /**

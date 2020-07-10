@@ -35,6 +35,6 @@ class NewsDiffUtil : DiffUtil.ItemCallback<News>() {
     }
 
     override fun areContentsTheSame(oldItem: News, newItem: News): Boolean {
-        return oldItem.url == newItem.url
+        return oldItem.cmsId == newItem.cmsId
     }
 }

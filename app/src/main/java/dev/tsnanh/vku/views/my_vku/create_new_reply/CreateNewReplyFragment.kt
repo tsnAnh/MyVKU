@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -40,18 +41,17 @@ import dev.tsnanh.vku.utils.Constants.Companion.RC_IMAGE_PICKER
 import dev.tsnanh.vku.utils.Constants.Companion.RC_PERMISSION
 import dev.tsnanh.vku.utils.convertTimestampToDateString
 import dev.tsnanh.vku.utils.showSnackbarWithAction
+import dev.tsnanh.vku.viewmodels.my_vku.CreateNewReplyViewModel
+import dev.tsnanh.vku.viewmodels.my_vku.CreateNewReplyViewModelFactory
 import dev.tsnanh.vku.viewmodels.my_vku.MainViewModel
-import dev.tsnanh.vku.viewmodels.my_vku.NewReplyViewModel
-import dev.tsnanh.vku.viewmodels.my_vku.NewReplyViewModelFactory
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
-class NewReplyFragment : Fragment() {
-    private lateinit var viewModel: NewReplyViewModel
-    private val activityViewModel: MainViewModel by viewModel()
+class CreateNewReplyFragment : Fragment() {
+    private lateinit var viewModel: CreateNewReplyViewModel
+    private val activityViewModel: MainViewModel by activityViewModels()
 
-    private val navArgs: NewReplyFragmentArgs by navArgs()
+    private val navArgs: CreateNewReplyFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentNewReplyBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
@@ -84,11 +84,11 @@ class NewReplyFragment : Fragment() {
 
         viewModel = ViewModelProvider(
             this,
-            NewReplyViewModelFactory(
+            CreateNewReplyViewModelFactory(
                 navArgs.quotedReplyId,
                 requireActivity().application
             )
-        ).get(NewReplyViewModel::class.java)
+        ).get(CreateNewReplyViewModel::class.java)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -189,7 +189,7 @@ class NewReplyFragment : Fragment() {
                     val threadId = last.outputData.getString("threadId")
                     workManager.pruneWork()
                     findNavController().navigate(
-                        NewReplyFragmentDirections.actionNewReplyFragmentToNavigationReplies(
+                        CreateNewReplyFragmentDirections.actionNewReplyFragmentToNavigationReplies(
                             threadId!!, true
                         )
                     )

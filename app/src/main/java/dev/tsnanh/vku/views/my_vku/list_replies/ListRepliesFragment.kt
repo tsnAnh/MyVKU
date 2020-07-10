@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.RepliesAdapter
 import dev.tsnanh.vku.adapters.ReplyClickListener
@@ -20,9 +19,12 @@ import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.viewmodels.my_vku.ListRepliesViewModel
 import dev.tsnanh.vku.viewmodels.my_vku.ListRepliesViewModelFactory
 import dev.tsnanh.vku.views.my_vku.reply.ReplyFragmentDirections
-import timber.log.Timber
 
-class ListRepliesFragment(private val threadId: String, private val position: Int) : Fragment() {
+class ListRepliesFragment(
+    private val threadId: String,
+    private val position: Int,
+    private val isScrollDown: Boolean
+) : Fragment() {
 
     private lateinit var viewModel: ListRepliesViewModel
     private lateinit var binding: FragmentListRepliesBinding
@@ -59,11 +61,12 @@ class ListRepliesFragment(private val threadId: String, private val position: In
         )
 
         binding.listReplies.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = LinearLayoutManager(requireContext()).apply {
+                stackFromEnd = isScrollDown
+            }
             setHasFixedSize(true)
             adapter = adapterReplies
             itemAnimator = null
-            adapter?.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT
         }
 
         viewModel.listReplies.observe(viewLifecycleOwner, Observer { result ->
@@ -75,7 +78,6 @@ class ListRepliesFragment(private val threadId: String, private val position: In
                 is Resource.Success -> {
                     binding.swipeToRefresh.isRefreshing = false
                     adapterReplies.submitList(result.data?.replies)
-                    Timber.i("Yo")
                 }
             }
         })
@@ -93,8 +95,7 @@ class ListRepliesFragment(private val threadId: String, private val position: In
             )
         )
     }
-    private val shareClickListener: (NetworkCustomReply) -> Unit = { reply ->
+    private val shareClickListener: (NetworkCustomReply) -> Unit = {
 //        findNavController().navigate(L)
     }
-
 }

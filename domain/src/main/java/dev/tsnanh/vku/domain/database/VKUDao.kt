@@ -11,6 +11,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.domain.entities.Subject
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Database Access Object for VKUDatabase
@@ -19,18 +20,18 @@ import dev.tsnanh.vku.domain.entities.Subject
 @Dao
 interface VKUDao {
     /**
-     * Insert all news to database
-     * @param news DatabaseNews
+     * Get all news cached from database
+     * @return List<News>
+     */
+    @Query("SELECT * FROM news ORDER BY cmsId DESC")
+    fun getAllNews(): Flow<List<News>>
+
+    /**
+     * Insert all news get from REST API
+     * @param news News
      */
     @Insert(entity = News::class, onConflict = OnConflictStrategy.REPLACE)
     fun insertAllNews(vararg news: News)
-
-    /**
-     * Retrieve all news cached from database
-     * @return LiveData<List<DatabaseNews>>
-     */
-    @Query("SELECT * FROM news ORDER BY date DESC")
-    fun getAllNews(): LiveData<List<News>>
 
     /**
      * Insert all subjects to database

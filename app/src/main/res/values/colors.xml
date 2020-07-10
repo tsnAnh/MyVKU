@@ -25,4 +25,5 @@
     <color name="elearningSecondaryDarkColor">#002171</color>
     <color name="elearningPrimaryTextColor">#000000</color>
     <color name="elearningSecondaryTextColor">#ffffff</color>
+    <color name="cardBorder">@color/primaryColor</color>
 </resources>

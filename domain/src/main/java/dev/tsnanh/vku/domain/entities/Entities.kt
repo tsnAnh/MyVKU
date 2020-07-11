@@ -29,17 +29,19 @@ data class News(
     @field:Json(name = "CmsID")
     val cmsId: String,
     @field:Json(name = "CategoryName")
-    val categoryName: String,
+    val categoryName: String?,
     @field:Json(name = "Title")
-    val title: String,
+    val title: String?,
     @field:Json(name = "Content")
-    val content: String,
+    val content: String?,
     @field:Json(name = "CreatedDate")
-    val createdDate: String,
+    val createdDate: String?,
     @field:Json(name = "UpdatedDate")
-    val updatedDate: String,
+    val updatedDate: String?,
     @field:Json(name = "Slug")
-    val slug: String
+    val slug: String?,
+    @field:Json(name = "Attachment")
+    val attachment: String?
 )
 
 @JsonClass(generateAdapter = true)
@@ -227,7 +229,7 @@ data class SubjectNotification(
 data class Notification(
     @field:Json(name = "_id")
     val id: String,
-    val uid: User,
+    val uid: String,
     val createdAt: Long,
     val message: NotificationMessageContainer,
     val hasSeen: Boolean
@@ -240,10 +242,11 @@ data class NotificationMessageContainer(
 
 @JsonClass(generateAdapter = true)
 data class NotificationMessage(
-    val uid: User,
+    val uid: String,
     val userDisplayName: String,
     val title: String,
-    val content: String
+    val content: String,
+    val photoURL: String?
 )
 
 enum class NotificationTitle(val value: String) {

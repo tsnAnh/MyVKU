@@ -46,7 +46,8 @@ class Constants {
         const val THREAD_KEY = "thread"
 
         // DateFormat template
-        const val DATE_FORMAT_PATTERN = "yyyy/MM/dd - HH:mm:ss"
+        const val DATE_FORMAT_PATTERN_DASH = "yyyy/MM/dd - HH:mm:ss"
+        const val DATE_FORMAT_PATTERN_SPACE = "yyyy/MM/dd HH:mm:ss"
 
         // SaveState
         const val URIS_KEY = "uris"

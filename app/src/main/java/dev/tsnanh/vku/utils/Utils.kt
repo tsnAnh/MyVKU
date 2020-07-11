@@ -12,15 +12,16 @@ import com.google.android.material.snackbar.Snackbar
 import dev.tsnanh.vku.domain.entities.Subject
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /**
  * Convert Javascript timestamp to Java DateTime
  * @return datetime String
  */
-fun Long.convertTimestampToDateString(): String {
+fun Long.convertToDateString(format: String = Constants.DATE_FORMAT_PATTERN_DASH): String {
     val date = Date(this)
-    val formatter = SimpleDateFormat(Constants.DATE_FORMAT_PATTERN, Locale.getDefault())
+    val formatter = SimpleDateFormat(format, Locale.getDefault())
 
     return formatter.format(date)
 }

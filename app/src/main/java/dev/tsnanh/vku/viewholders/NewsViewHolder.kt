@@ -29,6 +29,7 @@ class NewsViewHolder private constructor(
     ) {
         binding.news = news
         binding.clickListener = clickListener
+        binding.date.text = news.updatedDate
         binding.executePendingBindings()
     }
 }

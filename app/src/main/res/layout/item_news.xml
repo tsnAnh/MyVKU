@@ -59,6 +59,7 @@
                 android:textAllCaps="true"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                 android:textColor="?android:attr/textColorPrimary"
+                android:text="@{ news.categoryName }"
                 app:drawableTint="?android:attr/textColorSecondary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

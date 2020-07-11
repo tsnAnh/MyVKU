@@ -1,31 +1,35 @@
 package dev.tsnanh.vku.domain.repositories
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import dev.tsnanh.vku.domain.database.VKUDao
 import dev.tsnanh.vku.domain.entities.News
+import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.domain.handler.ErrorHandler
+import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import org.koin.java.KoinJavaComponent.inject
 
 interface NewsRepo {
-    fun getAllNews(): LiveData<List<News>>
-    suspend fun refresh()
+    fun getNews(url: String, time: String): Flow<Resource<List<News>>>
 }
 
 class NewsRepoImpl : NewsRepo {
-    private val dao by inject(VKUDao::class.java)
-    override fun getAllNews(): LiveData<List<News>> {
-        return dao.getAllNews().asLiveData()
-    }
-
-    @Throws(Exception::class)
-    override suspend fun refresh() = withContext(Dispatchers.IO) {
+    override fun getNews(url: String, time: String): Flow<Resource<List<News>>> = flow {
+        emit(Resource.Loading())
         try {
-            // val news = VKUServiceApi.network.getNews
-            // dao.insertAllNews(*news.news.toTypedArray())
-        } catch (e: Throwable) {
-            throw e
+            val jsonString =
+                withContext(Dispatchers.IO) {
+                    VKUServiceApi.network.getNews(url, time).execute().body()!!.string()
+                }
+            val newString = jsonString
+                .replace("\\", "")
+                .replace("\"", "'")
+
+            // val listNews = withContext(Dispatchers.IO) {
+            //     adapter.fromJson(newString)
+            // }
+        } catch (e: Exception) {
+            emit(ErrorHandler.handleError(e))
         }
     }
 }

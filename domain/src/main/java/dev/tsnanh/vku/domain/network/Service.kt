@@ -11,7 +11,6 @@ import dev.tsnanh.vku.domain.entities.LoginBody
 import dev.tsnanh.vku.domain.entities.LoginResponse
 import dev.tsnanh.vku.domain.entities.NetworkCustomForum
 import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
-import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.domain.entities.Notification
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.ReplyContainer
@@ -21,8 +20,11 @@ import dev.tsnanh.vku.domain.entities.UserPopulatedNetworkReply
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -64,6 +66,7 @@ private val moshi = Moshi.Builder()
 private val retrofit = Retrofit.Builder()
     .client(client)
     .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .addConverterFactory(ScalarsConverterFactory.create())
     .baseUrl(BASE_URL)
     .build()
 
@@ -232,7 +235,7 @@ interface VKUService {
      * @return List<News>
      */
     @GET
-    suspend fun getNews(@Url url: String, @Query("time") time: String): List<News>
+    fun getNews(@Url url: String, @Query("time") time: String): Call<ResponseBody>
 }
 
 /**

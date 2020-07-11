@@ -31,7 +31,7 @@
                 android:layout_height="64dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:contentDescription="@{ notification.uid.displayName }"
+                android:contentDescription="@{ @string/notificationMessage(notification.message.data.userDisplayName, notiMessage) }"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
@@ -44,7 +44,7 @@
                 android:layout_marginEnd="16dp"
                 android:ellipsize="end"
                 android:maxLines="3"
-                android:text="@{ @string/notificationMessage(notification.uid.displayName, notiMessage) }"
+                android:text="@{  @string/notificationMessage(notification.message.data.userDisplayName, notiMessage) }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView5"

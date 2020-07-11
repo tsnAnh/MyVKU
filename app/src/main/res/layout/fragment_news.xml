@@ -17,6 +17,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            app:layout_anchor="@id/list_news"
+            app:layout_anchorGravity="center" />
+
         <include layout="@layout/app_bar_with_logo" />
 
         <androidx.core.widget.NestedScrollView
@@ -54,7 +63,6 @@
                                 style="@style/Widget.MaterialComponents.Chip.Filter"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
                                 android:tag="thong-bao-chung"
                                 android:text="@string/text_thong_bao_chung" />
 
@@ -63,7 +71,6 @@
                                 style="@style/Widget.MaterialComponents.Chip.Filter"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
                                 android:tag="thong-bao-ctsv"
                                 android:text="@string/text_thong_bao_ctsv" />
 
@@ -72,7 +79,6 @@
                                 style="@style/Widget.MaterialComponents.Chip.Filter"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
                                 android:tag="thong-bao-khtc"
                                 android:text="@string/text_thong_bao_khtc" />
 
@@ -81,7 +87,6 @@
                                 style="@style/Widget.MaterialComponents.Chip.Filter"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:onClick="@{ (view) -> viewModel.onChipClick(view) }"
                                 android:tag="confession"
                                 android:text="@string/text_confession" />
                         </com.google.android.material.chip.ChipGroup>

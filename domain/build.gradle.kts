@@ -73,4 +73,5 @@ dependencies {
     testImplementation(Libraries.testRoom)
 
     implementation(Libraries.timber)
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 }

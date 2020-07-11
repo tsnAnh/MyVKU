@@ -8,6 +8,7 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ItemNotificationBinding
 import dev.tsnanh.vku.domain.entities.Notification
 import dev.tsnanh.vku.domain.entities.NotificationTitle
+import dev.tsnanh.vku.utils.convertToDateString
 
 class NotificationViewHolder private constructor(
     private val binding: ItemNotificationBinding
@@ -22,6 +23,8 @@ class NotificationViewHolder private constructor(
 
     fun bind(notification: Notification) {
         binding.notification = notification
+        binding.textView15.text =
+            notification.createdAt.convertToDateString()
         binding.notiMessage = when (notification.message.data.title) {
             NotificationTitle.MESSAGE_LIKE.value -> binding.root.context.getString(R.string.text_message_like)
             NotificationTitle.MESSAGE_TO_OWNER.value -> binding.root.context.getString(R.string.text_message_to_owner)
@@ -30,7 +33,7 @@ class NotificationViewHolder private constructor(
             NotificationTitle.MESSAGE_TO_ALL_SUBSCRIBERS.value -> binding.root.context.getString(R.string.text_message_to_all_subscribers)
             else -> throw IllegalArgumentException("WTF is this message???")
         }
-        Glide.with(binding.imageView5).load(notification.message.data.uid.photoURL).centerCrop()
+        Glide.with(binding.imageView5).load(notification.message.data.photoURL).centerCrop()
             .circleCrop()
             .into(binding.imageView5)
         binding.executePendingBindings()

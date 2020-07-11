@@ -12,6 +12,7 @@ class ErrorHandler {
     companion object {
         fun <T> handleError(e: Exception): Resource.Error<out T> {
             Timber.e("Error: ${e.message!!}")
+            e.printStackTrace()
             return when (e) {
                 is HttpException -> {
                     when (e.code()) {

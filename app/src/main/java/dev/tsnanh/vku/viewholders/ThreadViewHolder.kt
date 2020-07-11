@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.ItemThreadBinding
 import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
-import dev.tsnanh.vku.utils.convertTimestampToDateString
+import dev.tsnanh.vku.utils.convertToDateString
 
 class ThreadViewHolder(
     private val binding: ItemThreadBinding
@@ -28,7 +28,7 @@ class ThreadViewHolder(
 
     fun bind(thread: NetworkForumThreadCustom, listener: ThreadClickListener) {
         binding.thread = thread
-        binding.createdAt = thread.createdAt.convertTimestampToDateString()
+        binding.createdAt = thread.createdAt.convertToDateString()
         binding.listener = listener
         binding.executePendingBindings()
     }

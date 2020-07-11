@@ -124,6 +124,7 @@ dependencies {
     implementation(Libraries.recyclerView)
     implementation(Libraries.firebaseCrashlytics)
     implementation(Libraries.firebaseAnalytics)
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"

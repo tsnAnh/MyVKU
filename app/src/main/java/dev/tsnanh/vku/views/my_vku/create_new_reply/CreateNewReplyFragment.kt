@@ -39,7 +39,7 @@ import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.Constants.Companion.RC_ADD_PHOTO
 import dev.tsnanh.vku.utils.Constants.Companion.RC_IMAGE_PICKER
 import dev.tsnanh.vku.utils.Constants.Companion.RC_PERMISSION
-import dev.tsnanh.vku.utils.convertTimestampToDateString
+import dev.tsnanh.vku.utils.convertToDateString
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.CreateNewReplyViewModel
 import dev.tsnanh.vku.viewmodels.my_vku.CreateNewReplyViewModelFactory
@@ -140,7 +140,7 @@ class CreateNewReplyFragment : Fragment() {
                             materialCardView.visibility = View.VISIBLE
                             reply = replyResource.data
                             datetime.text =
-                                replyResource.data?.createdAt?.convertTimestampToDateString()
+                                replyResource.data?.createdAt?.convertToDateString()
                         }
                     }
                 }

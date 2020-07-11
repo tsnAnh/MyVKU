@@ -11,28 +11,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.chip.Chip
 import com.google.android.material.transition.MaterialFadeThrough
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.NewsAdapter
 import dev.tsnanh.vku.adapters.NewsClickListener
 import dev.tsnanh.vku.databinding.FragmentNewsBinding
 import dev.tsnanh.vku.domain.entities.News
+import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.CustomTabHelper
 import dev.tsnanh.vku.utils.SecretConstants
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.my_vku.NewsViewModel
-import kotlinx.coroutines.launch
 
 class NewsFragment : Fragment() {
 
@@ -57,7 +55,6 @@ class NewsFragment : Fragment() {
             .inflate(inflater, R.layout.fragment_news, container, false)
 
         setHasOptionsMenu(true)
-        viewModel.refreshNews()
         return binding.root
     }
 
@@ -78,52 +75,39 @@ class NewsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        viewModel.navigateToView.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                launchNews(it)
-            }
-        })
-
-        viewModel.error.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                binding.apply {
-                    swipeToRefresh.isRefreshing = false
-                    chipsFilterNews.clearCheck()
+        viewModel.news.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Resource.Loading -> isShowProgressBar(true)
+                is Resource.Error -> {
+                    isShowProgressBar(false)
+                    updateUIError(result.message)
                 }
-                showSnackbarWithAction(
-                    requireView(),
-                    it,
-                    requireContext().getString(R.string.text_hide)
-                )
-                viewModel.onErrorDisplayed()
-            }
-        })
-
-        binding.swipeToRefresh.setOnRefreshListener {
-            lifecycleScope.launch {
-                binding.swipeToRefresh.isRefreshing = true
-                for (chip in binding.chipsFilterNews.children) {
-                    (chip as Chip).isChecked = false
+                is Resource.Success -> {
+                    // adapter.submitList(result.data)
+                    isShowProgressBar(false)
                 }
-                viewModel.refreshNews()
             }
         }
     }
 
+    private fun updateUIError(message: String?) {
+        if (message != null) {
+            showSnackbarWithAction(requireView(), message)
+        }
+    }
+
+    private fun isShowProgressBar(boolean: Boolean) {
+        binding.progressBar.isVisible = boolean
+    }
+
     private val viewClick: (News) -> Unit = {
-        viewModel.onNavigateToView(it)
     }
 
     private val shareClick: (News) -> Unit = {
-        viewModel.onShareButtonClick(it)
-    }
-
-    private val addDomain: (String) -> String = {
-        "${Constants.DAO_TAO_URL}$it"
     }
 
     private fun launchNews(news: News) {
-        val url = addDomain(SecretConstants.SINGLE_NEWS_URL(news.cmsId))
+        val url = SecretConstants.SINGLE_NEWS_URL(news.cmsId)
         val builder = CustomTabsIntent.Builder()
         builder.setToolbarColor(ContextCompat.getColor(requireContext(), R.color.primaryColor))
         builder.addDefaultShareMenuItem()
@@ -156,13 +140,12 @@ class NewsFragment : Fragment() {
         if (packageName == null) {
             findNavController().navigate(
                 NewsFragmentDirections.actionNavigationNewsToActivityNews(
-                    SecretConstants.SINGLE_NEWS_URL(news.cmsId), news.title
+                    SecretConstants.SINGLE_NEWS_URL(news.cmsId), news.title!!
                 )
             )
         } else {
             customTabsIntent.intent.setPackage(packageName)
             customTabsIntent.launchUrl(requireActivity(), Uri.parse(url))
         }
-        viewModel.onNavigatedToView()
     }
 }

@@ -32,8 +32,6 @@ data class News(
     val categoryName: String?,
     @field:Json(name = "Title")
     val title: String?,
-    @field:Json(name = "Content")
-    val content: String?,
     @field:Json(name = "CreatedDate")
     val createdDate: String?,
     @field:Json(name = "UpdatedDate")

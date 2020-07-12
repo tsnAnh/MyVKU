@@ -254,3 +254,16 @@ enum class NotificationTitle(val value: String) {
     MESSAGE_TO_OWNER_CUSTOM("messageToOwnerCustom"),
     MESSAGE_TO_ALL_SUBSCRIBERS("messageToAllSubscribers")
 }
+
+@JsonClass(generateAdapter = true)
+data class Teacher(
+    @field:Json(name = "hoten")
+    val fullName: String,
+    val phone: String,
+    @field:Json(name = "chucdanh")
+    val title: String,
+    val email: String,
+    @field:Json(name = "tendonvi")
+    val unit: String
+
+)

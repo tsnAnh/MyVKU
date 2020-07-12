@@ -16,6 +16,7 @@ import dev.tsnanh.vku.domain.entities.Notification
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.ReplyContainer
 import dev.tsnanh.vku.domain.entities.Subject
+import dev.tsnanh.vku.domain.entities.Teacher
 import dev.tsnanh.vku.domain.entities.User
 import dev.tsnanh.vku.domain.entities.UserPopulatedNetworkReply
 import okhttp3.MultipartBody
@@ -233,6 +234,14 @@ interface VKUService {
      */
     @GET
     suspend fun getNews(@Url url: String, @Query("time") time: String): List<News>
+
+    /**
+     * Get all teacher from daotao.sict.udn.vn
+     * @param url String
+     * @return List<Teacher>
+     */
+    @GET
+    suspend fun getAllTeachers(@Url url: String): List<Teacher>
 }
 
 /**

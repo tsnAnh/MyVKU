@@ -11,6 +11,8 @@ import dev.tsnanh.vku.domain.repositories.NotificationRepo
 import dev.tsnanh.vku.domain.repositories.NotificationRepoImpl
 import dev.tsnanh.vku.domain.repositories.ReplyRepo
 import dev.tsnanh.vku.domain.repositories.ReplyRepoImpl
+import dev.tsnanh.vku.domain.repositories.TeacherRepo
+import dev.tsnanh.vku.domain.repositories.TeacherRepoImpl
 import dev.tsnanh.vku.domain.repositories.ThreadRepo
 import dev.tsnanh.vku.domain.repositories.ThreadRepoImpl
 import dev.tsnanh.vku.domain.repositories.TimetableRepo
@@ -37,6 +39,8 @@ import dev.tsnanh.vku.domain.usecases.RetrieveReplyByIdUseCase
 import dev.tsnanh.vku.domain.usecases.RetrieveReplyByIdUseCaseImpl
 import dev.tsnanh.vku.domain.usecases.RetrieveSingleForumUseCase
 import dev.tsnanh.vku.domain.usecases.RetrieveSingleForumUseCaseImpl
+import dev.tsnanh.vku.domain.usecases.RetrieveTeachersUseCase
+import dev.tsnanh.vku.domain.usecases.RetrieveTeachersUseCaseImpl
 import dev.tsnanh.vku.domain.usecases.RetrieveThreadsUseCase
 import dev.tsnanh.vku.domain.usecases.RetrieveThreadsUseCaseImpl
 import dev.tsnanh.vku.domain.usecases.RetrieveUserTimetableLiveDataUseCase
@@ -122,5 +126,11 @@ val module = module {
     }
     single<RetrieveNotificationsUseCase> {
         RetrieveNotificationsUseCaseImpl()
+    }
+    single<RetrieveTeachersUseCase> {
+        RetrieveTeachersUseCaseImpl()
+    }
+    single<TeacherRepo> {
+        TeacherRepoImpl()
     }
 }

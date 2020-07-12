@@ -116,6 +116,9 @@
     <string name="text_show_all_subject_summary">Display all subjects in your timetable</string>
     <string name="show_all_subjects_key" translatable="false">dev.tsnanh.vku.showallsubjects</string>
 
+    <string name="text_teacher_email" translatable="false">Email: %s</string>
+    <string name="text_teacher_phone" translatable="false">Phone: %s</string>
+
     <!-- String template -->
     <string name="threadNameTime" translatable="false">%s - %s</string>
     <string name="threadDetails" translatable="true">Threads: %d Replies: %d</string>

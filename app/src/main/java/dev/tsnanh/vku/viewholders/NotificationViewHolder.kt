@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import dev.tsnanh.vku.R
+import dev.tsnanh.vku.adapters.NotificationClickListener
 import dev.tsnanh.vku.databinding.ItemNotificationBinding
 import dev.tsnanh.vku.domain.entities.Notification
 import dev.tsnanh.vku.domain.entities.NotificationTitle
@@ -21,7 +22,10 @@ class NotificationViewHolder private constructor(
         }
     }
 
-    fun bind(notification: Notification) {
+    fun bind(
+        notification: Notification,
+        listener: NotificationClickListener
+    ) {
         binding.notification = notification
         binding.textView15.text =
             notification.createdAt.convertToDateString()

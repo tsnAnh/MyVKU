@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/navigation_forum"
-        android:name="dev.tsnanh.vku.views.my_vku.forum.ForumFragment"
+        android:name="dev.tsnanh.vku.views.forum.ForumFragment"
         android:label="@string/text_forum"
         tools:layout="@layout/fragment_forum">
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_news"
-        android:name="dev.tsnanh.vku.views.my_vku.news.NewsFragment"
+        android:name="dev.tsnanh.vku.views.news.NewsFragment"
         android:label="@string/text_news"
         tools:layout="@layout/fragment_news">
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_more"
-        android:name="dev.tsnanh.vku.views.my_vku.more.MoreFragment"
+        android:name="dev.tsnanh.vku.views.more.MoreFragment"
         android:label="@string/text_more">
         <action
             android:id="@+id/activity_settings"
@@ -45,9 +45,6 @@
         <action
             android:id="@+id/action_navigation_more_to_navigation_teacher_evaluation"
             app:destination="@id/navigation_teacher_evaluation" />
-        <action
-            android:id="@+id/action_navigation_more_to_elearningMainActivity"
-            app:destination="@id/elearningMainActivity" />
     </fragment>
     <activity
         android:id="@+id/activity_news"
@@ -62,7 +59,7 @@
     </activity>
     <fragment
         android:id="@+id/navigation_new_thread"
-        android:name="dev.tsnanh.vku.views.my_vku.create_new_thread.NewThreadFragment"
+        android:name="dev.tsnanh.vku.views.create_new_thread.NewThreadFragment"
         android:label="@string/text_new_thread">
         <argument
             android:name="forumId"
@@ -78,7 +75,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_thread"
-        android:name="dev.tsnanh.vku.views.my_vku.thread.ThreadFragment"
+        android:name="dev.tsnanh.vku.views.thread.ThreadFragment"
         android:label="ThreadFragment">
         <argument
             android:name="id"
@@ -95,15 +92,15 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_timetable"
-        android:name="dev.tsnanh.vku.views.my_vku.timetable.TimetableFragment"
+        android:name="dev.tsnanh.vku.views.timetable.TimetableFragment"
         android:label="Timetable" />
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="dev.tsnanh.vku.views.my_vku.notifications.NotificationsFragment"
+        android:name="dev.tsnanh.vku.views.notifications.NotificationsFragment"
         android:label="@string/text_notification" />
     <fragment
         android:id="@+id/navigation_replies"
-        android:name="dev.tsnanh.vku.views.my_vku.reply.ReplyFragment"
+        android:name="dev.tsnanh.vku.views.reply.ReplyFragment"
         android:label="Replies">
         <argument
             android:name="threadId"
@@ -121,7 +118,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_image_viewer"
-        android:name="dev.tsnanh.vku.views.my_vku.image_viewer.ImageViewerFragment"
+        android:name="dev.tsnanh.vku.views.image_viewer.ImageViewerFragment"
         android:label="ImageViewerFragment">
         <argument
             android:name="urls"
@@ -140,15 +137,11 @@
         android:label="WelcomeActivity" />
     <fragment
         android:id="@+id/navigation_teacher_evaluation"
-        android:name="dev.tsnanh.vku.views.my_vku.teacher_evaluation.TeacherEvaluationFragment"
+        android:name="dev.tsnanh.vku.views.teacher_evaluation.TeacherEvaluationFragment"
         tools:layout="@layout/fragment_teacher_evaluation" />
-    <activity
-        android:id="@+id/elearningMainActivity"
-        android:name="dev.tsnanh.vku.activities.ElearningMainActivity"
-        android:label="ElearningMainActivity" />
     <fragment
         android:id="@+id/navigation_new_reply"
-        android:name="dev.tsnanh.vku.views.my_vku.create_new_reply.CreateNewReplyFragment"
+        android:name="dev.tsnanh.vku.views.create_new_reply.CreateNewReplyFragment"
         android:label="NewReplyFragment">
         <argument
             android:name="threadId"
@@ -165,7 +158,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_list_replies"
-        android:name="dev.tsnanh.vku.views.my_vku.list_replies.ListRepliesFragment"
+        android:name="dev.tsnanh.vku.views.list_replies.ListRepliesFragment"
         android:label="ListRepliesFragment">
         <action
             android:id="@+id/action_navigation_list_replies_to_navigation_new_reply"

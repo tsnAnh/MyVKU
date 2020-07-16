@@ -21,21 +21,6 @@
         <item name="fontFamily">@font/roboto</item>
         <item name="android:fontFamily">@font/roboto</item>
     </style>
-    <!-- Elearning Theme -->
-    <style name="ElearningAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/elearningPrimaryColor</item>
-        <item name="colorPrimaryDark">@color/elearningPrimaryDarkColor</item>
-        <item name="colorPrimaryVariant">@color/elearningPrimaryDarkColor</item>
-        <item name="colorAccent">@color/elearningPrimaryLightColor</item>
-        <item name="colorControlActivated">@color/elearningSecondaryColor</item>
-        <item name="colorControlHighlight">@color/elearningPrimaryLightColor</item>
-        <item name="colorSecondary">@color/elearningSecondaryColor</item>
-        <item name="colorSecondaryVariant">@color/elearningSecondaryDarkColor</item>
-        <item name="colorOnSecondary">@color/elearningSecondaryTextColor</item>
-        <item name="colorOnPrimary">@color/elearningPrimaryTextColor</item>
-        <item name="android:statusBarColor">@color/elearningPrimaryDarkColor</item>
-    </style>
 
     <style name="BottomSheetDialogStyle" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="colorPrimary">@color/primaryColor</item>

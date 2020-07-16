@@ -61,9 +61,6 @@
         <receiver android:name=".receivers.SubjectReminderReceiver" />
 
         <activity
-            android:name=".activities.ElearningMainActivity"
-            android:theme="@style/ElearningAppTheme" />
-        <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity android:name=".activities.NewsActivity" />

@@ -10,7 +10,7 @@
 
         <variable
             name="viewModel"
-            type="dev.tsnanh.vku.viewmodels.my_vku.NewThreadViewModel" />
+            type="dev.tsnanh.vku.viewmodels.NewThreadViewModel" />
 
         <variable
             name="pickerHasImage"

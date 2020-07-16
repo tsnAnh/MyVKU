@@ -11,7 +11,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.PreferenceManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -25,7 +24,7 @@ import dev.tsnanh.vku.domain.entities.LoginBody
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.setSchoolReminderAlarm
-import dev.tsnanh.vku.viewmodels.my_vku.WelcomeViewModel
+import dev.tsnanh.vku.viewmodels.WelcomeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -91,27 +90,13 @@ class WelcomeActivity : AppCompatActivity() {
                             when (response) {
                                 is Resource.Success -> {
                                     if (response.data!!.user.id.isNotEmpty()) {
-                                        val sharedPreferences =
-                                            PreferenceManager.getDefaultSharedPreferences(this@WelcomeActivity)
-                                        if (sharedPreferences.getBoolean(
-                                                getString(R.string.elearning_mode),
-                                                false
+                                        startActivity(
+                                            Intent(
+                                                this@WelcomeActivity,
+                                                MainActivity::class.java
                                             )
-                                        ) {
-                                            startActivity(
-                                                Intent(
-                                                    this@WelcomeActivity,
-                                                    ElearningMainActivity::class.java
-                                                )
-                                            )
-                                        } else {
-                                            startActivity(
-                                                Intent(
-                                                    this@WelcomeActivity,
-                                                    MainActivity::class.java
-                                                )
-                                            )
-                                        }
+                                        )
+
                                         finish()
                                     }
                                 }
@@ -124,7 +109,7 @@ class WelcomeActivity : AppCompatActivity() {
                                             .make(
                                                 binding.root,
                                                 "Bạn phải sử dụng email \"sict.udn.vn\" để có " +
-                                                        "thể đăng nhập vào ứng dụng!",
+                                                    "thể đăng nhập vào ứng dụng!",
                                                 Snackbar.LENGTH_LONG
                                             )
                                             .show()

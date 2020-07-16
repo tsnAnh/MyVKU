@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="@color/background"
         android:transitionName="teacherEvaluation"
-        tools:context=".views.my_vku.teacher_evaluation.TeacherEvaluationFragment">
+        tools:context=".views.teacher_evaluation.TeacherEvaluationFragment">
 
         <include layout="@layout/app_bar_with_logo" />
 

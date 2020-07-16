@@ -26,7 +26,7 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
 import dev.tsnanh.vku.domain.network.BASE_URL
-import dev.tsnanh.vku.views.my_vku.reply.ReplyFragmentDirections
+import dev.tsnanh.vku.views.reply.ReplyFragmentDirections
 import timber.log.Timber
 
 fun progressBar(context: Context) = CircularProgressDrawable(context).apply {

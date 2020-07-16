@@ -10,7 +10,7 @@
 
         <variable
             name="viewModel"
-            type="dev.tsnanh.vku.viewmodels.my_vku.MoreViewModel" />
+            type="dev.tsnanh.vku.viewmodels.MoreViewModel" />
 
         <variable
             name="user"

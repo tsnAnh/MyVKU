@@ -17,9 +17,22 @@ sealed class Resource<out T>(
     class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
 }
 
+sealed class WorkResult<out T>(
+    val data: T? = null,
+    val message: String? = null
+) {
+    class Success<T>(data: T?) : WorkResult<T>(data)
+    class Error<T>(message: String, data: T? = null) : WorkResult<T>(data, message)
+}
+
 @JsonClass(generateAdapter = true)
 data class LoginBody(
     val tokenFCM: String
+)
+
+@JsonClass(generateAdapter = true)
+data class UpdateThreadBody(
+    val title: String
 )
 
 @JsonClass(generateAdapter = true)
@@ -32,6 +45,8 @@ data class News(
     val categoryName: String?,
     @field:Json(name = "Title")
     val title: String?,
+    @field:Json(name = "Content")
+    val content: String?,
     @field:Json(name = "CreatedDate")
     val createdDate: String?,
     @field:Json(name = "UpdatedDate")
@@ -156,8 +171,7 @@ data class NetworkReply(
     val forumId: String = "",
     val editHistory: List<String> = emptyList(),
     val createdAt: Long = 0L,
-    val quoted: String = "",
-    val quotedReply: QuotedReply? = null
+    val quoted: String? = null
 )
 
 @JsonClass(generateAdapter = true)
@@ -192,6 +206,10 @@ data class NetworkCustomReply(
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class Subject(
+    @field:Json(name = "masv")
+    val studentCode: String,
+    @field:Json(name = "ten")
+    val studentFullName: String,
     @field:Json(name = "tenlop")
     @PrimaryKey
     val className: String,

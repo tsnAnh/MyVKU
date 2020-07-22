@@ -4,7 +4,7 @@
 
 <network-security-config>
     <domain-config>
-        <domain includeSubdomains="true">c3584294.ngrok.io</domain>
+        <domain includeSubdomains="true">34.87.151.214:5001</domain>
         <domain includeSubdomains="true">daotao.sict.udn.vn</domain>
     </domain-config>
     <base-config cleartextTrafficPermitted="true">

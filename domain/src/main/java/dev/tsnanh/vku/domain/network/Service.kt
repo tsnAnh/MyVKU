@@ -5,36 +5,15 @@ package dev.tsnanh.vku.domain.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dev.tsnanh.vku.domain.entities.Forum
-import dev.tsnanh.vku.domain.entities.ForumThread
-import dev.tsnanh.vku.domain.entities.LoginBody
-import dev.tsnanh.vku.domain.entities.LoginResponse
-import dev.tsnanh.vku.domain.entities.NetworkCustomForum
-import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
-import dev.tsnanh.vku.domain.entities.News
-import dev.tsnanh.vku.domain.entities.Notification
-import dev.tsnanh.vku.domain.entities.Reply
-import dev.tsnanh.vku.domain.entities.ReplyContainer
-import dev.tsnanh.vku.domain.entities.Subject
-import dev.tsnanh.vku.domain.entities.Teacher
-import dev.tsnanh.vku.domain.entities.User
-import dev.tsnanh.vku.domain.entities.UserPopulatedNetworkReply
+import dev.tsnanh.vku.domain.entities.*
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Part
-import retrofit2.http.Path
-import retrofit2.http.Query
-import retrofit2.http.Url
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -64,7 +43,8 @@ private val moshi = Moshi.Builder()
  */
 private val retrofit = Retrofit.Builder()
     .client(client)
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
+    .addConverterFactory(ScalarsConverterFactory.create())
     .baseUrl(BASE_URL)
     .build()
 
@@ -204,18 +184,22 @@ interface VKUService {
     suspend fun deleteThread(
         @Header("gg-auth-token") idToken: String,
         @Path("threadId") threadId: String
-    )
+    ): String
 
     /**
      * Edit thread
+     * @param idToken String
      * @param threadId String
+     * @param updateThreadBody UpdateThreadBody
+     * @return ForumThread
      * @author tsnAnh
      */
     @PUT("api/thread/{threadId}")
     suspend fun editThread(
         @Header("gg-auth-token") idToken: String,
-        @Path("threadId") threadId: String
-    )
+        @Path("threadId") threadId: String,
+        @Body updateThreadBody: UpdateThreadBody
+    ): NetworkForumThread
 
     @GET("api/notification")
     suspend fun getNotifications(@Header("gg-auth-token") idToken: String): List<Notification>
@@ -233,7 +217,7 @@ interface VKUService {
      * @return List<News>
      */
     @GET
-    suspend fun getNews(@Url url: String, @Query("time") time: String): List<News>
+    suspend fun getNews(@Url url: String, @Query("time") time: String): ResponseBody
 
     /**
      * Get all teacher from daotao.sict.udn.vn
@@ -242,6 +226,16 @@ interface VKUService {
      */
     @GET
     suspend fun getAllTeachers(@Url url: String): List<Teacher>
+
+    @Multipart
+    @PUT("/api/reply/{replyId}")
+    suspend fun updateReply(
+        @Header("gg-auth-token") idToken: String,
+        @Path("replyId") replyId: String,
+        @Part newImage: Array<MultipartBody.Part>?,
+        @Part("content") content: RequestBody,
+        @Part("images") images: Array<RequestBody>?
+    ): NetworkReply
 }
 
 /**

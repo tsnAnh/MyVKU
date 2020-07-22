@@ -74,4 +74,5 @@ dependencies {
 
     implementation(Libraries.timber)
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation("org.jsoup:jsoup:1.13.1")
 }

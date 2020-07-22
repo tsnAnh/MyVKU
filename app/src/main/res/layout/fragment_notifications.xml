@@ -30,5 +30,8 @@
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             tools:listitem="@layout/item_notification" />
 
+        <include
+            android:id="@+id/include"
+            layout="@layout/layout_error" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -8,6 +8,7 @@ import okhttp3.RequestBody
 import org.koin.java.KoinJavaComponent.inject
 
 interface CreateNewReplyUseCase {
+    @Throws(Exception::class)
     suspend fun execute(
         idToken: String,
         threadId: String,
@@ -19,6 +20,8 @@ interface CreateNewReplyUseCase {
 
 class CreateNewReplyUseCaseImpl : CreateNewReplyUseCase {
     private val replyRepo by inject(ReplyRepo::class.java)
+
+    @Throws(Exception::class)
     override suspend fun execute(
         idToken: String, threadId: String, content: RequestBody,
         images: Array<MultipartBody.Part>?,

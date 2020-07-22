@@ -8,8 +8,7 @@ import android.os.Build
 import dev.tsnanh.vku.domain.entities.Subject
 import dev.tsnanh.vku.receivers.SchoolReminderReceiver
 import timber.log.Timber
-import java.util.ArrayList
-import java.util.Calendar
+import java.util.*
 
 const val RC_SCHOOL_REMINDER_MORNING = 1000
 const val RC_SCHOOL_REMINDER_AFTERNOON = 2000

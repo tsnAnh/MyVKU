@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -24,7 +25,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.chip.Chip
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.entities.NetworkCustomReply
-import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
 import dev.tsnanh.vku.domain.network.BASE_URL
 import dev.tsnanh.vku.views.reply.ReplyFragmentDirections
 import timber.log.Timber
@@ -65,7 +65,13 @@ fun ImageView.setChooserImage(uri: Uri?) {
     uri?.let {
         Glide
             .with(this.context)
-            .load(it)
+            .load(if (it.toString().startsWith("http")) {
+                it.toString().also { str ->
+                    Timber.i(str)
+                }
+            } else {
+                it
+            })
             .placeholder(progressBar(this.context))
             .into(this)
     }
@@ -81,22 +87,7 @@ fun Button.setButtonVisible(visibility: Boolean) {
 
 @BindingAdapter("hasImage")
 fun RecyclerView.setHasImage(visibility: Boolean) {
-    this.visibility = when (visibility) {
-        true -> View.VISIBLE
-        false -> View.INVISIBLE
-    }
-}
-
-@BindingAdapter("itemThreadAvatar")
-fun ImageView.setItemThreadAvatar(thread: NetworkForumThreadCustom) {
-    Glide
-        .with(this.context)
-        .load(thread.uid?.photoURL)
-        .placeholder(progressBar(this.context))
-        .diskCacheStrategy(DiskCacheStrategy.ALL)
-        .centerCrop()
-        .circleCrop()
-        .into(this)
+    this.isVisible = visibility
 }
 
 @BindingAdapter("setImage")

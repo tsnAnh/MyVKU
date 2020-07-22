@@ -4,6 +4,7 @@
 
 package dev.tsnanh.vku.activities
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -12,23 +13,36 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.Window
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.animation.doOnEnd
 import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.common.api.ApiException
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
+import com.google.firebase.iid.FirebaseInstanceId
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
-import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.createNotificationChannel
+import dev.tsnanh.vku.domain.entities.LoginBody
+import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.utils.*
+import dev.tsnanh.vku.viewmodels.MainViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 import kotlin.math.hypot
 
@@ -37,6 +51,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var sharedPreferences: SharedPreferences
+    private val mGoogleSignInClient by inject(GoogleSignInClient::class.java)
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -74,8 +90,111 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             getString(R.string.firebase_forum_notification_channel),
             "Forum Notification"
         )
-    }
 
+        // slient Sign In
+        mGoogleSignInClient.silentSignIn().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    viewModel.updateAccount(Resource.Success(account))
+                } catch (e: ApiException) {
+                    showSnackbarWithAction(
+                        binding.root,
+                        "Something went wrong with your Google Account. Please log in again!",
+                        "Log out", {
+                            mGoogleSignInClient.signOut().addOnCompleteListener {
+                                startActivity(Intent(this, WelcomeActivity::class.java))
+                                finish()
+                            }
+                        }, binding.bottomNavView
+                    )
+                    viewModel.updateAccount(Resource.Error("googleException"))
+                } catch (ex: Exception) {
+                    viewModel.updateAccount(Resource.Error("exception"))
+                    Timber.e(ex)
+                }
+            }
+        }
+
+        viewModel.accountStatus.observe(this) { result ->
+            when (result) {
+                is Resource.Error -> {
+                    showSnackbarWithAction(
+                        binding.root,
+                        "Errorrrrrrr",
+                        null,
+                        null,
+                        binding.bottomNavView
+                    )
+                }
+                is Resource.Success -> {
+                    result.data?.email?.let { setSchoolReminderAlarm(it) }
+                    if (isInternetAvailable(this)) {
+                        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+                            if (task.isComplete) {
+                                lifecycleScope.launch {
+                                    val response =
+                                        withContext(Dispatchers.IO) {
+                                            Timber.d(task.result?.token!!)
+                                            viewModel.login(
+                                                result.data?.idToken!!,
+                                                LoginBody(task.result!!.token)
+                                            )
+                                        }
+                                    when (response) {
+                                        is Resource.Success -> {
+                                            if (response.data!!.user.id.isNotEmpty()) {
+                                                showSnackbarWithAction(
+                                                    binding.root,
+                                                    "Logged in as ${response.data?.user?.email}",
+                                                    null, null,
+                                                    binding.bottomNavView
+                                                )
+                                            }
+                                        }
+                                        is Resource.Error -> {
+                                            if (response.message == "403 Forbidden") {
+                                                mGoogleSignInClient.signOut()
+                                                Snackbar
+                                                    .make(
+                                                        binding.root,
+                                                        "Bạn phải sử dụng email \"sict.udn.vn\" để có " +
+                                                                "thể đăng nhập vào ứng dụng!",
+                                                        Snackbar.LENGTH_LONG
+                                                    )
+                                                    .show()
+                                            } else if (response.message == "") {
+
+                                            } else
+                                                Snackbar
+                                                    .make(
+                                                        binding.root,
+                                                        response.message!!,
+                                                        Snackbar.LENGTH_INDEFINITE
+                                                    )
+                                                    .setAction(getString(R.string.text_exit)) {
+                                                        this@MainActivity.finish()
+                                                    }
+                                                    .show()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        showSnackbarWithAction(
+                            binding.root,
+                            "Offline mode",
+                            null,
+                            null,
+                            binding.bottomNavView
+                        )
+                    }
+                }
+                is Resource.Loading -> TODO("implement later")
+            }
+        }
+    }
 
     // Bottom Navigation View callback
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

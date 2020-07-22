@@ -8,17 +8,14 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
+import androidx.work.*
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import dev.tsnanh.vku.domain.entities.ForumThread
-import dev.tsnanh.vku.domain.entities.Reply
+import dev.tsnanh.vku.domain.entities.*
+import dev.tsnanh.vku.domain.usecases.LoginUseCase
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.toListStringUri
 import dev.tsnanh.vku.workers.CreateNewReplyWorker
@@ -60,16 +57,18 @@ class MainViewModel : ViewModel() {
         _notificationCount.value = null
     }
 
-    private val _displayMode = MutableLiveData<String>()
-    val displayMode: LiveData<String>
-        get() = _displayMode
+    private val _accountStatus = MutableLiveData<Resource<GoogleSignInAccount>>()
+    val accountStatus: LiveData<Resource<GoogleSignInAccount>>
+        get() = _accountStatus
 
-    fun setTheme(mode: String) {
-        _displayMode.value = mode
+    fun updateAccount(account: Resource<GoogleSignInAccount>) {
+        _accountStatus.value = account
     }
 
-    fun onSetThemeDone() {
-        _displayMode.value = null
+    private val checkHasUserUseCase by inject(LoginUseCase::class.java)
+
+    suspend fun login(token: String, loginBody: LoginBody): Resource<LoginResponse> {
+        return checkHasUserUseCase.execute(token, loginBody)
     }
 
     // TODO: Create Notifications LiveData

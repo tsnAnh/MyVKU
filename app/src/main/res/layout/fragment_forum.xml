@@ -46,33 +46,9 @@
             app:layout_anchor="@id/list_topics"
             app:layout_anchorGravity="center" />
 
-        <LinearLayout
-            android:id="@+id/error_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            app:layout_anchor="@id/list_topics"
-            app:layout_anchorGravity="center">
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/sad" />
-
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/err_msg_something_went_wrong"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-        </LinearLayout>
+        <include
+            android:id="@+id/include"
+            layout="@layout/layout_error" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

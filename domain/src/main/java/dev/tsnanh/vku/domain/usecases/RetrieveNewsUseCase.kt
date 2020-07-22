@@ -8,7 +8,7 @@ import dev.tsnanh.vku.domain.repositories.NewsRepo
 import org.koin.java.KoinJavaComponent.inject
 
 interface RetrieveNewsUseCase {
-    fun execute(url: String, time: String): LiveData<Resource<List<News>>>
+    fun execute(url: String, time: String): LiveData<Resource<List<News?>>>
 }
 
 class RetrieveNewsUseCaseImpl : RetrieveNewsUseCase {

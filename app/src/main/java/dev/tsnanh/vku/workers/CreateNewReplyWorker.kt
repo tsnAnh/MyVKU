@@ -11,7 +11,9 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.domain.entities.Reply
+import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.usecases.CreateNewReplyUseCase
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.getFilePath
@@ -76,17 +78,24 @@ class CreateNewReplyWorker(private val context: Context, params: WorkerParameter
         val deferred = async {
             parts?.let {
                 with(createNewReplyUseCase) {
-                    execute(
-                        token,
-                        threadId,
-                        RequestBody.create(MediaType.parse("text/plain"), reply!!.content),
-                        parts,
-                        if (quotedReplyId != null) {
-                            RequestBody.create(MediaType.parse("text/plain"), quotedReplyId)
-                        } else {
-                            null
+                    try {
+                        execute(
+                            token,
+                            threadId,
+                            RequestBody.create(MediaType.parse("text/plain"), reply!!.content),
+                            parts,
+                            if (quotedReplyId != null) {
+                                RequestBody.create(MediaType.parse("text/plain"), quotedReplyId)
+                            } else {
+                                null
+                            }
+                        )
+                    } catch (e: Exception) {
+                        // TODO: 18/07/2020 delete threads when create reply fail
+                        Resource.Error<News>("failToCreateReply").also {
+                            Result.failure()
                         }
-                    )
+                    }
                 }
             }
         }

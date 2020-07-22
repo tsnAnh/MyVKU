@@ -13,8 +13,8 @@ import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -39,7 +39,6 @@ class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-
         exitTransition = Hold()
 
         setHasOptionsMenu(true)
@@ -89,27 +88,25 @@ class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
         }
 
         with(viewModel) {
-            pageCount.observe(viewLifecycleOwner, Observer {
-                it?.let { result ->
-                    when (result) {
-                        is Resource.Success -> {
-                            Timber.d("Refreshed All Pages")
-                            val adapter = ListRepliesPagerAdapter(
-                                this@ReplyFragment,
-                                navArgs.threadId,
-                                result.data!!.totalPages
-                            )
-                            binding.viewPager.adapter = adapter
+            pageCount.observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Timber.d("Refreshed All Pages")
+                        val adapter = ListRepliesPagerAdapter(
+                            this@ReplyFragment,
+                            navArgs.threadId,
+                            result.data!!.totalPages
+                        )
+                        binding.viewPager.adapter = adapter
 
-                            binding.viewPager.currentItem = if (navArgs.hasCreatedReply) {
-                                adapter.itemCount
-                            } else {
-                                0
-                            }
+                        binding.viewPager.currentItem = if (navArgs.hasCreatedReply) {
+                            adapter.itemCount
+                        } else {
+                            0
                         }
                     }
                 }
-            })
+            }
         }
 
         binding.fabReply.setOnClickListener {
@@ -152,5 +149,11 @@ class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
                 true
             }
         }
+    }
+
+    companion object {
+        const val EDIT_ITEM_ORDER = 0
+        const val DELETE_ITEM_ORDER = 1
+        const val REPORT_ITEM_ORDER = 2
     }
 }

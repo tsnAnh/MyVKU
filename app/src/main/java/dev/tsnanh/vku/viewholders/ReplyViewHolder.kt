@@ -12,6 +12,7 @@ import dev.tsnanh.vku.adapters.ReplyClickListener
 import dev.tsnanh.vku.databinding.ItemReplyBinding
 import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.utils.convertToDateString
+import dev.tsnanh.vku.views.reply.ReplyFragment
 
 class ReplyViewHolder private constructor(
     private val binding: ItemReplyBinding
@@ -25,9 +26,19 @@ class ReplyViewHolder private constructor(
         }
     }
 
-    fun bind(reply: NetworkCustomReply, listener: ReplyClickListener) {
+    fun bind(uid: String, reply: NetworkCustomReply, listener: ReplyClickListener, position: Int) {
         reply.let {
             with(binding) {
+                root.setOnCreateContextMenuListener { contextMenu, _, _ ->
+                    contextMenu.apply {
+                        setHeaderTitle("What do you want to do?")
+                        if (uid == reply.uid?.uidGG) {
+                            add(0, position, ReplyFragment.EDIT_ITEM_ORDER, "Edit")
+                            add(0, position, ReplyFragment.DELETE_ITEM_ORDER, "Delete")
+                        }
+                        add(0, position, ReplyFragment.REPORT_ITEM_ORDER, "Report")
+                    }
+                }
                 this.reply = it
                 timeCreated = it.createdAt.convertToDateString()
                 quotedReply = it.quoted

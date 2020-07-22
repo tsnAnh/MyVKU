@@ -28,6 +28,7 @@ import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.FragmentForumBinding
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
+import dev.tsnanh.vku.utils.isInternetAvailable
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.ForumViewModel
 import timber.log.Timber
@@ -87,7 +88,7 @@ class ForumFragment : Fragment() {
 
         viewModel.forums.observe(viewLifecycleOwner) {
             it.let {
-                binding.errorLayout.visibility = View.GONE
+                binding.include.errorLayout.visibility = View.GONE
                 when (it) {
                     is Resource.Success -> {
                         adapter.updateForums(it.data!!)
@@ -98,12 +99,16 @@ class ForumFragment : Fragment() {
                         binding.progressBar.visibility = View.VISIBLE
                     }
                     is Resource.Error -> {
-                        binding.errorLayout.visibility = View.VISIBLE
-                        showSnackbarWithAction(
-                            requireView(),
-                            it.message.toString(),
-                            requireContext().getString(R.string.text_hide)
-                        )
+                        binding.include.errorLayout.visibility = View.VISIBLE
+                        if (isInternetAvailable(requireContext())) {
+                            showSnackbarWithAction(
+                                requireView(),
+                                it.message.toString(),
+                                requireContext().getString(R.string.text_hide)
+                            )
+                        } else {
+                            binding.include.textView7.text = "No Internet Connection"
+                        }
                         binding.progressBar.visibility = View.GONE
                     }
                 }

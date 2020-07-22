@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2020 My VKU by tsnAnh
- */
-
-package dev.tsnanh.vku.views.create_new_thread
+package dev.tsnanh.vku.views.update_reply
 
 import android.Manifest
 import android.app.Activity
@@ -14,43 +10,38 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import androidx.activity.addCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.transition.MaterialArcMotion
-import com.google.android.material.transition.MaterialContainerTransform
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
-import dev.tsnanh.vku.databinding.FragmentNewThreadBinding
+import dev.tsnanh.vku.adapters.UpdateReplyImageAdapter
+import dev.tsnanh.vku.databinding.FragmentUpdateReplyBinding
 import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
-import dev.tsnanh.vku.domain.entities.ForumThread
-import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.showSnackbarWithAction
-import dev.tsnanh.vku.viewmodels.MainViewModel
-import dev.tsnanh.vku.viewmodels.NewThreadViewModel
+import dev.tsnanh.vku.viewmodels.UpdateReplyViewModel
+import dev.tsnanh.vku.viewmodels.UpdateReplyViewModelFactory
 import timber.log.Timber
 
-class NewThreadFragment : Fragment() {
+class UpdateReplyFragment : Fragment() {
 
-    private val viewModel: NewThreadViewModel by viewModels()
-    private lateinit var binding: FragmentNewThreadBinding
+    private lateinit var viewModel: UpdateReplyViewModel
+    private lateinit var binding: FragmentUpdateReplyBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
-    private val activityViewModel: MainViewModel by activityViewModels()
-
+    private lateinit var imagesAdapter: UpdateReplyImageAdapter
+    private val navArgs: UpdateReplyFragmentArgs by navArgs()
     private lateinit var progressBarLayoutBinding: ProgressDialogLayoutBinding
     private val progressDialog by lazy {
         MaterialAlertDialogBuilder(requireContext())
@@ -61,27 +52,12 @@ class NewThreadFragment : Fragment() {
             .create()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            setPathMotion(MaterialArcMotion())
-        }
-        sharedElementReturnTransition = MaterialContainerTransform().apply {
-            setPathMotion(MaterialArcMotion())
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            findNavController().navigateUp()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil
-            .inflate(inflater, R.layout.fragment_new_thread, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_update_reply, container, false)
 
         binding.toolbar.apply {
             setNavigationOnClickListener {
@@ -94,29 +70,22 @@ class NewThreadFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
-        val navArgs: NewThreadFragmentArgs by navArgs()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-
-        binding.forum.keyListener = null
-        navArgs.forumId?.let {
-            binding.forum.apply {
-                tag = it
-                setText(navArgs.forumTitle)
-                binding.layoutForum.isEnabled = false
-            }
-        }
+        val factory =
+            UpdateReplyViewModelFactory(navArgs.replyId)
+        viewModel = ViewModelProvider(this, factory).get(UpdateReplyViewModel::class.java)
 
         pickerAdapter = ImageChooserAdapter(ImageChooserClickListener(
             listener = { pos ->
                 val newList = pickerAdapter.currentList.toMutableList()
-                newList.removeAt(pos)
+                newList.removeAt(pos.minus(imagesAdapter.itemCount))
                 if (newList.isEmpty()) {
-                    viewModel.onPickerHasNoImage()
+                    if (imagesAdapter.itemCount <= 0) {
+                        viewModel.onPickerHasNoImage()
+                    }
                     pickerAdapter.submitList(emptyList())
                 } else {
                     viewModel.onPickerHasImage()
@@ -127,99 +96,78 @@ class NewThreadFragment : Fragment() {
                 pickImage(Constants.RC_ADD_PHOTO)
             }
         ))
+
+        imagesAdapter = UpdateReplyImageAdapter(emptyList(), ImageChooserClickListener(
+            listener = listener,
+            footerClick = { pickImage(Constants.RC_ADD_PHOTO) }
+        ))
+
+        val concatAdapter = ConcatAdapter(imagesAdapter, pickerAdapter)
+
         binding.listImageUpload.apply {
+            layoutManager = GridLayoutManager(requireContext(), 3)
+            adapter = concatAdapter
             setHasFixedSize(false)
             isNestedScrollingEnabled = false
-            layoutManager =
-                LinearLayoutManager(
-                    requireContext()
-                )
-            adapter = pickerAdapter
         }
 
-        viewModel.pickerHasImage.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                binding.pickerHasImage = it
-            }
-        })
-
-        viewModel.newReplyWorkLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.isNullOrEmpty()) {
-                return@Observer
+        viewModel.updateReplyWorkLiveData.observe(viewLifecycleOwner) { workInfos ->
+            if (workInfos.isNullOrEmpty()) {
+                return@observe
             }
 
-            val workInfo = it[0]
+            val workInfo = workInfos[0]
+            if (!progressDialog.isShowing) {
+                progressDialog.show()
+            }
 
             if (workInfo.state.isFinished) {
-                progressDialog.dismiss()
+                progressDialog.hide()
                 val threadId = workInfo.outputData.getString("threadId")
-                Timber.d(threadId)
-                WorkManager.getInstance(requireContext()).pruneWork()
-//                viewModel.onNavigateToReplyFragment(threadId)
-                findNavController().navigateUp()
-            }
-        })
-
-        viewModel.navigateToReplyFragment.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                findNavController().navigate(
-                    NewThreadFragmentDirections.actionNavigationNewThreadToNavigationReplies(
-                        it
+                Timber.i(threadId)
+                WorkManager.getInstance(requireContext()).pruneWork().state.observe(
+                    viewLifecycleOwner
+                ) {
+                    findNavController().navigate(
+                        UpdateReplyFragmentDirections.actionNavigationUpdateReplyToNavigationReplies(
+                            threadId!!
+                        )
                     )
-                )
-                viewModel.onNavigatedToReplyFragment()
+                }
             }
-        })
+        }
 
-        viewModel.forums.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when (it) {
-                    is Resource.Loading -> {
-                        binding.layoutForum.hint =
-                            requireContext().getString(R.string.text_loading_forums)
-                    }
-                    is Resource.Success -> {
-                        binding.layoutForum.hint = "Forums"
-                        if (it.data != null && it.data!!.isNotEmpty()) {
-                            val forumsTitle = it.data!!.map { forum ->
-                                forum.title
-                            }
-                            val arrAdapter =
-                                ArrayAdapter(
-                                    requireContext(),
-                                    R.layout.dropdown_menu_popup_item,
-                                    forumsTitle
-                                )
+        viewModel.reply.observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    binding.apply {
+                        userPopulatedReply = resource.data
 
-                            binding.forum.setOnItemClickListener { _, _, i, _ ->
-                                binding.forum.tag = it.data!![i].id
-                            }
-
-                            binding.forum.setAdapter(arrAdapter)
+                        Timber.d(resource.data.toString())
+                        fabUpdateReply.setOnClickListener {
+                            viewModel.editReply(
+                                pickerAdapter.currentList,
+                                content.text.toString(),
+                                imagesAdapter.listImages
+                            )
                         }
-                    }
-                    is Resource.Error -> {
-                        binding.apply {
-                            this.chooseImage.isEnabled = false
-                            this.layoutForum.isEnabled = false
-                            this.fabSubmit.isEnabled = false
-                            this.layoutTitle.isEnabled = false
-                            this.layoutContent.isEnabled = false
-                        }
-                        showSnackbarWithAction(
-                            requireView(),
-                            "${it.message.toString()}. Please try again later.",
-                            "BACK"
-                        ) {
-                            findNavController().navigateUp()
+
+                        resource.data?.images?.let {
+                            Timber.d(it.toString())
+                            imagesAdapter.updateList(it)
+                            viewModel.onPickerHasImage()
                         }
                     }
                 }
             }
-        })
+        }
 
-        binding.fabSubmit.setOnClickListener {
-            createThread()
+        viewModel.pickerHasImage.observe(viewLifecycleOwner) {
+            it.let {
+                binding.pickerHasImage = it
+            }
         }
 
         binding.chooseImage.setOnClickListener {
@@ -236,16 +184,10 @@ class NewThreadFragment : Fragment() {
                     )
                 ) {
                     MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(requireContext().getString(R.string.msg_permission_required))
-                        .setMessage(requireContext().getString(R.string.msg_need_permission))
-                        .setPositiveButton(requireContext().getString(R.string.text_ok)) { d, _ ->
-                            requestPermissions(
-                                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                                Constants.RC_PERMISSION
-                            )
-                            d.dismiss()
-                        }
-                        .setNegativeButton(requireContext().getString(R.string.text_cancel)) { d, _ ->
+                        .setTitle("Permission required")
+                        .setMessage("We need permission to upload your image!")
+                        .setPositiveButton("OK") { d, _ ->
+                            pickImage(Constants.RC_IMAGE_PICKER)
                             d.dismiss()
                         }
                         .create().show()
@@ -258,6 +200,7 @@ class NewThreadFragment : Fragment() {
             }
         }
     }
+
 
     // region Pick Image
     private fun pickImage(requestCode: Int) {
@@ -277,8 +220,6 @@ class NewThreadFragment : Fragment() {
         val listImage = ArrayList<Uri>()
         if (requestCode == Constants.RC_IMAGE_PICKER) {
             if (resultCode == Activity.RESULT_OK) {
-                pickerAdapter.submitList(emptyList())
-
                 data?.let {
                     if (data.clipData != null) {
                         // check if user has selected more than 5 images
@@ -370,55 +311,19 @@ class NewThreadFragment : Fragment() {
     }
     // endregion
 
-    private fun createThread() {
-        clearError()
-        if (
-            binding.title.text.isNullOrBlank() ||
-            binding.content.text.isNullOrBlank() ||
-            binding.forum.text.isNullOrBlank()
-        ) {
-            if (binding.title.text.isNullOrBlank()) binding.title.error =
-                requireContext().getString(R.string.msg_empty_title)
-            if (binding.forum.text.isNullOrBlank()) binding.forum.error =
-                requireContext().getString(R.string.msg_choose_a_forum)
-            if (binding.content.text.isNullOrBlank()) binding.content.error =
-                requireContext().getString(R.string.msg_empty_content)
+    private val listener: (Int) -> Unit = { pos ->
+        val newList = imagesAdapter.listImages.toMutableList()
+        newList.removeAt(pos)
+        if (newList.isEmpty()) {
+            if (pickerAdapter.itemCount <= 0) {
+                viewModel.onPickerHasNoImage()
+            }
+            imagesAdapter.updateList(emptyList())
+            imagesAdapter.notifyDataSetChanged()
         } else {
-            val thread = prepareThread()
-            val post = preparePost()
-
-            activityViewModel.createNewThread(pickerAdapter.currentList, thread, post)
+            viewModel.onPickerHasImage()
+            imagesAdapter.updateList(newList)
+            imagesAdapter.notifyDataSetChanged()
         }
     }
-
-    private fun prepareThread(): ForumThread {
-        return ForumThread(
-            title = binding.title.text.toString().trim(),
-            forumId = (binding.forum.tag as String?).toString()
-        )
-    }
-
-    private fun preparePost(): Reply {
-        return Reply(
-            content = binding.content.text.toString().trim()
-        )
-    }
-
-    private fun clearError() {
-        binding.title.error = null
-        binding.content.error = null
-        binding.forum.error = null
-    }
-    // Disabled for two months
-    // TODO: Make it better
-/*    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(Constants.URIS_KEY, ArrayList(pickerAdapter.currentList))
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        pickerAdapter.submitList(savedInstanceState?.getParcelableArrayList(Constants.URIS_KEY))
-        super.onViewStateRestored(savedInstanceState)
-    }*/
-
 }

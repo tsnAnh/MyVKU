@@ -10,7 +10,7 @@
 
         <variable
             name="viewModel"
-            type="dev.tsnanh.vku.viewmodels.NewThreadViewModel" />
+            type="dev.tsnanh.vku.viewmodels.CreateNewThreadViewModel" />
 
         <variable
             name="pickerHasImage"
@@ -57,7 +57,6 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:fontFamily="@font/roboto"
                     android:text="@string/text_new_thread"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -143,9 +142,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:clipToPadding="false"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
                     app:hasImage="@{ pickerHasImage }"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

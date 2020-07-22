@@ -59,7 +59,7 @@
     </activity>
     <fragment
         android:id="@+id/navigation_new_thread"
-        android:name="dev.tsnanh.vku.views.create_new_thread.NewThreadFragment"
+        android:name="dev.tsnanh.vku.views.create_new_thread.CreateNewThreadFragment"
         android:label="@string/text_new_thread">
         <argument
             android:name="forumId"
@@ -115,6 +115,9 @@
             android:name="hasCreatedReply"
             android:defaultValue="false"
             app:argType="boolean" />
+        <action
+            android:id="@+id/action_navigation_replies_to_navigation_update_reply"
+            app:destination="@id/navigation_update_reply" />
     </fragment>
     <fragment
         android:id="@+id/navigation_image_viewer"
@@ -137,8 +140,7 @@
         android:label="WelcomeActivity" />
     <fragment
         android:id="@+id/navigation_teacher_evaluation"
-        android:name="dev.tsnanh.vku.views.teacher_evaluation.TeacherEvaluationFragment"
-        tools:layout="@layout/fragment_teacher_evaluation" />
+        android:name="dev.tsnanh.vku.views.teacher_evaluation.TeacherEvaluationFragment" />
     <fragment
         android:id="@+id/navigation_new_reply"
         android:name="dev.tsnanh.vku.views.create_new_reply.CreateNewReplyFragment"
@@ -163,5 +165,19 @@
         <action
             android:id="@+id/action_navigation_list_replies_to_navigation_new_reply"
             app:destination="@id/navigation_new_reply" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_update_reply"
+        android:name="dev.tsnanh.vku.views.update_reply.UpdateReplyFragment"
+        android:label="fragment_update_reply"
+        tools:layout="@layout/fragment_update_reply">
+        <argument
+            android:name="replyId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_navigation_update_reply_to_navigation_replies"
+            app:destination="@id/navigation_replies"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_replies" />
     </fragment>
 </navigation>

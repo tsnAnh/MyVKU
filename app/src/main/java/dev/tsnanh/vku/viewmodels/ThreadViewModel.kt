@@ -9,22 +9,27 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.card.MaterialCardView
+import dev.tsnanh.vku.domain.entities.NetworkForumThread
 import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
 import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.domain.entities.UpdateThreadBody
+import dev.tsnanh.vku.domain.usecases.DeleteThreadUseCase
 import dev.tsnanh.vku.domain.usecases.RetrieveThreadsUseCase
+import dev.tsnanh.vku.domain.usecases.UpdateThreadTitleUseCase
 import org.koin.java.KoinJavaComponent.inject
 
 class ThreadViewModel(private val forumId: String) : ViewModel() {
     // Use case
     private val retrieveThreadsUseCase by inject(RetrieveThreadsUseCase::class.java)
+    private val deleteThreadUseCase by inject(DeleteThreadUseCase::class.java)
+    private val updateThreadTitleUseCase by inject(UpdateThreadTitleUseCase::class.java)
 
-    // Data source livedata
+    // Data source LiveData
     private var _threads = retrieveThreadsUseCase.invoke(forumId)
-
     val threads: LiveData<Resource<List<NetworkForumThreadCustom>>>
         get() = _threads
 
-    // Functional livedata
+    // Functional LiveData
     private val _navigateToReplies =
         MutableLiveData<Pair<NetworkForumThreadCustom, MaterialCardView>>()
     val navigateToReplies: LiveData<Pair<NetworkForumThreadCustom, MaterialCardView>>
@@ -39,7 +44,25 @@ class ThreadViewModel(private val forumId: String) : ViewModel() {
     }
 
     fun refreshThreads() {
-        _threads = retrieveThreadsUseCase.invoke(forumId)
+        _threads = retrieveThreadsUseCase
+            .invoke(forumId)
+    }
+
+    fun refreshThreadsLiveData(): LiveData<Resource<List<NetworkForumThreadCustom>>> {
+        return retrieveThreadsUseCase
+            .invoke(forumId)
+    }
+
+    fun updateThreadTitle(
+        idToken: String,
+        threadId: String,
+        body: UpdateThreadBody
+    ): LiveData<Resource<NetworkForumThread>> {
+        return updateThreadTitleUseCase.invoke(idToken, threadId, body)
+    }
+
+    fun deleteThread(idToken: String, threadId: String): LiveData<String> {
+        return deleteThreadUseCase.invoke(idToken, threadId)
     }
 }
 

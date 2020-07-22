@@ -21,6 +21,7 @@ import dev.tsnanh.vku.adapters.NotificationAdapter
 import dev.tsnanh.vku.adapters.NotificationClickListener
 import dev.tsnanh.vku.databinding.FragmentNotificationsBinding
 import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.utils.isInternetAvailable
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.NotificationsViewModel
 import org.koin.java.KoinJavaComponent.inject
@@ -69,17 +70,28 @@ class NotificationsFragment : Fragment() {
                             when (it) {
                                 is Resource.Success -> {
                                     binding.progressBar.isVisible = false
+                                    binding.include.errorLayout.isVisible = false
                                     notificationAdapter.submitList(it.data)
                                 }
                                 is Resource.Loading -> {
                                     binding.progressBar.isVisible = true
+                                    binding.include.errorLayout.isVisible = false
                                 }
                                 is Resource.Error -> {
                                     binding.progressBar.isVisible = false
-                                    showSnackbarWithAction(
-                                        requireView(),
-                                        requireContext().getString(R.string.err_msg_something_went_wrong)
-                                    )
+                                    if (isInternetAvailable(requireContext())) {
+                                        showSnackbarWithAction(
+                                            requireView(),
+                                            requireContext().getString(
+                                                R.string.err_msg_something_went_wrong
+                                            )
+                                        )
+                                    } else {
+                                        binding.include.apply {
+                                            errorLayout.isVisible = true
+                                            textView7.text = "No Internet Connection"
+                                        }
+                                    }
                                 }
                             }
                         }

@@ -6,43 +6,38 @@ package dev.tsnanh.vku.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import dev.tsnanh.vku.R
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import dev.tsnanh.vku.domain.usecases.RetrieveUserTimetableLiveDataUseCase
-import dev.tsnanh.vku.utils.SecretConstants
+import dev.tsnanh.vku.utils.isInternetAvailable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
-import java.net.SocketException
-import java.net.SocketTimeoutException
+import timber.log.Timber
 
 class TimetableViewModel(application: Application) : AndroidViewModel(application) {
     private val retrieveTimetableUseCase by inject(RetrieveUserTimetableLiveDataUseCase::class.java)
     val timetable =
         retrieveTimetableUseCase.invoke()
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
-        get() = _error
+    private val client by inject(GoogleSignInClient::class.java)
 
-    fun onErrorDisplayed() {
-        _error.value = null
+    init {
+        client.silentSignIn().addOnSuccessListener {
+            it.email?.let { it1 -> refreshSubjects(it1) }
+        }
     }
 
-    fun refreshSubjects(email: String) {
+    private fun refreshSubjects(email: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
-                    retrieveTimetableUseCase.refresh(SecretConstants.TKB_URL, email)
-                } catch (ste: SocketTimeoutException) {
-                    _error.postValue(getApplication<Application>().getString(R.string.err_msg_request_timeout))
-                } catch (ske: SocketException) {
-                    _error.postValue(getApplication<Application>().getString(R.string.err_msg_socket_exception))
+                    if (isInternetAvailable(getApplication())) {
+                        retrieveTimetableUseCase.refresh(email)
+                    }
                 } catch (e: Exception) {
-                    _error.postValue(getApplication<Application>().getString(R.string.err_msg_something_went_wrong))
+                    Timber.e(e)
                 }
             }
         }

@@ -11,29 +11,17 @@ import android.os.Build
 import android.os.Build.VERSION_CODES.M
 import android.os.PowerManager
 import androidx.annotation.RequiresApi
-import androidx.core.content.edit
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.usecases.RetrieveUserTimetableUseCase
-import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.RC_SCHOOL_REMINDER_AFTERNOON
-import dev.tsnanh.vku.utils.RC_SCHOOL_REMINDER_EVENING
-import dev.tsnanh.vku.utils.RC_SCHOOL_REMINDER_MORNING
-import dev.tsnanh.vku.utils.RC_SCHOOL_REMINDER_NIGHT
-import dev.tsnanh.vku.utils.calendarAfternoon
-import dev.tsnanh.vku.utils.calendarEvening
-import dev.tsnanh.vku.utils.calendarMorning
-import dev.tsnanh.vku.utils.calendarNight
-import dev.tsnanh.vku.utils.dayOfWeekFilter
-import dev.tsnanh.vku.utils.getHourFromStringLesson
-import dev.tsnanh.vku.utils.sendSchoolReminderNotification
+import dev.tsnanh.vku.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
-import java.util.Calendar
+import java.util.*
 import kotlin.random.Random
 
 class SchoolReminderReceiver : BroadcastReceiver() {
@@ -57,40 +45,41 @@ class SchoolReminderReceiver : BroadcastReceiver() {
             // return part of the day, 0 -> 11 Morning, 12 -> 18 Afternoon, 19 -> 23 Night
             val partOfTheDay = when (Calendar.getInstance()[Calendar.HOUR_OF_DAY]) {
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 -> 0
-                12, 13, 14, 15, 16, 17, 18 -> 1
-                19, 20, 21, 22, 23 -> 2
+                12, 13, 14, 15, 16, 17 -> 1
+                18, 19, 20 -> 2
+                21, 22, 23 -> 3
                 else -> throw IllegalArgumentException("Wrong hour")
             }
             // [END]
             when (val result =
                 withContext(Dispatchers.IO) {
                     retrieveTimetableUseCase.invoke(
-                        "http://daotao.sict.udn.vn/tkb",
                         email!!
                     )
                 }) {
                 is Resource.Error -> Timber.d(result.message)
                 is Resource.Success -> {
+                    Timber.d("success")
                     // Get current day of week
                     val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
 
-                    // Filter this day only
+                    // Filter current day only
                     val list = result.data!!.filter { subject ->
                         dayOfWeekFilter(subject, dayOfWeek)
                     }
 
                     if (list.isEmpty()) {
-                        notificationManager.sendSchoolReminderNotification(
-                            Random(100).nextInt(),
-                            context
-                                .getString(R.string.title_notification_school_reminder_no_subject),
-                            context
-                                .getString(R.string.content_notification_school_reminder_no_subject),
-                            null,
-                            context
-                        )
-                        sharedPreferences.edit {
-                            putBoolean("dayOff", true)
+                        // day off
+                        if (partOfTheDay == 0) {
+                            notificationManager.sendSchoolReminderNotification(
+                                Random(100).nextInt(),
+                                context
+                                    .getString(R.string.title_notification_school_reminder_no_subject),
+                                context
+                                    .getString(R.string.content_notification_school_reminder_no_subject),
+                                null,
+                                context
+                            )
                         }
                     } else {
                         when (partOfTheDay) {
@@ -128,9 +117,6 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                             }
                             // Afternoon
                             1 -> {
-                                if (sharedPreferences.getBoolean("dayOff", false)) {
-                                    return@launch
-                                }
                                 val afternoonSubjects = list.filter { subject ->
                                     subject.week.trim()
                                         .isNotEmpty() && subject.lesson.trim()[0].toString()
@@ -152,8 +138,8 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                                             subject.lesson.getHourFromStringLesson(),
                                             subject.className,
                                             "You have ${subject.className} at " +
-                                                "${subject.lesson.getHourFromStringLesson()} at " +
-                                                "${subject.room} in this afternoon!",
+                                                    "${subject.lesson.getHourFromStringLesson()} at " +
+                                                    "${subject.room} in this afternoon!",
                                             subject.className,
                                             context
                                         )
@@ -161,17 +147,33 @@ class SchoolReminderReceiver : BroadcastReceiver() {
                                 }
                             }
                             2 -> {
+                                notificationManager.sendSchoolReminderNotification(
+                                    Random(10).nextInt(),
+                                    "How is your day?",
+                                    "Good evening here!",
+                                    null,
+                                    context
+                                )
+                            }
+                            3 -> {
                                 // TODO: create notification good night user
-                                sharedPreferences.edit {
-                                    putBoolean("dayOff", false)
-                                }
+                                notificationManager.sendSchoolReminderNotification(
+                                    Random(100).nextInt(),
+                                    "Good night",
+                                    "Good night here!",
+                                    null,
+                                    context
+                                )
                             }
                         }
                     }
                 }
             }
             if (Build.VERSION.SDK_INT >= M) {
-                setAlarmApi23AndAbove(context, intent)
+                val newIntent = Intent(context, SchoolReminderReceiver::class.java).apply {
+                    putExtra("email", email)
+                }
+                setAlarmApi23AndAbove(context, newIntent)
             }
             wakeLock.release()
         }

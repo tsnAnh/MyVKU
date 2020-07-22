@@ -135,4 +135,6 @@
     <string name="text_message_to_owner_custom">has quoted your reply in your thread!</string>
     <string name="text_message_to_all_subscribers">has replied in your thread you are following!</string>
     <string name="notificationMessage" translatable="false"><b>%s</b> %s</string>
+    <string name="text_update_reply">Update Reply</string>
+    <string name="text_update">Update</string>
 </resources>

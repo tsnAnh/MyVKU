@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
 import dev.tsnanh.vku.R
@@ -33,7 +32,8 @@ import dev.tsnanh.vku.utils.getDayOfWeekFromString
 import dev.tsnanh.vku.utils.getHourFromStringLesson
 import dev.tsnanh.vku.utils.getMinutesFromStringLesson
 import dev.tsnanh.vku.viewmodels.TimetableViewModel
-import java.util.Calendar
+import timber.log.Timber
+import java.util.*
 
 class TimetableFragment : Fragment() {
 
@@ -81,64 +81,48 @@ class TimetableFragment : Fragment() {
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
-        mGoogleSignInClient.silentSignIn().addOnCompleteListener {
-            if (it.isSuccessful) {
-                viewModel.timetable
-                    .observe(viewLifecycleOwner, Observer { result ->
-                        binding.progressBar.visibility = View.GONE
-                        // FALSE[view current day only], TRUE[view all]
-                        val viewAll = sharedPreferences.getBoolean(
-                            requireContext().getString(R.string.show_all_subjects_key),
-                            false
-                        )
-                        var list = result.sortedBy { subject ->
-                            subject.lesson.length < 2
-                        }
-                        if (!viewAll) {
-                            val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
-                            list = list.filter { subject ->
-                                when (subject.dayOfWeek) {
-                                    Constants.MONDAY -> Calendar.MONDAY == dayOfWeek
-                                    Constants.TUESDAY -> Calendar.TUESDAY == dayOfWeek
-                                    Constants.WEDNESDAY -> Calendar.WEDNESDAY == dayOfWeek
-                                    Constants.THURSDAY -> Calendar.THURSDAY == dayOfWeek
-                                    Constants.FRIDAY -> Calendar.FRIDAY == dayOfWeek
-                                    Constants.SATURDAY -> Calendar.SATURDAY == dayOfWeek
-                                    else -> Calendar.SUNDAY == dayOfWeek
-                                }
-                            }
-                        }
-                        timetableAdapter.updateSubjects(list)
-                        // requireArguments().getString("subject", null)?.let {
-                        //     var position = 0
-                        //     list.filterIndexed { index, subject ->
-                        //         position = index
-                        //         subject.className == it
-                        //     }
-                        //     binding.listSubjects.scrollToPosition(position)
-                        // }
-                    })
-                viewModel.refreshSubjects(it.getResult(ApiException::class.java)!!.email!!)
-            }
-        }
-
-        viewModel.error.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                val bar = Snackbar
-                    .make(requireView(), it, Snackbar.LENGTH_INDEFINITE)
-                bar.setAction(requireContext().getString(R.string.text_hide)) {
-                    bar.dismiss()
+        viewModel.timetable
+            .observe(viewLifecycleOwner, Observer { result ->
+                binding.progressBar.visibility = View.GONE
+                // FALSE[view current day only], TRUE[view all]
+                val viewAll = sharedPreferences.getBoolean(
+                    requireContext().getString(R.string.show_all_subjects_key),
+                    false
+                )
+                var list = result.sortedBy { subject ->
+                    subject.lesson.length < 2
                 }
-                bar.show()
+                if (!viewAll) {
+                    val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
+                    list = list.filter { subject ->
+                        when (subject.dayOfWeek) {
+                            Constants.MONDAY -> Calendar.MONDAY == dayOfWeek
+                            Constants.TUESDAY -> Calendar.TUESDAY == dayOfWeek
+                            Constants.WEDNESDAY -> Calendar.WEDNESDAY == dayOfWeek
+                            Constants.THURSDAY -> Calendar.THURSDAY == dayOfWeek
+                            Constants.FRIDAY -> Calendar.FRIDAY == dayOfWeek
+                            Constants.SATURDAY -> Calendar.SATURDAY == dayOfWeek
+                            else -> Calendar.SUNDAY == dayOfWeek
+                        }
+                    }
+                }
+                Timber.i(list.toString())
+                timetableAdapter.submitList(list)
+                // requireArguments().getString("subject", null)?.let {
+                //     var position = 0
+                //     list.filterIndexed { index, subject ->
+                //         position = index
+                //         subject.className == it
+                //     }
+                //     binding.listSubjects.scrollToPosition(position)
+                // }
+            })
 
-                viewModel.onErrorDisplayed()
-            }
-        })
     }
 
     private fun createTimetableAdapter(): TimetableAdapter {
         return TimetableAdapter(
-            emptyList(), TimetableClickListener(
+            TimetableClickListener(
                 setAlarmClickListener, attendanceClickListener
             )
         )

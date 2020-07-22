@@ -34,8 +34,8 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
             )
         }
     }
@@ -55,6 +55,8 @@ android {
 dependencies {
     implementation(fileTree("dir" to "libs", "include" to arrayOf("*.jar")))
     implementation(project(":domain"))
+    implementation(project(":flutter"))
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
     ktlint("com.pinterest:ktlint:0.37.2")
 
     implementation(Libraries.kotlinStdLib)

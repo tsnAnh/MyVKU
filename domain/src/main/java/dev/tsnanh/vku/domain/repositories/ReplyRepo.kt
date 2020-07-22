@@ -1,10 +1,6 @@
 package dev.tsnanh.vku.domain.repositories
 
-import android.util.Log
-import dev.tsnanh.vku.domain.entities.Reply
-import dev.tsnanh.vku.domain.entities.ReplyContainer
-import dev.tsnanh.vku.domain.entities.Resource
-import dev.tsnanh.vku.domain.entities.UserPopulatedNetworkReply
+import dev.tsnanh.vku.domain.entities.*
 import dev.tsnanh.vku.domain.handler.ErrorHandler
 import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.delay
@@ -12,8 +8,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import timber.log.Timber
 
 interface ReplyRepo {
+    @Throws(Exception::class)
     suspend fun createReply(
         idToken: String,
         threadId: String,
@@ -34,9 +32,18 @@ interface ReplyRepo {
 
     @Throws(Exception::class)
     fun likeOrUnlikeReply(idToken: String, replyId: String): Flow<List<String>>
+
+    suspend fun updateReply(
+        idToken: String,
+        replyId: String,
+        newImage: Array<MultipartBody.Part>? = null,
+        content: RequestBody,
+        images: Array<RequestBody>? = null
+    ): WorkResult<NetworkReply>
 }
 
 class ReplyRepoImpl : ReplyRepo {
+    @Throws(Exception::class)
     override suspend fun createReply(
         idToken: String,
         threadId: String,
@@ -68,7 +75,7 @@ class ReplyRepoImpl : ReplyRepo {
         emit(Resource.Loading())
         delay(200)
         try {
-            Log.i("information: ", "start emitting replies...")
+            Timber.i("start emitting replies...")
             emit(
                 Resource.Success(
                     VKUServiceApi.network.getRepliesInThread(
@@ -112,6 +119,28 @@ class ReplyRepoImpl : ReplyRepo {
         } catch (e: Exception) {
             // emit(e)
             throw e
+        }
+    }
+
+    override suspend fun updateReply(
+        idToken: String,
+        replyId: String,
+        newImage: Array<MultipartBody.Part>?,
+        content: RequestBody,
+        images: Array<RequestBody>?
+    ): WorkResult<NetworkReply> {
+        return try {
+            WorkResult.Success(
+                VKUServiceApi.network.updateReply(
+                    idToken,
+                    replyId,
+                    newImage,
+                    content,
+                    images
+                )
+            )
+        } catch (e: Exception) {
+            WorkResult.Error(e.message.toString())
         }
     }
 }

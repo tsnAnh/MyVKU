@@ -2,18 +2,26 @@
  * Copyright (c) 2020 My VKU by tsnAnh
  */
 
+@file:Suppress("DEPRECATION")
+
 package dev.tsnanh.vku.utils
 
 import android.content.ContentResolver
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.provider.OpenableColumns
 import android.view.View
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import dev.tsnanh.vku.domain.entities.Subject
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 /**
  * Convert Javascript timestamp to Java DateTime
@@ -58,7 +66,8 @@ fun showSnackbarWithAction(
     view: View,
     msg: String,
     actionButton: String? = null,
-    action: ((View) -> Unit)? = null
+    action: ((View) -> Unit)? = null,
+    anchorView: View? = null
 ) {
     val bar = Snackbar
         .make(
@@ -74,6 +83,9 @@ fun showSnackbarWithAction(
     } else {
         { bar.dismiss() }
     })
+    anchorView?.let {
+        bar.setAnchorView(it)
+    }
     bar.show()
 }
 
@@ -81,4 +93,45 @@ fun List<Uri>.toListStringUri(): List<String> {
     return map {
         it.toString()
     }
+}
+
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+    observe(lifecycleOwner, object : Observer<T> {
+        override fun onChanged(t: T?) {
+            observer.onChanged(t)
+            removeObserver(this)
+        }
+    })
+}
+
+
+fun isInternetAvailable(context: Context): Boolean {
+    var result = false
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw =
+            connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        result = when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
+    } else {
+        connectivityManager.run {
+            connectivityManager.activeNetworkInfo?.run {
+                result = when (type) {
+                    ConnectivityManager.TYPE_WIFI -> true
+                    ConnectivityManager.TYPE_MOBILE -> true
+                    ConnectivityManager.TYPE_ETHERNET -> true
+                    else -> false
+                }
+
+            }
+        }
+    }
+
+    return result
 }

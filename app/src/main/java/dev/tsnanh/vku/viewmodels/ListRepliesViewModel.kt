@@ -3,6 +3,7 @@ package dev.tsnanh.vku.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkManager
 import dev.tsnanh.vku.domain.entities.ReplyContainer
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.usecases.RetrieveRepliesUseCase
@@ -12,7 +13,11 @@ class ListRepliesViewModel(
     private val threadId: String,
     private val position: Int
 ) : ViewModel() {
+    // Use case
     private val retrieveRepliesLiveDataUseCase by inject(RetrieveRepliesUseCase::class.java)
+
+    // Work manager
+    private val workManager by inject(WorkManager::class.java)
     private var _listReplies = retrieveRepliesLiveDataUseCase.execute(threadId, position, 10)
     val listReplies: LiveData<Resource<ReplyContainer>>
         get() = _listReplies
@@ -20,6 +25,8 @@ class ListRepliesViewModel(
     fun refreshPage() {
         _listReplies = retrieveRepliesLiveDataUseCase.execute(threadId, position, 10)
     }
+
+
 }
 
 class ListRepliesViewModelFactory(

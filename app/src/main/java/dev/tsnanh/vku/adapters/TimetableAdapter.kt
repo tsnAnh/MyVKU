@@ -1,27 +1,28 @@
 package dev.tsnanh.vku.adapters
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import dev.tsnanh.vku.domain.entities.Subject
 import dev.tsnanh.vku.viewholders.SubjectViewHolder
 
 class TimetableAdapter(
-    private var subjects: List<Subject> = emptyList(),
     private val listener: TimetableClickListener
-) : RecyclerView.Adapter<SubjectViewHolder>() {
+) : ListAdapter<Subject, SubjectViewHolder>(SubjectDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         SubjectViewHolder.from(parent)
 
-    override fun getItemCount() = subjects.size
-
     override fun onBindViewHolder(holder: SubjectViewHolder, position: Int) {
-        holder.bind(subjects[position], listener)
+        holder.bind(getItem(position), listener)
     }
 
-    fun updateSubjects(subjects: List<Subject>) {
-        this.subjects = subjects
-        notifyDataSetChanged()
-    }
+}
+
+class SubjectDiffUtil : DiffUtil.ItemCallback<Subject>() {
+    override fun areItemsTheSame(oldItem: Subject, newItem: Subject) = oldItem === newItem
+
+    override fun areContentsTheSame(oldItem: Subject, newItem: Subject) =
+        oldItem.className == newItem.className
 }
 
 class TimetableClickListener(

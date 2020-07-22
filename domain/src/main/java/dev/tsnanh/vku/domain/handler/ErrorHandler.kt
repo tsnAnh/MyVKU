@@ -20,6 +20,7 @@ class ErrorHandler {
                         HttpURLConnection.HTTP_UNAVAILABLE -> Resource.Error("503 Unavailable!")
                         HttpURLConnection.HTTP_BAD_REQUEST -> Resource.Error("400 Bad Request!")
                         HttpURLConnection.HTTP_FORBIDDEN -> Resource.Error("403 Forbidden")
+                        HttpURLConnection.HTTP_UNAUTHORIZED -> Resource.Error("401 Unauthorized")
                         else -> Resource.Error("Unknown Error!")
                     }
                 }

@@ -29,6 +29,8 @@ class RepliesViewModel(
 
     private val retrievePageCountUseCase by inject(RetrievePageCountOfThreadUseCase::class.java)
     val pageCount = retrievePageCountUseCase.invoke(threadId, 10)
+
+
 }
 
 class RepliesViewModelFactory(private val threadId: String, private val application: Application) :

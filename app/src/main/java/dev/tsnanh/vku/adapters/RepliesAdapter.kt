@@ -11,6 +11,7 @@ import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.viewholders.ReplyViewHolder
 
 class RepliesAdapter(
+    private val uid: String,
     private val listener: ReplyClickListener
 ) : ListAdapter<NetworkCustomReply, ReplyViewHolder>(ReplyDiffUtil()) {
     override fun onCreateViewHolder(
@@ -19,7 +20,7 @@ class RepliesAdapter(
     ): ReplyViewHolder = ReplyViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: ReplyViewHolder, position: Int) {
-        holder.bind(getItem(position), listener)
+        holder.bind(uid, getItem(position), listener, position)
     }
 }
 

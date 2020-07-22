@@ -11,7 +11,7 @@ import androidx.work.WorkManager
 import dev.tsnanh.vku.domain.usecases.RetrieveForumsUseCase
 import org.koin.java.KoinJavaComponent.inject
 
-class NewThreadViewModel : ViewModel() {
+class CreateNewThreadViewModel : ViewModel() {
     private val retrieveForumsUseCase by inject(RetrieveForumsUseCase::class.java)
     val forums = retrieveForumsUseCase.execute()
 

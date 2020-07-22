@@ -9,8 +9,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -23,7 +25,6 @@ import dev.tsnanh.vku.databinding.ActivityWelcomeBinding
 import dev.tsnanh.vku.domain.entities.LoginBody
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.setSchoolReminderAlarm
 import dev.tsnanh.vku.viewmodels.WelcomeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +37,9 @@ class WelcomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWelcomeBinding
     private val viewModel: WelcomeViewModel by viewModels()
     private val mGoogleSignInClient: GoogleSignInClient by inject(GoogleSignInClient::class.java)
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,35 +53,43 @@ class WelcomeActivity : AppCompatActivity() {
         binding.googleSignInButton.setOnClickListener {
             signIn()
         }
+
+        if (GoogleSignIn.getLastSignedInAccount(this) != null && sharedPreferences.getBoolean(
+                "loginSuccess",
+                false
+            )
+        ) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
     }
 
     private fun signIn() {
         startActivityForResult(mGoogleSignInClient.signInIntent, Constants.RC_SIGN_IN)
     }
 
-    override fun onStart() {
-        super.onStart()
-        showProgressBar()
-        mGoogleSignInClient.silentSignIn().addOnCompleteListener {
-            if (it.isSuccessful) {
-                try {
-                    val account = it.getResult(ApiException::class.java)!!
-                    updateUI(account)
-                    Timber.d("Token: ${account.idToken}")
-                } catch (e: ApiException) {
-                    updateUI(null)
-                }
-            } else {
-                hideProgressBar()
-            }
-        }
-    }
+    // override fun onStart() {
+    //     super.onStart()
+    //     showProgressBar()
+    //     mGoogleSignInClient.silentSignIn().addOnCompleteListener {
+    //         if (it.isSuccessful) {
+    //             try {
+    //                 val account = it.getResult(ApiException::class.java)!!
+    //                 updateUI(account)
+    //                 Timber.d("Token: ${account.idToken}")
+    //             } catch (e: ApiException) {
+    //                 updateUI(null)
+    //             }
+    //         } else {
+    //             hideProgressBar()
+    //         }
+    //     }
+    // }
 
     private fun updateUI(account: GoogleSignInAccount?) {
         if (account != null) {
             Timber.d("User not null")
             showProgressBar()
-            setSchoolReminderAlarm(account.email!!)
             account.idToken!!.let {
                 FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
                     if (task.isComplete) {
@@ -90,6 +102,9 @@ class WelcomeActivity : AppCompatActivity() {
                             when (response) {
                                 is Resource.Success -> {
                                     if (response.data!!.user.id.isNotEmpty()) {
+                                        sharedPreferences.edit {
+                                            putBoolean("loginSuccess", true)
+                                        }
                                         startActivity(
                                             Intent(
                                                 this@WelcomeActivity,
@@ -109,7 +124,7 @@ class WelcomeActivity : AppCompatActivity() {
                                             .make(
                                                 binding.root,
                                                 "Bạn phải sử dụng email \"sict.udn.vn\" để có " +
-                                                    "thể đăng nhập vào ứng dụng!",
+                                                        "thể đăng nhập vào ứng dụng!",
                                                 Snackbar.LENGTH_LONG
                                             )
                                             .show()

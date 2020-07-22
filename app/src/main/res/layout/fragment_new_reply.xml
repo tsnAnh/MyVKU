@@ -28,7 +28,7 @@
         android:background="@color/background">
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fab_submit_reply"
+            android:id="@+id/fab_create_reply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -36,22 +36,6 @@
             android:layout_marginBottom="16dp"
             android:text="@string/text_create"
             app:icon="@drawable/ic_round_add_24" />
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/actionBarSize"
-            android:backgroundTint="@color/background"
-            android:transitionGroup="false"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
-            app:liftOnScroll="true">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:buttonGravity="center_vertical"
-                app:navigationIcon="@drawable/ic_round_arrow_back_24" />
-        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -63,6 +47,26 @@
                 android:layout_height="wrap_content"
                 tools:context=".views.create_new_reply.CreateNewReplyFragment">
 
+                <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/appBarLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/actionBarSize"
+                    android:backgroundTint="@color/background"
+                    android:transitionGroup="false"
+                    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:liftOnScroll="false">
+
+                    <com.google.android.material.appbar.MaterialToolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:buttonGravity="center_vertical"
+                        app:navigationIcon="@drawable/ic_round_arrow_back_24" />
+                </com.google.android.material.appbar.AppBarLayout>
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/materialCardView"
                     android:layout_width="0dp"
@@ -72,7 +76,7 @@
                     app:cardElevation="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView12"
+                    app:layout_constraintTop_toBottomOf="@+id/title"
                     tools:visibility="visible">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -251,7 +255,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
                 <TextView
-                    android:id="@+id/textView12"
+                    android:id="@+id/title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -262,7 +266,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

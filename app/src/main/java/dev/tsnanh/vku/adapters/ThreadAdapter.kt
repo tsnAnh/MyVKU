@@ -13,17 +13,20 @@ import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
 import dev.tsnanh.vku.viewholders.ThreadViewHolder
 
 class ThreadAdapter(
+    private val uid: String,
     private val listener: ThreadClickListener
 ) : ListAdapter<NetworkForumThreadCustom, ThreadViewHolder>(ThreadDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ThreadViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: ThreadViewHolder, position: Int) {
-        holder.bind(getItem(position), listener)
+        holder.bind(uid, getItem(position), listener, position)
     }
 }
 
-class ThreadClickListener(val clickListener: (NetworkForumThreadCustom, MaterialCardView) -> Unit) {
+class ThreadClickListener(
+    val clickListener: (NetworkForumThreadCustom, MaterialCardView) -> Unit
+) {
     fun onClick(thread: NetworkForumThreadCustom, cardView: View) =
         clickListener(thread, cardView as MaterialCardView)
 }

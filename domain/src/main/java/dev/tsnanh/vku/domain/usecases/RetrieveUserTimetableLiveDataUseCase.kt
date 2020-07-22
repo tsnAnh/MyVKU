@@ -7,7 +7,7 @@ import org.koin.java.KoinJavaComponent.inject
 
 interface RetrieveUserTimetableLiveDataUseCase {
     fun invoke(): LiveData<List<Subject>>
-    suspend fun refresh(url: String, email: String)
+    suspend fun refresh(email: String)
 }
 
 class RetrieveUserTimetableLiveDataUseCaseImpl : RetrieveUserTimetableLiveDataUseCase {
@@ -17,9 +17,9 @@ class RetrieveUserTimetableLiveDataUseCaseImpl : RetrieveUserTimetableLiveDataUs
     }
 
     @Throws(Exception::class)
-    override suspend fun refresh(url: String, email: String) {
+    override suspend fun refresh(email: String) {
         try {
-            timetableRepo.refresh("http://daotao.sict.udn.vn/tkb", email)
+            timetableRepo.refreshSubjects(email)
         } catch (e: Throwable) {
             throw e
         }

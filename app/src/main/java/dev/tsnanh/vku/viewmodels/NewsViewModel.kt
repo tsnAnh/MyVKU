@@ -16,6 +16,6 @@ class NewsViewModel : ViewModel() {
     private val retrieveNewsUseCase by inject(RetrieveNewsUseCase::class.java)
 
     private var _news = retrieveNewsUseCase.execute(SecretConstants.NEWS_URL, "0")
-    val news: LiveData<Resource<List<News>>>
+    val news: LiveData<Resource<List<News?>>>
         get() = _news
 }

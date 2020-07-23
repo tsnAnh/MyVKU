@@ -14,20 +14,24 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp">
 
-        <Button
+        <ImageButton
             android:id="@+id/button"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@null"
             android:onClick="@{ () -> listener.onFooterClick() }"
-            android:text="@string/text_add_photo"
-            app:icon="@drawable/ic_round_add_a_photo_24"
+            android:padding="64dp"
+            android:scaleType="fitCenter"
+            android:tint="@color/primaryColor"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintDimensionRatio="3:4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_round_add_a_photo_24" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

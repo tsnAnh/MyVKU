@@ -24,31 +24,34 @@
         android:background="@color/background"
         android:transitionName="view">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/actionBarSize"
-            android:backgroundTint="@color/background"
-            android:transitionGroup="false"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
-            app:liftOnScroll="true">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:buttonGravity="center_vertical"
-                app:navigationIcon="@drawable/ic_round_arrow_back_24" />
-        </com.google.android.material.appbar.AppBarLayout>
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+            android:fillViewport="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+                <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/appBarLayout3"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/actionBarSize"
+                    android:backgroundTint="@color/background"
+                    android:transitionGroup="false"
+                    app:elevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.appbar.MaterialToolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:elevation="0dp"
+                        app:buttonGravity="center_vertical"
+                        app:navigationIcon="@drawable/ic_round_arrow_back_24" />
+                </com.google.android.material.appbar.AppBarLayout>
 
                 <TextView
                     android:id="@+id/new_thread"
@@ -200,7 +203,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/appBarLayout3" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 

@@ -283,5 +283,4 @@ data class Teacher(
     val email: String,
     @field:Json(name = "tendonvi")
     val unit: String
-
 )

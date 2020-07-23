@@ -38,8 +38,7 @@ import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
 import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.Resource
-import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.showSnackbarWithAction
+import dev.tsnanh.vku.utils.*
 import dev.tsnanh.vku.viewmodels.CreateNewThreadViewModel
 import dev.tsnanh.vku.viewmodels.MainViewModel
 import timber.log.Timber
@@ -127,12 +126,20 @@ class CreateNewThreadFragment : Fragment() {
                 pickImage(Constants.RC_ADD_PHOTO)
             }
         ))
+        with(binding) {
+            title.validate("Minimum title length is 10") {
+                it.isThreadTitleValidLength()
+            }
+            content.validate("Minimum content length is 25") {
+                it.isReplyContentIsValidLength()
+            }
+        }
         binding.listImageUpload.apply {
             setHasFixedSize(false)
             isNestedScrollingEnabled = false
             layoutManager =
                 GridLayoutManager(
-                    requireContext(), 3
+                    requireContext(), 2
                 )
             adapter = pickerAdapter
         }

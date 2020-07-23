@@ -140,7 +140,7 @@
         android:label="WelcomeActivity" />
     <fragment
         android:id="@+id/navigation_teacher_evaluation"
-        android:name="dev.tsnanh.vku.views.teacher_evaluation.TeacherEvaluationFragment" />
+        android:name="dev.tsnanh.vku.views.teacher_review.TeacherEvaluationFragment" />
     <fragment
         android:id="@+id/navigation_new_reply"
         android:name="dev.tsnanh.vku.views.create_new_reply.CreateNewReplyFragment"

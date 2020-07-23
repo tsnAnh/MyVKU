@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.transition.MaterialSharedAxis
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
@@ -50,6 +52,17 @@ class UpdateReplyFragment : Fragment() {
             )
             .setCancelable(false)
             .create()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            findNavController().navigateUp()
+        }
     }
 
     override fun onCreateView(
@@ -105,7 +118,7 @@ class UpdateReplyFragment : Fragment() {
         val concatAdapter = ConcatAdapter(imagesAdapter, pickerAdapter)
 
         binding.listImageUpload.apply {
-            layoutManager = GridLayoutManager(requireContext(), 3)
+            layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = concatAdapter
             setHasFixedSize(false)
             isNestedScrollingEnabled = false
@@ -125,15 +138,12 @@ class UpdateReplyFragment : Fragment() {
                 progressDialog.hide()
                 val threadId = workInfo.outputData.getString("threadId")
                 Timber.i(threadId)
-                WorkManager.getInstance(requireContext()).pruneWork().state.observe(
-                    viewLifecycleOwner
-                ) {
-                    findNavController().navigate(
-                        UpdateReplyFragmentDirections.actionNavigationUpdateReplyToNavigationReplies(
-                            threadId!!
-                        )
+                WorkManager.getInstance(requireContext()).pruneWork()
+                findNavController().navigate(
+                    UpdateReplyFragmentDirections.actionNavigationUpdateReplyToNavigationReplies(
+                        threadId!!
                     )
-                }
+                )
             }
         }
 

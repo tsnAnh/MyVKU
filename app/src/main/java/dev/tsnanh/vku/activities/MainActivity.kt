@@ -228,8 +228,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         arguments: Bundle?
     ) {
         when (destination.id) {
-            R.id.navigation_replies, R.id.navigation_image_viewer, R.id.navigation_new_reply ->
-                toggleBottomNav(false)
+            R.id.navigation_replies,
+            R.id.navigation_image_viewer,
+            R.id.navigation_new_reply,
+            R.id.navigation_new_thread -> toggleBottomNav(false)
             else -> toggleBottomNav(true)
         }
     }

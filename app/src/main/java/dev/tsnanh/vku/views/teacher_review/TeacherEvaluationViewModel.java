@@ -1,4 +1,4 @@
-package dev.tsnanh.vku.views.teacher_evaluation;
+package dev.tsnanh.vku.views.teacher_review;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;

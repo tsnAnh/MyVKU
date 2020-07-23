@@ -107,7 +107,8 @@ class ForumFragment : Fragment() {
                                 requireContext().getString(R.string.text_hide)
                             )
                         } else {
-                            binding.include.textView7.text = "No Internet Connection"
+                            binding.include.textView7.text =
+                                requireContext().getString(R.string.text_no_internet_connection)
                         }
                         binding.progressBar.visibility = View.GONE
                     }

@@ -99,4 +99,6 @@
     <string name="text_message_to_quoted_user">đã trích dẫn phản hồi của bạn!</string>
     <string name="text_message_to_owner_custom">đã trích dẫn phản hồi của bạn ngay trong chủ đề của bạn!</string>
     <string name="text_message_to_all_subscribers">đã phản hồi trong một chủ đề mà bạn đang theo dõi!</string>
+    <string name="text_update_reply">Cập nhật câu trả lời</string>
+    <string name="text_update">Cập nhật</string>
 </resources>

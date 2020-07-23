@@ -24,7 +24,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialArcMotion
@@ -35,12 +35,10 @@ import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewReplyBinding
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.Resource
-import dev.tsnanh.vku.utils.Constants
+import dev.tsnanh.vku.utils.*
 import dev.tsnanh.vku.utils.Constants.Companion.RC_ADD_PHOTO
 import dev.tsnanh.vku.utils.Constants.Companion.RC_IMAGE_PICKER
 import dev.tsnanh.vku.utils.Constants.Companion.RC_PERMISSION
-import dev.tsnanh.vku.utils.convertToDateString
-import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.CreateNewReplyViewModel
 import dev.tsnanh.vku.viewmodels.CreateNewReplyViewModelFactory
 import dev.tsnanh.vku.viewmodels.MainViewModel
@@ -119,7 +117,7 @@ class CreateNewReplyFragment : Fragment() {
             setHasFixedSize(false)
             isNestedScrollingEnabled = false
             layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                GridLayoutManager(requireContext(), 2)
             adapter = pickerAdapter
         }
 
@@ -146,6 +144,12 @@ class CreateNewReplyFragment : Fragment() {
                 }
             }
         })
+
+        with(binding) {
+            content.validate("Minimum content length is 25") {
+                it.isReplyContentIsValidLength()
+            }
+        }
 
         binding.chooseImage.setOnClickListener {
             if (ContextCompat.checkSelfPermission(

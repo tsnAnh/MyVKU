@@ -26,6 +26,13 @@ class ImageViewerViewHolder(
     fun bind(url: String) {
         Timber.d(url)
         binding.url = url
+//        val bitmap = BitmapFactory.decodeStream(URL("${BASE_URL}/images/$url").openStream())
+//        val blurred = blurBitmap(bitmap, binding.background.context)
+//        Glide
+//            .with(binding.background)
+//            .load(blurred)
+//            .transform()
+//            .into(binding.background)
         binding.executePendingBindings()
     }
 }

@@ -8,11 +8,16 @@ package dev.tsnanh.vku.utils
 
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.provider.OpenableColumns
+import android.renderscript.Allocation
+import android.renderscript.Element
+import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -134,4 +139,31 @@ fun isInternetAvailable(context: Context): Boolean {
     }
 
     return result
+}
+
+fun blurBitmap(bitmap: Bitmap, applicationContext: Context): Bitmap {
+    lateinit var rsContext: RenderScript
+    try {
+
+        // Create the output bitmap
+        val output = Bitmap.createBitmap(
+            bitmap.width, bitmap.height, bitmap.config
+        )
+
+        // Blur the image
+        rsContext = RenderScript.create(applicationContext, RenderScript.ContextType.DEBUG)
+        val inAlloc = Allocation.createFromBitmap(rsContext, bitmap)
+        val outAlloc = Allocation.createTyped(rsContext, inAlloc.type)
+        val theIntrinsic = ScriptIntrinsicBlur.create(rsContext, Element.U8_4(rsContext))
+        theIntrinsic.apply {
+            setRadius(10f)
+            theIntrinsic.setInput(inAlloc)
+            theIntrinsic.forEach(outAlloc)
+        }
+        outAlloc.copyTo(output)
+
+        return output
+    } finally {
+        rsContext.finish()
+    }
 }

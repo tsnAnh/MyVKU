@@ -40,6 +40,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:fillViewport="true"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,6 +54,7 @@
                     android:layout_height="@dimen/actionBarSize"
                     android:backgroundTint="@color/background"
                     android:transitionGroup="false"
+                    app:elevation="0dp"
                     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -61,6 +63,7 @@
 
                     <com.google.android.material.appbar.MaterialToolbar
                         android:id="@+id/toolbar"
+                        android:elevation="0dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:buttonGravity="center_vertical"

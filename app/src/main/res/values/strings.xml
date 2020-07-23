@@ -137,4 +137,8 @@
     <string name="notificationMessage" translatable="false"><b>%s</b> %s</string>
     <string name="text_update_reply">Update Reply</string>
     <string name="text_update">Update</string>
+    <string name="text_no_internet_connection">No Internet Connection</string>
+    <string name="text_write_a_review">Write a review</string>
+    <string name="text_rate">Rate</string>
+    <string name="text_email_not_provided">Email not provided</string>
 </resources>

@@ -21,54 +21,75 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp">
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/unit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@{ teacher.unit }"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                app:layout_constraintEnd_toEndOf="@+id/tv_teacher_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_teacher_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:text="@{@string/title_and_full_name(teacher.title, teacher.fullName)}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ratingBar2"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/unit"
                 app:layout_constraintVertical_bias="0.0"
                 tools:text="ThS Nguyễn Anh Tuấn" />
 
             <TextView
-                android:id="@+id/tv_teacher_unit"
+                android:id="@+id/email"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@{teacher.unit}"
+                android:layout_marginBottom="16dp"
+                android:text="@{ teacher.email.trim().length() > 3 ? teacher.email : @string/text_email_not_provided }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/ratingBar2"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tv_teacher_name"
+                app:layout_constraintStart_toStartOf="@+id/tv_teacher_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_teacher_name"
                 app:layout_constraintVertical_bias="0.0"
                 tools:text="Khoa CNTT&amp;TT" />
 
-            <RatingBar
-                android:id="@+id/ratingBar2"
-                style="?android:attr/ratingBarStyleSmall"
+            <Button
+                android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:isIndicator="true"
-                android:numStars="5"
-                android:progressTint="@color/primaryColor"
-                android:rating="3.5"
-                android:stepSize="0.1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/text_write_a_review"
+                app:icon="@drawable/ic_round_create_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/email"
+                app:layout_constraintTop_toBottomOf="@+id/email" />
+
+            <Button
+                android:id="@+id/button3"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/text_rate"
+                app:icon="@drawable/ic_baseline_star_24"
+                app:layout_constraintBottom_toBottomOf="@+id/button2"
+                app:layout_constraintStart_toEndOf="@+id/button2"
+                app:layout_constraintTop_toTopOf="@+id/button2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

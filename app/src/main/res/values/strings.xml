@@ -141,4 +141,10 @@
     <string name="text_write_a_review">Write a review</string>
     <string name="text_rate">Rate</string>
     <string name="text_email_not_provided">Email not provided</string>
+    <string name="text_notice_board">Notice Board</string>
+    <string name="absence_class_name" translatable="false">Nghỉ %s ngày %s</string>
+    <string name="text_absence">Absence</string>
+    <string name="text_makeup_class">Make up class</string>
+    <string name="makeup_class_name" translatable="false">%s ngày %s</string>
+    <string name="text_no_attachment">No Attachment</string>
 </resources>

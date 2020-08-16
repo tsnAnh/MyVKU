@@ -39,7 +39,6 @@
                 android:layout_marginEnd="16dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="@{ news.title }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="24sp"
@@ -57,13 +56,12 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:textAllCaps="true"
+                android:text="@{ news.categoryName }"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                 android:textColor="?android:attr/textColorPrimary"
-                android:text="@{ news.categoryName }"
                 app:drawableTint="?android:attr/textColorSecondary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="SmallSp"
                 tools:text="category" />
 
             <TextView
@@ -106,6 +104,19 @@
                 app:layout_constraintBottom_toBottomOf="@+id/button_view"
                 app:layout_constraintStart_toEndOf="@+id/button_view"
                 app:layout_constraintTop_toTopOf="@+id/button_view" />
+
+            <ImageButton
+                android:id="@+id/more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@null"
+                app:layout_constraintBottom_toBottomOf="@+id/button_share"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/button_share"
+                app:layout_constraintTop_toTopOf="@+id/button_share"
+                app:srcCompat="@drawable/ic_round_more_vert_24" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

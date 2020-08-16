@@ -59,7 +59,7 @@
     </activity>
     <fragment
         android:id="@+id/navigation_new_thread"
-        android:name="dev.tsnanh.vku.views.create_new_thread.CreateNewThreadFragment"
+        android:name="dev.tsnanh.vku.views.createNewThread.CreateNewThreadFragment"
         android:label="@string/text_new_thread">
         <argument
             android:name="forumId"
@@ -121,7 +121,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_image_viewer"
-        android:name="dev.tsnanh.vku.views.image_viewer.ImageViewerFragment"
+        android:name="dev.tsnanh.vku.views.imageViewer.ImageViewerFragment"
         android:label="ImageViewerFragment">
         <argument
             android:name="urls"
@@ -140,10 +140,10 @@
         android:label="WelcomeActivity" />
     <fragment
         android:id="@+id/navigation_teacher_evaluation"
-        android:name="dev.tsnanh.vku.views.teacher_review.TeacherEvaluationFragment" />
+        android:name="dev.tsnanh.vku.views.teacherEvaluation.TeacherEvaluationFragment" />
     <fragment
         android:id="@+id/navigation_new_reply"
-        android:name="dev.tsnanh.vku.views.create_new_reply.CreateNewReplyFragment"
+        android:name="dev.tsnanh.vku.views.createNewReply.CreateNewReplyFragment"
         android:label="NewReplyFragment">
         <argument
             android:name="threadId"
@@ -160,7 +160,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_list_replies"
-        android:name="dev.tsnanh.vku.views.list_replies.ListRepliesFragment"
+        android:name="dev.tsnanh.vku.views.listReplies.ListRepliesFragment"
         android:label="ListRepliesFragment">
         <action
             android:id="@+id/action_navigation_list_replies_to_navigation_new_reply"
@@ -168,7 +168,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_update_reply"
-        android:name="dev.tsnanh.vku.views.update_reply.UpdateReplyFragment"
+        android:name="dev.tsnanh.vku.views.updateReply.UpdateReplyFragment"
         android:label="fragment_update_reply"
         tools:layout="@layout/fragment_update_reply">
         <argument

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 My VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.views.create_new_reply
+package dev.tsnanh.vku.views.createNewThread
 
 import android.Manifest
 import android.app.Activity
@@ -14,14 +14,15 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.activity.addCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,32 +33,40 @@ import com.google.android.material.transition.MaterialContainerTransform
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
-import dev.tsnanh.vku.databinding.FragmentNewReplyBinding
+import dev.tsnanh.vku.databinding.FragmentCreateNewThreadBinding
+import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
+import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.*
-import dev.tsnanh.vku.utils.Constants.Companion.RC_ADD_PHOTO
-import dev.tsnanh.vku.utils.Constants.Companion.RC_IMAGE_PICKER
-import dev.tsnanh.vku.utils.Constants.Companion.RC_PERMISSION
-import dev.tsnanh.vku.viewmodels.CreateNewReplyViewModel
-import dev.tsnanh.vku.viewmodels.CreateNewReplyViewModelFactory
+import dev.tsnanh.vku.viewmodels.CreateNewThreadViewModel
 import dev.tsnanh.vku.viewmodels.MainViewModel
-import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
-class CreateNewReplyFragment : Fragment() {
-    private lateinit var viewModel: CreateNewReplyViewModel
+class CreateNewThreadFragment : Fragment() {
+
+    private val viewModel: CreateNewThreadViewModel by viewModels()
+    private lateinit var binding: FragmentCreateNewThreadBinding
+    private lateinit var pickerAdapter: ImageChooserAdapter
     private val activityViewModel: MainViewModel by activityViewModels()
 
-    private val navArgs: CreateNewReplyFragmentArgs by navArgs()
-
-    private lateinit var binding: FragmentNewReplyBinding
-    private lateinit var pickerAdapter: ImageChooserAdapter
+    private lateinit var progressBarLayoutBinding: ProgressDialogLayoutBinding
+    private val progressDialog by lazy {
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(
+                progressBarLayoutBinding.root
+            )
+            .setCancelable(false)
+            .create()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform().apply {
+            setPathMotion(MaterialArcMotion())
+        }
+        sharedElementReturnTransition = MaterialContainerTransform().apply {
             setPathMotion(MaterialArcMotion())
         }
 
@@ -71,30 +80,34 @@ class CreateNewReplyFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil
-            .inflate(inflater, R.layout.fragment_new_reply, container, false)
+            .inflate(inflater, R.layout.fragment_create_new_thread, container, false)
 
-        binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+        binding.toolbar.apply {
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+        }
+        progressBarLayoutBinding =
+            ProgressDialogLayoutBinding.inflate(LayoutInflater.from(requireContext()))
+
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(
-            this,
-            CreateNewReplyViewModelFactory(
-                navArgs.quotedReplyId,
-                requireActivity().application
-            )
-        ).get(CreateNewReplyViewModel::class.java)
+        val navArgs: CreateNewThreadFragmentArgs by navArgs()
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        binding.layout.transitionName = Constants.FAB_TRANSFORM_TO_NEW_REPLY
-
-        if (navArgs.quotedReplyId == null) {
-            binding.materialCardView.visibility = View.GONE
+        binding.forum.keyListener = null
+        navArgs.forumId?.let {
+            binding.forum.apply {
+                tag = it
+                setText(navArgs.forumTitle)
+                binding.layoutForum.isEnabled = false
+            }
         }
 
         pickerAdapter = ImageChooserAdapter(ImageChooserClickListener(
@@ -110,14 +123,24 @@ class CreateNewReplyFragment : Fragment() {
                 }
             },
             footerClick = {
-                pickImage(RC_ADD_PHOTO)
+                pickImage(Constants.RC_ADD_PHOTO)
             }
         ))
+        with(binding) {
+            title.validate("Minimum title length is 10") {
+                it.isThreadTitleValidLength()
+            }
+            content.validate("Minimum content length is 25") {
+                it.isReplyContentIsValidLength()
+            }
+        }
         binding.listImageUpload.apply {
             setHasFixedSize(false)
             isNestedScrollingEnabled = false
             layoutManager =
-                GridLayoutManager(requireContext(), 2)
+                GridLayoutManager(
+                    requireContext(), 2
+                )
             adapter = pickerAdapter
         }
 
@@ -127,28 +150,85 @@ class CreateNewReplyFragment : Fragment() {
             }
         })
 
-        viewModel.quotedReply?.observe(viewLifecycleOwner, Observer {
-            it?.let { replyResource ->
-                when (replyResource) {
+        viewModel.newReplyWorkLiveData.observe(viewLifecycleOwner, Observer {
+            if (it.isNullOrEmpty()) {
+                return@Observer
+            }
+
+            val workInfo = it[0]
+            if (!progressDialog.isShowing) {
+                progressDialog.show()
+            }
+
+            if (workInfo.state.isFinished) {
+                progressDialog.dismiss()
+                val threadId = workInfo.outputData.getString("threadId")
+                Timber.d(threadId)
+                WorkManager.getInstance(requireContext()).pruneWork()
+//                viewModel.onNavigateToReplyFragment(threadId)
+                findNavController().navigateUp()
+            }
+        })
+
+        viewModel.navigateToReplyFragment.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                findNavController().navigate(
+                    CreateNewThreadFragmentDirections.actionNavigationNewThreadToNavigationReplies(
+                        it
+                    )
+                )
+                viewModel.onNavigatedToReplyFragment()
+            }
+        })
+
+        viewModel.forums.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is Resource.Loading -> {
+                        binding.layoutForum.hint =
+                            requireContext().getString(R.string.text_loading_forums)
+                    }
                     is Resource.Success -> {
-                        Timber.i("${replyResource.data}")
-                        with(binding) {
-                            layoutPost.visibility = View.VISIBLE
-                            progressBar.visibility = View.GONE
-                            materialCardView.visibility = View.VISIBLE
-                            reply = replyResource.data
-                            datetime.text =
-                                replyResource.data?.createdAt?.convertToDateString()
+                        binding.layoutForum.hint = "Forums"
+                        if (it.data != null && it.data!!.isNotEmpty()) {
+                            val forumsTitle = it.data!!.map { forum ->
+                                forum.title
+                            }
+                            val arrAdapter =
+                                ArrayAdapter(
+                                    requireContext(),
+                                    R.layout.dropdown_menu_popup_item,
+                                    forumsTitle
+                                )
+
+                            binding.forum.setOnItemClickListener { _, _, i, _ ->
+                                binding.forum.tag = it.data!![i].id
+                            }
+
+                            binding.forum.setAdapter(arrAdapter)
                         }
+                    }
+                    is Resource.Error -> {
+                        binding.apply {
+                            this.chooseImage.isEnabled = false
+                            this.layoutForum.isEnabled = false
+                            this.fabSubmit.isEnabled = false
+                            this.layoutTitle.isEnabled = false
+                            this.layoutContent.isEnabled = false
+                        }
+                        showSnackbarWithAction(
+                            requireView(),
+                            "${it.message.toString()}. Please try again later.",
+                            "BACK", {
+                                findNavController().navigateUp()
+                            })
                     }
                 }
             }
         })
 
-        with(binding) {
-            content.validate("Minimum content length is 25") {
-                it.isReplyContentIsValidLength()
-            }
+        binding.fabSubmit.setOnClickListener {
+            createThread()
         }
 
         binding.chooseImage.setOnClickListener {
@@ -157,7 +237,7 @@ class CreateNewReplyFragment : Fragment() {
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-                pickImage(RC_IMAGE_PICKER)
+                pickImage(Constants.RC_IMAGE_PICKER)
             } else {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(
                         requireActivity(),
@@ -165,56 +245,25 @@ class CreateNewReplyFragment : Fragment() {
                     )
                 ) {
                     MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Permission required")
-                        .setMessage("We need permission to upload your image!")
-                        .setPositiveButton("OK") { d, _ ->
-                            pickImage(RC_IMAGE_PICKER)
+                        .setTitle(requireContext().getString(R.string.msg_permission_required))
+                        .setMessage(requireContext().getString(R.string.msg_need_permission))
+                        .setPositiveButton(requireContext().getString(R.string.text_ok)) { d, _ ->
+                            requestPermissions(
+                                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                                Constants.RC_PERMISSION
+                            )
+                            d.dismiss()
+                        }
+                        .setNegativeButton(requireContext().getString(R.string.text_cancel)) { d, _ ->
                             d.dismiss()
                         }
                         .create().show()
                 } else {
                     requestPermissions(
                         arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                        RC_PERMISSION
+                        Constants.RC_PERMISSION
                     )
                 }
-            }
-        }
-
-        viewModel.createNewReplyWorkerData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                if (it.isEmpty()) {
-                    return@Observer
-                }
-
-                val last = it.last()
-                if (last.state.isFinished) {
-                    val workManager by inject(WorkManager::class.java)
-                    val threadId = last.outputData.getString("threadId")
-                    workManager.pruneWork()
-                    findNavController().navigate(
-                        CreateNewReplyFragmentDirections.actionNewReplyFragmentToNavigationReplies(
-                            threadId!!, true
-                        )
-                    )
-                }
-            }
-        })
-
-        binding.fabCreateReply.setOnClickListener {
-            if (binding.content.text.isNullOrBlank()) {
-                binding.content.error = "Empty Reply Content"
-            } else {
-                val post = Reply(
-                    content = binding.content.text.toString().trim()
-                )
-
-                activityViewModel.createNewReply(
-                    navArgs.threadId,
-                    post,
-                    pickerAdapter.currentList,
-                    navArgs.quotedReplyId
-                )
             }
         }
     }
@@ -235,7 +284,7 @@ class CreateNewReplyFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         val listImage = ArrayList<Uri>()
-        if (requestCode == RC_IMAGE_PICKER) {
+        if (requestCode == Constants.RC_IMAGE_PICKER) {
             if (resultCode == Activity.RESULT_OK) {
                 pickerAdapter.submitList(emptyList())
 
@@ -274,7 +323,7 @@ class CreateNewReplyFragment : Fragment() {
             } else {
                 viewModel.onPickerHasNoImage()
             }
-        } else if (requestCode == RC_ADD_PHOTO) {
+        } else if (requestCode == Constants.RC_ADD_PHOTO) {
             if (resultCode == Activity.RESULT_OK) {
                 data?.let {
                     if (data.clipData != null) {
@@ -322,12 +371,63 @@ class CreateNewReplyFragment : Fragment() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == RC_PERMISSION &&
+        if (requestCode == Constants.RC_PERMISSION &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {
-            pickImage(RC_IMAGE_PICKER)
+            pickImage(Constants.RC_IMAGE_PICKER)
         }
     }
     // endregion
+
+    private fun createThread() {
+        clearError()
+        if (
+            binding.title.text.isNullOrBlank() ||
+            binding.content.text.isNullOrBlank() ||
+            binding.forum.text.isNullOrBlank()
+        ) {
+            if (binding.title.text.isNullOrBlank()) binding.title.error =
+                requireContext().getString(R.string.msg_empty_title)
+            if (binding.forum.text.isNullOrBlank()) binding.forum.error =
+                requireContext().getString(R.string.msg_choose_a_forum)
+            if (binding.content.text.isNullOrBlank()) binding.content.error =
+                requireContext().getString(R.string.msg_empty_content)
+        } else {
+            val thread = prepareThread()
+            val post = preparePost()
+
+            activityViewModel.createNewThread(pickerAdapter.currentList, thread, post)
+        }
+    }
+
+    private fun prepareThread(): ForumThread {
+        return ForumThread(
+            title = binding.title.text.toString().trim(),
+            forumId = (binding.forum.tag as String?).toString()
+        )
+    }
+
+    private fun preparePost(): Reply {
+        return Reply(
+            content = binding.content.text.toString().trim()
+        )
+    }
+
+    private fun clearError() {
+        binding.title.error = null
+        binding.content.error = null
+        binding.forum.error = null
+    }
+    // Disabled for two months
+    // TODO: Make it better
+/*    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList(Constants.URIS_KEY, ArrayList(pickerAdapter.currentList))
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        pickerAdapter.submitList(savedInstanceState?.getParcelableArrayList(Constants.URIS_KEY))
+        super.onViewStateRestored(savedInstanceState)
+    }*/
 
 }

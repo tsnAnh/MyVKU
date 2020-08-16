@@ -8,6 +8,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -16,10 +17,13 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dev.tsnanh.vku.domain.entities.*
 import dev.tsnanh.vku.domain.usecases.LoginUseCase
+import dev.tsnanh.vku.domain.usecases.RetrieveNewsUseCase
+import dev.tsnanh.vku.domain.usecases.RetrieveUserTimetableLiveDataUseCase
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.toListStringUri
 import dev.tsnanh.vku.workers.CreateNewReplyWorker
 import dev.tsnanh.vku.workers.CreateNewThreadWorker
+import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
@@ -30,6 +34,20 @@ class MainViewModel : ViewModel() {
 
     // Get Moshi instance from DI
     private val moshi by inject(Moshi::class.java)
+
+    // Use Case
+    private val retrieveNewsUseCase by inject(RetrieveNewsUseCase::class.java)
+    private val retrieveUserTimetableUseCase by inject(RetrieveUserTimetableLiveDataUseCase::class.java)
+
+    init {
+        mGoogleSignInClient.silentSignIn().addOnSuccessListener {
+            viewModelScope.launch {
+                it.email?.let { it1 -> retrieveUserTimetableUseCase.refresh(it1) }
+                retrieveNewsUseCase.refresh()
+            }
+        }
+
+    }
 
     // Create JsonAdapter
     private val threadJsonAdapter =

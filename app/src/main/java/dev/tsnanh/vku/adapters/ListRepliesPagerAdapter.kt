@@ -2,7 +2,7 @@ package dev.tsnanh.vku.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import dev.tsnanh.vku.views.list_replies.ListRepliesFragment
+import dev.tsnanh.vku.views.listReplies.ListRepliesFragment
 
 class ListRepliesPagerAdapter(
     fragment: Fragment,

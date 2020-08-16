@@ -16,8 +16,9 @@ class NewsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         NewsViewHolder.from(parent)
 
+    @ExperimentalStdlibApi
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
-        holder.bind(getItem(position), clickListener)
+        holder.bind(getItem(position), clickListener, position)
     }
 }
 

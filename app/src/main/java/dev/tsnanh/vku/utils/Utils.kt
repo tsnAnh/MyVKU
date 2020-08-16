@@ -19,11 +19,17 @@ import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.view.View
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
+import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.entities.Subject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.flowOf
+import org.json.JSONObject
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -141,6 +147,7 @@ fun isInternetAvailable(context: Context): Boolean {
     return result
 }
 
+@WorkerThread
 fun blurBitmap(bitmap: Bitmap, applicationContext: Context): Bitmap {
     lateinit var rsContext: RenderScript
     try {
@@ -167,3 +174,30 @@ fun blurBitmap(bitmap: Bitmap, applicationContext: Context): Bitmap {
         rsContext.finish()
     }
 }
+
+fun String.unescapeJava(): String {
+    var escaped1 = this
+    if (escaped1.indexOf("\\u") == -1) return escaped1
+    var processed = ""
+    var position = escaped1.indexOf("\\u")
+    while (position != -1) {
+        if (position != 0) processed += escaped1.substring(0, position)
+        val token = escaped1.substring(position + 2, position + 6)
+        escaped1 = escaped1.substring(position + 6)
+        processed += token.toInt(16).toChar()
+        position = escaped1.indexOf("\\u")
+    }
+    processed += escaped1
+    return processed
+}
+
+fun String.getTypeDrawable(): Int {
+    return when (this) {
+        "xls", "xlsx" -> R.drawable.sheets
+        "doc", "docx" -> R.drawable.doc
+        "png", "jpg", "jpeg", "webp" -> R.drawable.image
+        "pdf" -> R.drawable.pdf
+        else -> R.drawable.file
+    }
+}
+fun <T> merge(vararg flows: Flow<T>): Flow<T> = flowOf(*flows).flattenMerge()

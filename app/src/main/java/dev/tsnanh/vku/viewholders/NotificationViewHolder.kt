@@ -38,7 +38,6 @@ class NotificationViewHolder private constructor(
             else -> throw IllegalArgumentException("WTF is this message???")
         }
         Glide.with(binding.imageView5).load(notification.message.data.photoURL).centerCrop()
-            .circleCrop()
             .into(binding.imageView5)
         binding.executePendingBindings()
     }

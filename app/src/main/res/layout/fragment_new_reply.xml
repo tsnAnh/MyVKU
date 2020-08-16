@@ -46,7 +46,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:context=".views.create_new_reply.CreateNewReplyFragment">
+                tools:context=".views.createNewReply.CreateNewReplyFragment">
 
                 <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/appBarLayout"

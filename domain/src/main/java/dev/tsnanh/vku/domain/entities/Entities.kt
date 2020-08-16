@@ -284,3 +284,35 @@ data class Teacher(
     @field:Json(name = "tendonvi")
     val unit: String
 )
+
+sealed class Notice
+
+@JsonClass(generateAdapter = true)
+data class Absence(
+    @field:Json(name = "tenlop")
+    val className: String,
+    @field:Json(name = "chucdanh")
+    val title: String,
+    @field:Json(name = "ten")
+    val firstName: String,
+    @field:Json(name = "hodem")
+    val lastName: String,
+    @field:Json(name = "ngaybaonghi")
+    val dateNotice: String
+) : Notice()
+
+@JsonClass(generateAdapter = true)
+data class MakeUpClass(
+    @field:Json(name = "tenlop")
+    val className: String,
+    @field:Json(name = "chucdanh")
+    val title: String,
+    @field:Json(name = "hodem")
+    val lastName: String,
+    @field:Json(name = "ten")
+    val firstName: String,
+    @field:Json(name = "ngaybaobu")
+    val dateMakeUp: String,
+    @field:Json(name = "tenphong")
+    val room: String
+) : Notice()

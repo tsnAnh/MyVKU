@@ -303,4 +303,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
         anim.start()
     }
+
+
 }

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 My VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.views.image_viewer
+package dev.tsnanh.vku.views.imageViewer
 
 import android.Manifest
 import android.app.DownloadManager
@@ -118,7 +118,7 @@ class ImageViewerFragment : Fragment() {
                     )
                 }
             } else {
-                downloadImage("$BASE_URL/${navArgs.urls[binding.viewPager2.currentItem]}")
+                downloadImage("$BASE_URL/images/${navArgs.urls[binding.viewPager2.currentItem]}")
             }
         }
     }
@@ -132,7 +132,7 @@ class ImageViewerFragment : Fragment() {
         when (requestCode) {
             RC_PERMISSION -> {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    downloadImage("$BASE_URL/${navArgs.urls[binding.viewPager2.currentItem]}")
+                    downloadImage("$BASE_URL/images/${navArgs.urls[binding.viewPager2.currentItem]}")
                 }
             }
         }

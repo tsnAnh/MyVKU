@@ -21,25 +21,5 @@ class TimetableViewModel(application: Application) : AndroidViewModel(applicatio
     val timetable =
         retrieveTimetableUseCase.invoke()
 
-    private val client by inject(GoogleSignInClient::class.java)
 
-    init {
-        client.silentSignIn().addOnSuccessListener {
-            it.email?.let { it1 -> refreshSubjects(it1) }
-        }
-    }
-
-    private fun refreshSubjects(email: String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    if (isInternetAvailable(getApplication())) {
-                        retrieveTimetableUseCase.refresh(email)
-                    }
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-            }
-        }
-    }
 }

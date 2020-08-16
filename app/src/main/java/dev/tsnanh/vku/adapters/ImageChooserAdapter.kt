@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.viewholders.imagechooser.ImageChooserFooterViewHolder
-import dev.tsnanh.vku.viewholders.imagechooser.ImageChooserViewHolder
+import dev.tsnanh.vku.viewholders.imageChooser.ImageChooserFooterViewHolder
+import dev.tsnanh.vku.viewholders.imageChooser.ImageChooserViewHolder
 
 private const val TYPE_FOOTER = 0
 private const val TYPE_ITEM = 1

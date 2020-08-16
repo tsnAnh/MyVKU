@@ -1,4 +1,4 @@
-package dev.tsnanh.vku.views.teacher_review;
+package dev.tsnanh.vku.views.teacherEvaluation;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

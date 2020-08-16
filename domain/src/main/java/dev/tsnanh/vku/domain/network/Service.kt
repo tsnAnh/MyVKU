@@ -236,6 +236,15 @@ interface VKUService {
         @Part("content") content: RequestBody,
         @Part("images") images: Array<RequestBody>?
     ): NetworkReply
+
+    @GET
+    suspend fun getAbsenceNotice(@Url url: String, @Query("time") time: String): List<Absence>
+
+    @GET
+    suspend fun getMakeUpClassNotice(
+        @Url url: String,
+        @Query("time") time: String
+    ): List<MakeUpClass>
 }
 
 /**

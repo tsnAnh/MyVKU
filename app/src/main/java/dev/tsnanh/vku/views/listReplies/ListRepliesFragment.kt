@@ -1,4 +1,4 @@
-package dev.tsnanh.vku.views.list_replies
+package dev.tsnanh.vku.views.listReplies
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -85,15 +85,11 @@ class ListRepliesFragment(
                 is Resource.Error -> {
                 }
                 is Resource.Success -> {
-                    binding.swipeToRefresh.isRefreshing = false
                     adapterReplies.submitList(result.data?.replies)
                 }
             }
         })
 
-        binding.swipeToRefresh.setOnRefreshListener {
-            viewModel.refreshPage()
-        }
     }
 
     private val replyClickListener: (NetworkCustomReply) -> Unit = { reply ->

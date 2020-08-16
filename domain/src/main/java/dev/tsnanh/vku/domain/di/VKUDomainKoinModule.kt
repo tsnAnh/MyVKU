@@ -100,4 +100,10 @@ val module = module {
     single<UpdateReplyUseCase> {
         UpdateReplyUseCaseImpl()
     }
+    single<NoticeRepo> {
+        NoticeRepoImpl()
+    }
+    single<RetrieveNoticeUseCase> {
+        RetrieveNoticeUseCaseImpl()
+    }
 }

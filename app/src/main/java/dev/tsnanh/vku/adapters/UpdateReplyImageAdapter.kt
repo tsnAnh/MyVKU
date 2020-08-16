@@ -2,7 +2,7 @@ package dev.tsnanh.vku.adapters
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.viewholders.imagechooser.UpdateReplyImageChooserViewHolder
+import dev.tsnanh.vku.viewholders.imageChooser.UpdateReplyImageChooserViewHolder
 
 class UpdateReplyImageAdapter(
     var listImages: List<String>,

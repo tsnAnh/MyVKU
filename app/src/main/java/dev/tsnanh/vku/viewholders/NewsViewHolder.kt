@@ -4,12 +4,17 @@
 
 package dev.tsnanh.vku.viewholders
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
+import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.NewsClickListener
 import dev.tsnanh.vku.databinding.ItemNewsBinding
 import dev.tsnanh.vku.domain.entities.News
+import dev.tsnanh.vku.utils.unescapeJava
+import timber.log.Timber
 
 class NewsViewHolder private constructor(
     private val binding: ItemNewsBinding
@@ -23,13 +28,35 @@ class NewsViewHolder private constructor(
         }
     }
 
+    @ExperimentalStdlibApi
     fun bind(
         news: News,
-        clickListener: NewsClickListener
+        clickListener: NewsClickListener,
+        position: Int
     ) {
-        binding.news = news
-        binding.clickListener = clickListener
-        binding.date.text = news.updatedDate
-        binding.executePendingBindings()
+        with(binding) {
+            root.setOnCreateContextMenuListener { contextMenu, v, _ ->
+                contextMenu.apply {
+                    setHeaderTitle(v.context.getString(R.string.text_options))
+                    add(0, position, 0, "Open in Browser")
+                    add(0, position, 1, "View attachment")
+                }
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                root.isContextClickable = false
+            }
+            more.setOnClickListener {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    root.showContextMenu(it.x, it.y)
+                } else {
+                    root.showContextMenu()
+                }
+            }
+            this.news = news
+            this.clickListener = clickListener
+            date.text = news.updatedDate
+            title.text = news.title!!.removeSurrounding("\"").unescapeJava()
+            executePendingBindings()
+        }
     }
 }

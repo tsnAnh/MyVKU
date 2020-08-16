@@ -2,7 +2,7 @@
  * Copyright (c) 2020 My VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.viewholders.imagechooser
+package dev.tsnanh.vku.viewholders.imageChooser
 
 import android.net.Uri
 import android.view.LayoutInflater

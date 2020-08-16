@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".VKUApplication"
@@ -23,6 +24,15 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
+        <provider
+            android:authorities="dev.tsnanh.vku.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <service
             android:name=".services.FirebaseMessagingForumService"
             android:exported="false">
@@ -34,10 +44,10 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/firebase_forum_notification_channel" />
-        <!-- <service -->
-        <!-- android:name=".services.SchoolReminderService" -->
-        <!-- android:enabled="true" -->
-        <!-- android:exported="false" /> -->
+         <service
+         android:name=".services.SchoolReminderService"
+         android:enabled="true"
+         android:exported="false" />
         <receiver
             android:name=".receivers.SchoolReminderReceiver"
             android:enabled="true"
@@ -55,6 +65,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".receivers.AttachmentReceiver" />
         <receiver android:name=".receivers.SubjectReminderReceiver" />
 
         <activity

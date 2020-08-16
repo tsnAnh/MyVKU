@@ -11,6 +11,7 @@ class Constants {
 
         // URL
         const val DAO_TAO_URL = "http://daotao.sict.udn.vn"
+        const val DAO_TAO_UPLOAD_URL = "http://daotao.sict.udn.vn/uploads"
 
         // Request code
         const val RC_SIGN_IN = 0

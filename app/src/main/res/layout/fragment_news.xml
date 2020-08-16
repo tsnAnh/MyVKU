@@ -54,37 +54,37 @@
                             android:id="@+id/chips_filter_news"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            app:selectionRequired="true"
                             app:singleSelection="true">
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/thong_bao_chung"
-                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:id="@+id/news_chip"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:tag="thong-bao-chung"
-                                android:text="@string/text_thong_bao_chung" />
+                                android:tag="news"
+                                android:text="@string/text_news" />
 
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/thong_bao_ctsv"
-                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:id="@+id/absence"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:tag="thong-bao-ctsv"
-                                android:text="@string/text_thong_bao_ctsv" />
-
+                                android:tag="absence"
+                                android:text="@string/text_absence" />
                             <com.google.android.material.chip.Chip
-                                android:id="@+id/thong_bao_khtc"
-                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                android:id="@+id/makeup"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:tag="thong-bao-khtc"
-                                android:text="@string/text_thong_bao_khtc" />
+                                android:tag="makeup"
+                                android:text="@string/text_makeup_class" />
 
                             <com.google.android.material.chip.Chip
                                 android:id="@+id/confession"
-                                style="@style/Widget.MaterialComponents.Chip.Filter"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:tag="confession"
@@ -93,17 +93,17 @@
                     </LinearLayout>
                 </HorizontalScrollView>
 
-                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                    android:id="@+id/swipe_to_refresh"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/list_news"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:listitem="@layout/item_news" />
-                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_news"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_news" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_notices"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_notice" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

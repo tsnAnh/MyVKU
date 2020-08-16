@@ -23,7 +23,7 @@ interface VKUDao {
      * Get all news cached from database
      * @return List<News>
      */
-    @Query("SELECT * FROM news ORDER BY cmsId DESC")
+    @Query("SELECT * FROM news ORDER BY updatedDate DESC")
     fun getAllNews(): Flow<List<News>>
 
     /**

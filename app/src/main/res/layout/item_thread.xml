@@ -28,7 +28,9 @@
         android:onClick="@{ (view) -> listener.onClick(thread, view) }"
         android:transitionName="@{ thread.id }"
         app:cardCornerRadius="8dp"
-        app:cardElevation="2dp">
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/material_on_surface_stroke"
+        app:cardElevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

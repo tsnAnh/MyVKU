@@ -3,8 +3,9 @@ package dev.tsnanh.vku.adapters
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import dev.tsnanh.vku.views.listReplies.ListRepliesFragment
+import javax.inject.Inject
 
-class ListRepliesPagerAdapter(
+class ListRepliesPagerAdapter @Inject constructor(
     fragment: Fragment,
     private val threadId: String,
     private val totalPage: Int

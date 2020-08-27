@@ -13,6 +13,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -20,19 +21,21 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialContainerTransform
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ListRepliesPagerAdapter
 import dev.tsnanh.vku.databinding.FragmentReplyBinding
+import dev.tsnanh.vku.domain.entities.ReplyContainer
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.RepliesViewModel
-import dev.tsnanh.vku.viewmodels.RepliesViewModelFactory
 import timber.log.Timber
 
+@AndroidEntryPoint
 class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
     private lateinit var binding: FragmentReplyBinding
-    private lateinit var viewModel: RepliesViewModel
+    private val viewModel: RepliesViewModel by viewModels()
     private val navArgs: ReplyFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,21 +68,13 @@ class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.layout.transitionName = navArgs.threadId
 
         binding.fabReply.transitionName = Constants.FAB_TRANSFORM_TO_NEW_REPLY
-
-        viewModel = ViewModelProvider(
-            this,
-            RepliesViewModelFactory(
-                navArgs.threadId,
-                requireActivity().application
-            )
-        ).get(RepliesViewModel::class.java)
 
         with(binding.viewPager) {
             offscreenPageLimit = 1
@@ -88,7 +83,7 @@ class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
         }
 
         with(viewModel) {
-            pageCount.observe(viewLifecycleOwner) { result ->
+            pageCount(navArgs.threadId).observe<Resource<ReplyContainer>>(viewLifecycleOwner) { result ->
                 when (result) {
                     is Resource.Success -> {
                         Timber.d("Refreshed All Pages")

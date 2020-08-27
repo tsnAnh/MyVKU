@@ -3,8 +3,9 @@ package dev.tsnanh.vku.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.viewholders.AttachmentViewHolder
+import javax.inject.Inject
 
-class AttachmentAdapter(
+class AttachmentAdapter @Inject constructor(
     private val listAttachments: List<String>,
     private val listener: AttachmentClickListener
 ) : RecyclerView.Adapter<AttachmentViewHolder>() {

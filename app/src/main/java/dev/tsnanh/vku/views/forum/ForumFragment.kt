@@ -22,10 +22,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialFadeThrough
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ForumAdapter
 import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.FragmentForumBinding
+import dev.tsnanh.vku.domain.entities.NetworkCustomForum
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.isInternetAvailable
@@ -33,6 +35,7 @@ import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.ForumViewModel
 import timber.log.Timber
 
+@AndroidEntryPoint
 class ForumFragment : Fragment() {
 
     private lateinit var binding: FragmentForumBinding
@@ -86,7 +89,7 @@ class ForumFragment : Fragment() {
 
         binding.listTopics.adapter = adapter
 
-        viewModel.forums.observe(viewLifecycleOwner) {
+        viewModel.forums.observe<Resource<List<NetworkCustomForum>>>(viewLifecycleOwner) {
             it.let {
                 binding.include.errorLayout.visibility = View.GONE
                 when (it) {
@@ -154,11 +157,6 @@ class ForumFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.refreshForums()
     }
 }
 

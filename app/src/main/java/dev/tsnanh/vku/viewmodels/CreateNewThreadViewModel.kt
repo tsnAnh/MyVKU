@@ -4,18 +4,21 @@
 
 package dev.tsnanh.vku.viewmodels
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.work.WorkManager
 import dev.tsnanh.vku.domain.usecases.RetrieveForumsUseCase
-import org.koin.java.KoinJavaComponent.inject
 
-class CreateNewThreadViewModel : ViewModel() {
-    private val retrieveForumsUseCase by inject(RetrieveForumsUseCase::class.java)
+class CreateNewThreadViewModel @ViewModelInject constructor(
+    retrieveForumsUseCase: RetrieveForumsUseCase,
+    workManager: WorkManager,
+    @Assisted savedStateHandle: SavedStateHandle
+) : ViewModel() {
     val forums = retrieveForumsUseCase.execute()
-
-    private val workManager by inject(WorkManager::class.java)
     val newReplyWorkLiveData = workManager.getWorkInfosByTagLiveData("dev.tsnanh.newreply")
 
     private val _pickerHasImage = MutableLiveData(false)

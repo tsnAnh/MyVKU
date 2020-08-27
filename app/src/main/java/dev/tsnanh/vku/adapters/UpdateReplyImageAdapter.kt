@@ -3,8 +3,9 @@ package dev.tsnanh.vku.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.viewholders.imageChooser.UpdateReplyImageChooserViewHolder
+import javax.inject.Inject
 
-class UpdateReplyImageAdapter(
+class UpdateReplyImageAdapter @Inject constructor(
     var listImages: List<String>,
     private val listener: ImageChooserClickListener
 ) : RecyclerView.Adapter<UpdateReplyImageChooserViewHolder>() {

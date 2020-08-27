@@ -1,46 +1,19 @@
 package dev.tsnanh.vku.viewmodels
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.work.WorkManager
 import dev.tsnanh.vku.domain.entities.ReplyContainer
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.usecases.RetrieveRepliesUseCase
-import org.koin.java.KoinJavaComponent.inject
 
-class ListRepliesViewModel(
-    private val threadId: String,
-    private val position: Int
+class ListRepliesViewModel @ViewModelInject constructor(
+    private val retrieveRepliesUseCase: RetrieveRepliesUseCase,
+    @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    // Use case
-    private val retrieveRepliesLiveDataUseCase by inject(RetrieveRepliesUseCase::class.java)
-
-    // Work manager
-    private val workManager by inject(WorkManager::class.java)
-    private var _listReplies = retrieveRepliesLiveDataUseCase.execute(threadId, position, 10)
-    val listReplies: LiveData<Resource<ReplyContainer>>
-        get() = _listReplies
-
-    fun refreshPage() {
-        _listReplies = retrieveRepliesLiveDataUseCase.execute(threadId, position, 10)
-    }
-
-
-}
-
-class ListRepliesViewModelFactory(
-    private val threadId: String,
-    private val position: Int
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ListRepliesViewModel::class.java)) {
-            return ListRepliesViewModel(
-                threadId,
-                position
-            ) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel")
+    fun refreshPage(threadId: String, position: Int): LiveData<Resource<ReplyContainer>> {
+        return retrieveRepliesUseCase.execute(threadId, position, 10)
     }
 }

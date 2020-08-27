@@ -3,9 +3,8 @@ package dev.tsnanh.vku.domain.usecases
 import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.handler.ErrorHandler
-import dev.tsnanh.vku.domain.network.VKUServiceApi
 import dev.tsnanh.vku.domain.repositories.ThreadRepo
-import org.koin.java.KoinJavaComponent.inject
+import javax.inject.Inject
 
 interface CreateNewThreadUseCase {
     suspend fun execute(
@@ -15,13 +14,14 @@ interface CreateNewThreadUseCase {
     ): Resource<ForumThread>
 }
 
-class CreateNewThreadUseCaseImpl : CreateNewThreadUseCase {
-    private val threadRepo by inject(ThreadRepo::class.java)
+class CreateNewThreadUseCaseImpl @Inject constructor(
+    private val threadRepo: ThreadRepo
+) : CreateNewThreadUseCase {
     override suspend fun execute(idToken: String, thread: ForumThread, forumId: String) =
         try {
-            Resource.Success(VKUServiceApi.network.createThread(idToken, thread, forumId))
+            Resource.Success(threadRepo.createThread(idToken, thread, forumId))
         } catch (e: Exception) {
-            ErrorHandler.handleError<ForumThread>(e)
+            ErrorHandler.handleError(e)
         }
 
 }

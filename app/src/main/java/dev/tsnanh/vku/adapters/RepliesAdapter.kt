@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.viewholders.ReplyViewHolder
+import javax.inject.Inject
 
-class RepliesAdapter(
+class RepliesAdapter @Inject constructor(
     private val uid: String,
     private val listener: ReplyClickListener
 ) : ListAdapter<NetworkCustomReply, ReplyViewHolder>(ReplyDiffUtil()) {

@@ -4,12 +4,12 @@
 
 package dev.tsnanh.vku.viewmodels
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import dev.tsnanh.vku.domain.usecases.RetrieveNotificationsUseCase
-import org.koin.java.KoinJavaComponent.inject
 
-class NotificationsViewModel : ViewModel() {
-    private val retrieveNotificationsUseCase by inject(RetrieveNotificationsUseCase::class.java)
-
+class NotificationsViewModel @ViewModelInject constructor(
+    private val retrieveNotificationsUseCase: RetrieveNotificationsUseCase
+) : ViewModel() {
     fun getNotifications(idToken: String) = retrieveNotificationsUseCase.getNotifications(idToken)
 }

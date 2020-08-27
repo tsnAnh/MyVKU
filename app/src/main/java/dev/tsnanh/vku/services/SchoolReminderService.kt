@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.os.PowerManager
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.getSystemService
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.usecases.RetrieveUserTimetableUseCase
@@ -18,12 +18,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 import kotlin.random.Random
 
+@AndroidEntryPoint
 class SchoolReminderService : Service() {
+    private val notificationManager by lazy {
+        getSystemService<NotificationManager>()
+    }
+    @Inject lateinit var retrieveTimetableUseCase: RetrieveUserTimetableUseCase
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
@@ -49,16 +54,6 @@ class SchoolReminderService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         GlobalScope.launch(Dispatchers.IO) {
             val context = this@SchoolReminderService
-//            val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-//            val wakeLock =
-//                powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Constants.WAKE_LOCK_TAG)
-//            wakeLock.acquire(10 * 60 * 1000L) // 10 minutes
-
-            // [START] Prepare data
-            Timber.d("Receiver called")
-            val retrieveTimetableUseCase by KoinJavaComponent.inject(RetrieveUserTimetableUseCase::class.java)
-            val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val email = intent?.getStringExtra("email")
 
             // return part of the day, 0 -> 11 Morning, 12 -> 18 Afternoon, 19 -> 23 Night
@@ -80,7 +75,7 @@ class SchoolReminderService : Service() {
                 }) {
                 is Resource.Error -> Timber.d(result.message)
                 is Resource.Success -> {
-                    Timber.d("success")
+                    Timber.d("successfully load timetable")
                     // Get current day of week
                     val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
 
@@ -92,7 +87,7 @@ class SchoolReminderService : Service() {
                     if (list.isEmpty()) {
                         // day off
                         if (partOfTheDay == 0) {
-                            notificationManager.sendSchoolReminderNotification(
+                            notificationManager?.sendSchoolReminderNotification(
                                 Random(100).nextInt(),
                                 context
                                     .getString(R.string.title_notification_school_reminder_no_subject),
@@ -113,7 +108,7 @@ class SchoolReminderService : Service() {
                                         .matches(Regex("[1-5]"))
                                 }
                                 if (morningSubjects.isEmpty()) {
-                                    notificationManager.sendSchoolReminderNotification(
+                                    notificationManager?.sendSchoolReminderNotification(
                                         Random(100).nextInt(),
                                         context
                                             .getString(R.string.title_notification_school_reminder_no_subject_morning),
@@ -124,7 +119,7 @@ class SchoolReminderService : Service() {
                                     )
                                 } else {
                                     morningSubjects.forEach { subject ->
-                                        notificationManager.sendSchoolReminderNotification(
+                                        notificationManager?.sendSchoolReminderNotification(
                                             subject.dayOfWeek.getHourFromStringLesson(),
                                             subject.className,
                                             "You have ${subject.className} at " +
@@ -138,13 +133,14 @@ class SchoolReminderService : Service() {
                             }
                             // Afternoon
                             1 -> {
+                                // Filter afternoon subject
                                 val afternoonSubjects = list.filter { subject ->
                                     subject.week.trim()
                                         .isNotEmpty() && subject.lesson.trim()[0].toString()
                                         .matches(Regex("[6-9]"))
                                 }
                                 if (afternoonSubjects.isEmpty()) {
-                                    notificationManager.sendSchoolReminderNotification(
+                                    notificationManager?.sendSchoolReminderNotification(
                                         Random(100).nextInt(),
                                         context
                                             .getString(R.string.title_notification_school_reminder_no_subject_afternoon),
@@ -155,7 +151,7 @@ class SchoolReminderService : Service() {
                                     )
                                 } else {
                                     afternoonSubjects.forEach { subject ->
-                                        notificationManager.sendSchoolReminderNotification(
+                                        notificationManager?.sendSchoolReminderNotification(
                                             subject.lesson.getHourFromStringLesson(),
                                             subject.className,
                                             "You have ${subject.className} at " +
@@ -168,7 +164,7 @@ class SchoolReminderService : Service() {
                                 }
                             }
                             2 -> {
-                                notificationManager.sendSchoolReminderNotification(
+                                notificationManager?.sendSchoolReminderNotification(
                                     Random(10).nextInt(),
                                     "How is your day?",
                                     "Good evening here!",
@@ -178,7 +174,7 @@ class SchoolReminderService : Service() {
                             }
                             3 -> {
                                 // TODO: create notification good night user
-                                notificationManager.sendSchoolReminderNotification(
+                                notificationManager?.sendSchoolReminderNotification(
                                     Random(100).nextInt(),
                                     "Good night",
                                     "Good night here!",

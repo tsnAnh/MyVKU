@@ -6,6 +6,8 @@ package dev.tsnanh.vku.workers
 
 import android.content.Context
 import android.net.Uri
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -14,7 +16,9 @@ import com.squareup.moshi.Types
 import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.domain.repositories.ReplyRepoImpl
 import dev.tsnanh.vku.domain.usecases.CreateNewReplyUseCase
+import dev.tsnanh.vku.domain.usecases.CreateNewReplyUseCaseImpl
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.getFilePath
 import kotlinx.coroutines.Dispatchers
@@ -24,17 +28,19 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class CreateNewReplyWorker(private val context: Context, params: WorkerParameters) :
-    CoroutineWorker(context, params) {
+class CreateNewReplyWorker @WorkerInject constructor(
+    @Assisted private val context: Context,
+    @Assisted params: WorkerParameters,
+) : CoroutineWorker(context, params) {
+
     override suspend fun doWork() = coroutineScope {
-        // Usecase
-        val createNewReplyUseCase by inject(CreateNewReplyUseCase::class.java)
+        val createNewReplyUseCase: CreateNewReplyUseCase = CreateNewReplyUseCaseImpl(ReplyRepoImpl())
+        val moshi = Moshi.Builder().build()
         // Get data from inputData
         val token = inputData.getString(Constants.TOKEN_KEY)!!
         val threadId = inputData.getString("threadId")!!
@@ -42,7 +48,6 @@ class CreateNewReplyWorker(private val context: Context, params: WorkerParameter
         val urisJsonString = inputData.getString(Constants.IMAGES_KEY)!!
         val quotedReplyId = inputData.getString(Constants.QUOTED_REPLY)
 
-        val moshi by inject(Moshi::class.java)
         val jsonAdapter =
             moshi.adapter(Reply::class.java)
         val type =

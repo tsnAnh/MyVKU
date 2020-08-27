@@ -2,11 +2,15 @@ package dev.tsnanh.vku.workers
 
 import android.content.Context
 import androidx.core.net.toUri
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import dev.tsnanh.vku.domain.entities.WorkResult
+import dev.tsnanh.vku.domain.repositories.ReplyRepoImpl
 import dev.tsnanh.vku.domain.usecases.UpdateReplyUseCase
+import dev.tsnanh.vku.domain.usecases.UpdateReplyUseCaseImpl
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.getFilePath
 import kotlinx.coroutines.async
@@ -14,16 +18,18 @@ import kotlinx.coroutines.coroutineScope
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class UpdateReplyWorker(private val context: Context, workerParameters: WorkerParameters) :
-    CoroutineWorker(context, workerParameters) {
+class UpdateReplyWorker @WorkerInject constructor(
+    @Assisted private val context: Context,
+    @Assisted params: WorkerParameters,
+) : CoroutineWorker(context, params) {
+
     override suspend fun doWork(): Result = coroutineScope {
-        val useCase by inject(UpdateReplyUseCase::class.java)
+        val useCase: UpdateReplyUseCase = UpdateReplyUseCaseImpl(ReplyRepoImpl())
         // Input Data
         val idToken = inputData.getString(Constants.TOKEN_KEY)!!
         val replyId = inputData.getString("replyId")!!

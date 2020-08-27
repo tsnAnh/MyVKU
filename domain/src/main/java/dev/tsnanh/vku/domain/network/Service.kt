@@ -5,6 +5,7 @@ package dev.tsnanh.vku.domain.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dev.tsnanh.vku.domain.constants.SecretConstants
 import dev.tsnanh.vku.domain.entities.*
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -19,8 +20,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Base URL
  */
-// Google Cloud VM Instance Server
-const val BASE_URL = "http://34.87.151.214:5001"
+const val BASE_URL = "http://13.229.109.199:8008"
 
 /**
  * OkHttp client
@@ -43,7 +43,10 @@ private val moshi = Moshi.Builder()
  */
 private val retrofit = Retrofit.Builder()
     .client(client)
-    .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
+    .addConverterFactory(
+        MoshiConverterFactory.create(moshi)
+            .asLenient()
+    )
     .addConverterFactory(ScalarsConverterFactory.create())
     .baseUrl(BASE_URL)
     .build()
@@ -173,7 +176,10 @@ interface VKUService {
      * @return subjects List<Subject>
      */
     @GET
-    suspend fun getTimetable(@Url url: String, @Query("email") email: String): List<Subject>
+    suspend fun getTimetable(
+        @Url url: String = SecretConstants.TKB_URL,
+        @Query("email") email: String
+    ): List<Subject>
 
     /**
      * Delete thread
@@ -217,7 +223,10 @@ interface VKUService {
      * @return List<News>
      */
     @GET
-    suspend fun getNews(@Url url: String, @Query("time") time: String): ResponseBody
+    suspend fun getNews(
+        @Url url: String = SecretConstants.NEWS_URL,
+        @Query("time") time: String
+    ): ResponseBody
 
     /**
      * Get all teacher from daotao.sict.udn.vn
@@ -225,7 +234,7 @@ interface VKUService {
      * @return List<Teacher>
      */
     @GET
-    suspend fun getAllTeachers(@Url url: String): List<Teacher>
+    suspend fun getAllTeachers(@Url url: String = SecretConstants.TEACHERS_URL): List<Teacher>
 
     @Multipart
     @PUT("/api/reply/{replyId}")
@@ -238,11 +247,11 @@ interface VKUService {
     ): NetworkReply
 
     @GET
-    suspend fun getAbsenceNotice(@Url url: String, @Query("time") time: String): List<Absence>
+    suspend fun getAbsenceNotice(@Url url: String = SecretConstants.ABSENCE_URL, @Query("time") time: String): List<Absence>
 
     @GET
     suspend fun getMakeUpClassNotice(
-        @Url url: String,
+        @Url url: String = SecretConstants.MAKEUP_URL,
         @Query("time") time: String
     ): List<MakeUpClass>
 }

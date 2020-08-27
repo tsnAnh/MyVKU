@@ -26,6 +26,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialContainerTransform
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageViewerPagerAdapter
 import dev.tsnanh.vku.databinding.FragmentImageViewerBinding
@@ -34,8 +35,8 @@ import dev.tsnanh.vku.utils.Constants.Companion.RC_PERMISSION
 import dev.tsnanh.vku.viewmodels.ImageViewerViewModel
 import timber.log.Timber
 
+@AndroidEntryPoint
 class ImageViewerFragment : Fragment() {
-
     private lateinit var viewModel: ImageViewerViewModel
     private lateinit var binding: FragmentImageViewerBinding
     private val navArgs by navArgs<ImageViewerFragmentArgs>()
@@ -61,8 +62,8 @@ class ImageViewerFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         navArgs.urls.map {
             Timber.d(it)

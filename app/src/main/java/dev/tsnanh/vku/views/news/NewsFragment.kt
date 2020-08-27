@@ -9,6 +9,7 @@ import android.app.Activity
 import android.app.DownloadManager
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -28,20 +29,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.*
 import dev.tsnanh.vku.databinding.AttachmentDialogLayoutBinding
 import dev.tsnanh.vku.databinding.FragmentNewsBinding
+import dev.tsnanh.vku.domain.constants.SecretConstants
 import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.receivers.AttachmentReceiver
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.CustomTabHelper
-import dev.tsnanh.vku.utils.SecretConstants
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.NewsViewModel
 import kotlinx.coroutines.Dispatchers
@@ -53,18 +54,17 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.net.URLConnection
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NewsFragment : Fragment() {
-
     private val viewModel: NewsViewModel by viewModels()
     private lateinit var binding: FragmentNewsBinding
     private val customTabHelper = CustomTabHelper()
     private lateinit var adapterNews: NewsAdapter
     private lateinit var adapterAbsence: NoticeAdapter
     private lateinit var adapterMakeUpClass: NoticeAdapter
-    private val preferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(requireContext())
-    }
+    @Inject lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,8 +84,8 @@ class NewsFragment : Fragment() {
     }
 
     @ExperimentalCoroutinesApi
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.viewModel = viewModel
 

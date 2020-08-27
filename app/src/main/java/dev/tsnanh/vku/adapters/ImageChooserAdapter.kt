@@ -11,11 +11,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.viewholders.imageChooser.ImageChooserFooterViewHolder
 import dev.tsnanh.vku.viewholders.imageChooser.ImageChooserViewHolder
+import javax.inject.Inject
 
 private const val TYPE_FOOTER = 0
 private const val TYPE_ITEM = 1
 
-class ImageChooserAdapter(
+class ImageChooserAdapter @Inject constructor(
     private val listener: ImageChooserClickListener
 ) : ListAdapter<Uri, RecyclerView.ViewHolder>(UriDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {

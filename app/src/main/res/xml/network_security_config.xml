@@ -5,7 +5,7 @@
 <network-security-config>
     <domain-config>
         <domain includeSubdomains="true">34.87.151.214:5001</domain>
-        <domain includeSubdomains="true">daotao.sict.udn.vn</domain>
+        <domain includeSubdomains="true">daotao.vku.udn.vn</domain>
     </domain-config>
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>

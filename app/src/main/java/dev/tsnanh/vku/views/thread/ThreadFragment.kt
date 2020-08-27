@@ -7,55 +7,38 @@ package dev.tsnanh.vku.views.thread
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialContainerTransform
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ThreadAdapter
 import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.FragmentThreadBinding
-import dev.tsnanh.vku.databinding.LayoutEditThreadTitleDialogBinding
 import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
 import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
 import dev.tsnanh.vku.domain.entities.Resource
-import dev.tsnanh.vku.domain.entities.UpdateThreadBody
 import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.ThreadViewModel
-import dev.tsnanh.vku.viewmodels.ThreadViewModelFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.java.KoinJavaComponent.inject
 
+@AndroidEntryPoint
 class ThreadFragment : Fragment() {
-
-    private lateinit var viewModel: ThreadViewModel
+    private val viewModel: ThreadViewModel by viewModels()
     private lateinit var binding: FragmentThreadBinding
     private lateinit var adapter: ThreadAdapter
     private lateinit var progressBarLayoutBinding: ProgressDialogLayoutBinding
-    private val progressDialog by lazy {
-        MaterialAlertDialogBuilder(requireContext())
-            .setView(
-                progressBarLayoutBinding.root
-            )
-            .setCancelable(false)
-            .create()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,11 +77,6 @@ class ThreadFragment : Fragment() {
         val navArgs: ThreadFragmentArgs by navArgs()
         binding.layoutThread.transitionName = navArgs.id
 
-        viewModel = ViewModelProvider(
-            this,
-            ThreadViewModelFactory(navArgs.id)
-        ).get(ThreadViewModel::class.java)
-
         configureList()
         adapter = ThreadAdapter(
             GoogleSignIn.getLastSignedInAccount(requireContext())?.id!!,
@@ -108,7 +86,7 @@ class ThreadFragment : Fragment() {
 
         binding.listThread.adapter = adapter
 
-        viewModel.threads.observe(viewLifecycleOwner, Observer {
+        viewModel.getThreads(navArgs.id).observe(viewLifecycleOwner) {
             it?.let {
                 when (it) {
                     is Resource.Success -> {
@@ -126,9 +104,9 @@ class ThreadFragment : Fragment() {
                     }
                 }
             }
-        })
+        }
 
-        viewModel.navigateToReplies.observe(viewLifecycleOwner, Observer {
+        viewModel.navigateToReplies.observe(viewLifecycleOwner) {
             it?.let {
                 val extras = FragmentNavigatorExtras(
                     it.second to it.first.id
@@ -141,7 +119,7 @@ class ThreadFragment : Fragment() {
                 )
                 viewModel.onNavigatedToReplies()
             }
-        })
+        }
 
         binding.fabNew.setOnClickListener {
             val extras = FragmentNavigatorExtras(
@@ -167,96 +145,90 @@ class ThreadFragment : Fragment() {
         }
     }
 
-    fun configureList() {
+    private fun configureList() {
         binding.listThread.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
             itemAnimator = null
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.refreshThreads()
-    }
-
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        val currentItemId = adapter.currentList[item.itemId].id
-        val titleThread = adapter.currentList[item.itemId].title
-        val client by inject(GoogleSignInClient::class.java)
-        when (item.order) {
-            EDIT_ITEM_ORDER -> {
-                val binding = LayoutEditThreadTitleDialogBinding
-                    .inflate(LayoutInflater.from(requireContext())).apply {
-                        inputEditText.setText(titleThread)
-                    }
-                val builder = MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Edit thread title")
-                    .setView(binding.root)
-                    .setPositiveButton("Confirm") { d, _ ->
-                        client.silentSignIn().addOnSuccessListener { result ->
-                            viewModel.updateThreadTitle(
-                                result.idToken!!,
-                                currentItemId,
-                                UpdateThreadBody(binding.inputEditText.text.toString())
-                            ).observe(viewLifecycleOwner) { resource ->
-                                when (resource) {
-                                    is Resource.Loading -> {
-                                        progressDialog.show()
-                                    }
-                                    is Resource.Error -> showSnackbarWithAction(
-                                        requireView(),
-                                        "An error has occurred. Please try again later!"
-                                    ).also {
-                                        progressDialog.hide()
-                                    }
-                                    is Resource.Success -> {
-                                        viewModel.refreshThreadsLiveData()
-                                            .observe(viewLifecycleOwner) {
-                                                refresh(it)
-                                            }
-                                        progressDialog.hide()
-                                    }
-                                }
-                            }
-                            d.dismiss()
-                        }
-                    }
-                    .setNegativeButton("Cancel") { d, _ ->
-                        d.dismiss()
-                    }
-                    .create().show()
-            }
-            DELETE_ITEM_ORDER -> {
-                client.silentSignIn().addOnSuccessListener {
-                    viewModel.deleteThread(it.idToken!!, currentItemId)
-                        .observe(viewLifecycleOwner) { result ->
-                            when (result) {
-                                "deleted thread" -> {
-                                    viewModel.refreshThreadsLiveData()
-                                        .observe(viewLifecycleOwner) { resource ->
-                                            refresh(resource)
-                                        }
-                                    showSnackbarWithAction(requireView(), "Deleted $titleThread")
-                                }
-                                else -> showSnackbarWithAction(
-                                    requireView(),
-                                    "An error has occurred! Please try again!"
-                                )
-                            }
-                        }
-                }
-            }
-            REPORT_ITEM_ORDER -> TODO("report thread")
-        }
-        return true
-    }
+//
+//    override fun onContextItemSelected(item: MenuItem): Boolean {
+//        val currentItemId = adapter.currentList[item.itemId].id
+//        val titleThread = adapter.currentList[item.itemId].title
+//        when (item.order) {
+//            EDIT_ITEM_ORDER -> {
+//                val binding = LayoutEditThreadTitleDialogBinding
+//                    .inflate(LayoutInflater.from(requireContext())).apply {
+//                        inputEditText.setText(titleThread)
+//                    }
+//                val builder = MaterialAlertDialogBuilder(requireContext())
+//                    .setTitle("Edit thread title")
+//                    .setView(binding.root)
+//                    .setPositiveButton("Confirm") { d, _ ->
+//                        client.silentSignIn().addOnSuccessListener { result ->
+//                            viewModel.updateThreadTitle(
+//                                result.idToken!!,
+//                                currentItemId,
+//                                UpdateThreadBody(binding.inputEditText.text.toString())
+//                            ).observe(viewLifecycleOwner) { resource ->
+//                                when (resource) {
+//                                    is Resource.Loading -> {
+//                                        progressDialog.show()
+//                                    }
+//                                    is Resource.Error -> showSnackbarWithAction(
+//                                        requireView(),
+//                                        "An error has occurred. Please try again later!"
+//                                    ).also {
+//                                        progressDialog.hide()
+//                                    }
+//                                    is Resource.Success -> {
+//                                        viewModel.refreshThreadsLiveData()
+//                                            .observe(viewLifecycleOwner) {
+//                                                refresh(it)
+//                                            }
+//                                        progressDialog.hide()
+//                                    }
+//                                }
+//                            }
+//                            d.dismiss()
+//                        }
+//                    }
+//                    .setNegativeButton("Cancel") { d, _ ->
+//                        d.dismiss()
+//                    }
+//                    .create().show()
+//            }
+//            DELETE_ITEM_ORDER -> {
+//                client.silentSignIn().addOnSuccessListener {
+//                    viewModel.deleteThread(it.idToken!!, currentItemId)
+//                        .observe(viewLifecycleOwner) { result ->
+//                            when (result) {
+//                                "deleted thread" -> {
+//                                    viewModel.refreshThreadsLiveData()
+//                                        .observe<Resource<List<NetworkForumThreadCustom>>>(viewLifecycleOwner) { resource ->
+//                                            refresh(resource)
+//                                        }
+//                                    showSnackbarWithAction(requireView(), "Deleted $titleThread")
+//                                }
+//                                else -> showSnackbarWithAction(
+//                                    requireView(),
+//                                    "An error has occurred! Please try again!"
+//                                )
+//                            }
+//                        }
+//                }
+//            }
+//            REPORT_ITEM_ORDER -> TODO("report thread")
+//        }
+//        return true
+//    }
 
     private fun refresh(resource: Resource<List<NetworkForumThreadCustom>>) {
         when (resource) {
             is Resource.Success -> {
                 binding.progressBar.visibility = View.GONE
-                adapter.submitList(resource.data!!.sortedByDescending { forum ->
+                adapter.submitList(resource.data?.sortedByDescending { forum ->
                     forum.createdAt
                 })
             }

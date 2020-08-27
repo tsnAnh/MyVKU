@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
@@ -31,14 +32,14 @@ import dev.tsnanh.vku.adapters.UpdateReplyImageAdapter
 import dev.tsnanh.vku.databinding.FragmentUpdateReplyBinding
 import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
 import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.domain.entities.UserPopulatedNetworkReply
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.UpdateReplyViewModel
-import dev.tsnanh.vku.viewmodels.UpdateReplyViewModelFactory
 import timber.log.Timber
 
+@AndroidEntryPoint
 class UpdateReplyFragment : Fragment() {
-
     private lateinit var viewModel: UpdateReplyViewModel
     private lateinit var binding: FragmentUpdateReplyBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
@@ -86,10 +87,6 @@ class UpdateReplyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val factory =
-            UpdateReplyViewModelFactory(navArgs.replyId)
-        viewModel = ViewModelProvider(this, factory).get(UpdateReplyViewModel::class.java)
 
         pickerAdapter = ImageChooserAdapter(ImageChooserClickListener(
             listener = { pos ->
@@ -147,7 +144,7 @@ class UpdateReplyFragment : Fragment() {
             }
         }
 
-        viewModel.reply.observe(viewLifecycleOwner) { resource ->
+        viewModel.reply(navArgs.replyId).observe<Resource<UserPopulatedNetworkReply>>(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Loading -> {
                 }
@@ -158,6 +155,7 @@ class UpdateReplyFragment : Fragment() {
                         Timber.d(resource.data.toString())
                         fabUpdateReply.setOnClickListener {
                             viewModel.editReply(
+                                navArgs.replyId,
                                 pickerAdapter.currentList,
                                 content.text.toString(),
                                 imagesAdapter.listImages
@@ -174,7 +172,7 @@ class UpdateReplyFragment : Fragment() {
             }
         }
 
-        viewModel.pickerHasImage.observe(viewLifecycleOwner) {
+        viewModel.pickerHasImage.observe<Boolean>(viewLifecycleOwner) {
             it.let {
                 binding.pickerHasImage = it
             }

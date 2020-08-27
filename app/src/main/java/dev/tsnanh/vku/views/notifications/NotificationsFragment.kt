@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.transition.MaterialFadeThrough
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.NotificationAdapter
 import dev.tsnanh.vku.adapters.NotificationClickListener
@@ -24,12 +25,14 @@ import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.isInternetAvailable
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.NotificationsViewModel
-import org.koin.java.KoinJavaComponent.inject
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NotificationsFragment : Fragment() {
 
     private val viewModel: NotificationsViewModel by viewModels()
     private lateinit var binding: FragmentNotificationsBinding
+    @Inject lateinit var client: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +50,8 @@ class NotificationsFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -61,11 +64,10 @@ class NotificationsFragment : Fragment() {
             adapter = notificationAdapter
         }
 
-        val mGoogleSignInClient by inject(GoogleSignInClient::class.java)
-        mGoogleSignInClient.silentSignIn().addOnCompleteListener { result ->
+        client.silentSignIn().addOnCompleteListener { result ->
             if (result.isSuccessful) {
                 viewModel.getNotifications(result.result?.idToken!!)
-                    .observe(viewLifecycleOwner, Observer {
+                    .observe(viewLifecycleOwner, {
                         it?.let {
                             when (it) {
                                 is Resource.Success -> {

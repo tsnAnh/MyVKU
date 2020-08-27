@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.RepliesAdapter
 import dev.tsnanh.vku.adapters.ReplyClickListener
@@ -20,22 +20,21 @@ import dev.tsnanh.vku.databinding.FragmentListRepliesBinding
 import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.viewmodels.ListRepliesViewModel
-import dev.tsnanh.vku.viewmodels.ListRepliesViewModelFactory
 import dev.tsnanh.vku.views.reply.ReplyFragment.Companion.DELETE_ITEM_ORDER
 import dev.tsnanh.vku.views.reply.ReplyFragment.Companion.EDIT_ITEM_ORDER
 import dev.tsnanh.vku.views.reply.ReplyFragment.Companion.REPORT_ITEM_ORDER
 import dev.tsnanh.vku.views.reply.ReplyFragmentDirections
-import org.koin.java.KoinJavaComponent
 
+@AndroidEntryPoint
 class ListRepliesFragment(
     private val threadId: String,
     private val position: Int,
     private val isScrollDown: Boolean
 ) : Fragment() {
-
-    private lateinit var viewModel: ListRepliesViewModel
+    private val viewModel: ListRepliesViewModel by viewModels()
     private lateinit var binding: FragmentListRepliesBinding
     private lateinit var adapterReplies: RepliesAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,18 +45,8 @@ class ListRepliesFragment(
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        viewModel = ViewModelProvider(
-            this,
-            ListRepliesViewModelFactory(
-                threadId,
-                position
-            )
-        ).get(
-            ListRepliesViewModel::class.java
-        )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -78,7 +67,7 @@ class ListRepliesFragment(
             itemAnimator = null
         }
 
-        viewModel.listReplies.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.refreshPage(threadId, position).observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Resource.Loading -> {
                 }
@@ -89,7 +78,6 @@ class ListRepliesFragment(
                 }
             }
         })
-
     }
 
     private val replyClickListener: (NetworkCustomReply) -> Unit = { reply ->
@@ -101,11 +89,6 @@ class ListRepliesFragment(
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.refreshPage()
-    }
-
     private val shareClickListener: (NetworkCustomReply) -> Unit = {
 //        findNavController().navigate(L)
     }
@@ -113,7 +96,6 @@ class ListRepliesFragment(
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val currentReplyId = adapterReplies.currentList[item.itemId].id
         val userDisplayName = adapterReplies.currentList[item.itemId].uid?.displayName
-        val client by KoinJavaComponent.inject(GoogleSignInClient::class.java)
 
         when (item.order) {
             EDIT_ITEM_ORDER -> {

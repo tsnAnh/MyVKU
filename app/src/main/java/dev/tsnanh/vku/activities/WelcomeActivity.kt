@@ -5,6 +5,7 @@
 package dev.tsnanh.vku.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -12,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.PreferenceManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -20,6 +20,7 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityWelcomeBinding
 import dev.tsnanh.vku.domain.entities.LoginBody
@@ -29,22 +30,19 @@ import dev.tsnanh.vku.viewmodels.WelcomeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class WelcomeActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityWelcomeBinding
     private val viewModel: WelcomeViewModel by viewModels()
-    private val mGoogleSignInClient: GoogleSignInClient by inject(GoogleSignInClient::class.java)
-    private val sharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(this)
-    }
+    @Inject lateinit var mGoogleSignInClient: GoogleSignInClient
+    @Inject lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // hide status bar and toolbar
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome)
 
         binding.lifecycleOwner = this
@@ -54,7 +52,8 @@ class WelcomeActivity : AppCompatActivity() {
             signIn()
         }
 
-        if (GoogleSignIn.getLastSignedInAccount(this) != null && sharedPreferences.getBoolean(
+        if (
+            GoogleSignIn.getLastSignedInAccount(this) != null && sharedPreferences.getBoolean(
                 "loginSuccess",
                 false
             )

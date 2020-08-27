@@ -9,8 +9,9 @@ import androidx.core.net.toUri
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import timber.log.Timber
 import java.io.File
+import javax.inject.Inject
 
-class AttachmentReceiver : BroadcastReceiver() {
+class AttachmentReceiver @Inject constructor() : BroadcastReceiver() {
     override fun onReceive(p0: Context?, p1: Intent?) {
         Timber.d("Attachment downloaded!")
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE == p1?.action) {

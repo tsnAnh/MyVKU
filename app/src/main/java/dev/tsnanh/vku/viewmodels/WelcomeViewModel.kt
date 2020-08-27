@@ -1,15 +1,14 @@
 package dev.tsnanh.vku.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.ViewModel
 import dev.tsnanh.vku.domain.entities.LoginBody
 import dev.tsnanh.vku.domain.usecases.LoginUseCase
 import kotlinx.coroutines.coroutineScope
-import org.koin.java.KoinJavaComponent.inject
 
-class WelcomeViewModel(application: Application) : AndroidViewModel(application) {
-    private val checkHasUserUseCase by inject(LoginUseCase::class.java)
-
+class WelcomeViewModel @ViewModelInject constructor(
+    private val checkHasUserUseCase: LoginUseCase
+) : ViewModel() {
     suspend fun login(idToken: String, body: LoginBody) = coroutineScope {
         checkHasUserUseCase.execute(idToken, body)
     }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import timber.log.Timber
+import javax.inject.Inject
 
 interface ReplyRepo {
     @Throws(Exception::class)
@@ -42,7 +43,7 @@ interface ReplyRepo {
     ): WorkResult<NetworkReply>
 }
 
-class ReplyRepoImpl : ReplyRepo {
+class ReplyRepoImpl @Inject constructor() : ReplyRepo {
     @Throws(Exception::class)
     override suspend fun createReply(
         idToken: String,
@@ -87,7 +88,7 @@ class ReplyRepoImpl : ReplyRepo {
             )
             delay(10000)
         } catch (e: Exception) {
-            emit(ErrorHandler.handleError(e))
+            emit(ErrorHandler.handleError<ReplyContainer>(e))
         }
     }
 
@@ -96,7 +97,7 @@ class ReplyRepoImpl : ReplyRepo {
         try {
             emit(Resource.Success(VKUServiceApi.network.getReplyById(replyId)))
         } catch (e: Exception) {
-            emit(ErrorHandler.handleError(e))
+            emit(ErrorHandler.handleError<UserPopulatedNetworkReply>(e))
         }
     }
 
@@ -107,7 +108,7 @@ class ReplyRepoImpl : ReplyRepo {
                 Resource.Success(VKUServiceApi.network.getRepliesInThread(threadId, 1, limit))
             )
         } catch (e: Exception) {
-            emit(ErrorHandler.handleError(e))
+            emit(ErrorHandler.handleError<ReplyContainer>(e))
         }
     }
 

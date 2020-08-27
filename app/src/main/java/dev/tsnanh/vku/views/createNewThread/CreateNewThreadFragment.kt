@@ -22,7 +22,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,6 +29,7 @@ import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
@@ -43,19 +43,17 @@ import dev.tsnanh.vku.viewmodels.CreateNewThreadViewModel
 import dev.tsnanh.vku.viewmodels.MainViewModel
 import timber.log.Timber
 
+@AndroidEntryPoint
 class CreateNewThreadFragment : Fragment() {
-
     private val viewModel: CreateNewThreadViewModel by viewModels()
     private lateinit var binding: FragmentCreateNewThreadBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
     private val activityViewModel: MainViewModel by activityViewModels()
-
     private lateinit var progressBarLayoutBinding: ProgressDialogLayoutBinding
+
     private val progressDialog by lazy {
         MaterialAlertDialogBuilder(requireContext())
-            .setView(
-                progressBarLayoutBinding.root
-            )
+            .setView(progressBarLayoutBinding.root)
             .setCancelable(false)
             .create()
     }
@@ -77,7 +75,7 @@ class CreateNewThreadFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         binding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_create_new_thread, container, false)
@@ -93,8 +91,8 @@ class CreateNewThreadFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val navArgs: CreateNewThreadFragmentArgs by navArgs()
 
@@ -144,15 +142,15 @@ class CreateNewThreadFragment : Fragment() {
             adapter = pickerAdapter
         }
 
-        viewModel.pickerHasImage.observe(viewLifecycleOwner, Observer {
+        viewModel.pickerHasImage.observe(viewLifecycleOwner) { it ->
             it?.let {
                 binding.pickerHasImage = it
             }
-        })
+        }
 
-        viewModel.newReplyWorkLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.newReplyWorkLiveData.observe(viewLifecycleOwner) {
             if (it.isNullOrEmpty()) {
-                return@Observer
+                return@observe
             }
 
             val workInfo = it[0]
@@ -165,12 +163,11 @@ class CreateNewThreadFragment : Fragment() {
                 val threadId = workInfo.outputData.getString("threadId")
                 Timber.d(threadId)
                 WorkManager.getInstance(requireContext()).pruneWork()
-//                viewModel.onNavigateToReplyFragment(threadId)
                 findNavController().navigateUp()
             }
-        })
+        }
 
-        viewModel.navigateToReplyFragment.observe(viewLifecycleOwner, Observer {
+        viewModel.navigateToReplyFragment.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
                     CreateNewThreadFragmentDirections.actionNavigationNewThreadToNavigationReplies(
@@ -179,9 +176,9 @@ class CreateNewThreadFragment : Fragment() {
                 )
                 viewModel.onNavigatedToReplyFragment()
             }
-        })
+        }
 
-        viewModel.forums.observe(viewLifecycleOwner, Observer {
+        viewModel.forums.observe(viewLifecycleOwner) {
             it?.let {
                 when (it) {
                     is Resource.Loading -> {
@@ -225,7 +222,7 @@ class CreateNewThreadFragment : Fragment() {
                     }
                 }
             }
-        })
+        }
 
         binding.fabSubmit.setOnClickListener {
             createThread()
@@ -368,7 +365,7 @@ class CreateNewThreadFragment : Fragment() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Constants.RC_PERMISSION &&
@@ -380,44 +377,29 @@ class CreateNewThreadFragment : Fragment() {
     // endregion
 
     private fun createThread() {
-        clearError()
-        if (
-            binding.title.text.isNullOrBlank() ||
-            binding.content.text.isNullOrBlank() ||
-            binding.forum.text.isNullOrBlank()
-        ) {
-            if (binding.title.text.isNullOrBlank()) binding.title.error =
-                requireContext().getString(R.string.msg_empty_title)
-            if (binding.forum.text.isNullOrBlank()) binding.forum.error =
-                requireContext().getString(R.string.msg_choose_a_forum)
-            if (binding.content.text.isNullOrBlank()) binding.content.error =
-                requireContext().getString(R.string.msg_empty_content)
-        } else {
-            val thread = prepareThread()
-            val post = preparePost()
+        when {
+            binding.title.text.isNullOrBlank() || binding.content.text.isNullOrBlank() || binding.forum.text.isNullOrBlank() -> {
+                if (binding.title.text.isNullOrBlank()) binding.title.error =
+                    requireContext().getString(R.string.msg_empty_title)
+                if (binding.forum.text.isNullOrBlank()) binding.forum.error =
+                    requireContext().getString(R.string.msg_choose_a_forum)
+                if (binding.content.text.isNullOrBlank()) binding.content.error =
+                    requireContext().getString(R.string.msg_empty_content)
+            }
+            else -> {
+                val thread = prepareThread()
+                val post = preparePost()
 
-            activityViewModel.createNewThread(pickerAdapter.currentList, thread, post)
+                activityViewModel.createNewThread(pickerAdapter.currentList, thread, post)
+            }
         }
     }
 
-    private fun prepareThread(): ForumThread {
-        return ForumThread(
-            title = binding.title.text.toString().trim(),
-            forumId = (binding.forum.tag as String?).toString()
-        )
-    }
+    private fun prepareThread() = ForumThread(title = binding.title.text.toString().trim(),
+        forumId = (binding.forum.tag as String?).toString())
 
-    private fun preparePost(): Reply {
-        return Reply(
-            content = binding.content.text.toString().trim()
-        )
-    }
+    private fun preparePost() = Reply(content = binding.content.text.toString().trim())
 
-    private fun clearError() {
-        binding.title.error = null
-        binding.content.error = null
-        binding.forum.error = null
-    }
     // Disabled for two months
     // TODO: Make it better
 /*    override fun onSaveInstanceState(outState: Bundle) {

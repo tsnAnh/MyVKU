@@ -11,8 +11,9 @@ import androidx.recyclerview.widget.ListAdapter
 import com.google.android.material.card.MaterialCardView
 import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
 import dev.tsnanh.vku.viewholders.ThreadViewHolder
+import javax.inject.Inject
 
-class ThreadAdapter(
+class ThreadAdapter @Inject constructor(
     private val uid: String,
     private val listener: ThreadClickListener
 ) : ListAdapter<NetworkForumThreadCustom, ThreadViewHolder>(ThreadDiffUtil()) {

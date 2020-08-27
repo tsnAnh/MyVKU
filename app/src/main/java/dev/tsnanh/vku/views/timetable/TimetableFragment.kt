@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
+import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.TimetableAdapter
 import dev.tsnanh.vku.adapters.TimetableClickListener
@@ -35,6 +36,7 @@ import dev.tsnanh.vku.viewmodels.TimetableViewModel
 import timber.log.Timber
 import java.util.*
 
+@AndroidEntryPoint
 class TimetableFragment : Fragment() {
 
     private lateinit var binding: FragmentTimetableBinding
@@ -62,8 +64,8 @@ class TimetableFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.lifecycleOwner = viewLifecycleOwner
 

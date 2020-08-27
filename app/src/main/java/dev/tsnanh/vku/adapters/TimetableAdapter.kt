@@ -5,8 +5,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import dev.tsnanh.vku.domain.entities.Subject
 import dev.tsnanh.vku.viewholders.SubjectViewHolder
+import javax.inject.Inject
 
-class TimetableAdapter(
+class TimetableAdapter @Inject constructor(
     private val listener: TimetableClickListener
 ) : ListAdapter<Subject, SubjectViewHolder>(SubjectDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

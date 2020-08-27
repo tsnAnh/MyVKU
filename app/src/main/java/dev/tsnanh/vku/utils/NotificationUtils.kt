@@ -13,12 +13,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.activities.MainActivity
-import dev.tsnanh.vku.domain.entities.NotificationTitle.MESSAGE_LIKE
-import dev.tsnanh.vku.domain.entities.NotificationTitle.MESSAGE_TO_ALL_SUBSCRIBERS
-import dev.tsnanh.vku.domain.entities.NotificationTitle.MESSAGE_TO_OWNER
-import dev.tsnanh.vku.domain.entities.NotificationTitle.MESSAGE_TO_OWNER_CUSTOM
-import dev.tsnanh.vku.domain.entities.NotificationTitle.MESSAGE_TO_QUOTED_USER
-import org.koin.java.KoinJavaComponent
+import dev.tsnanh.vku.domain.entities.NotificationTitle.*
 
 /**
  * Create a new notification channel
@@ -26,8 +21,7 @@ import org.koin.java.KoinJavaComponent
  * @param channelId String
  * @param channelName String
  */
-fun createNotificationChannel(channelId: String, channelName: String) {
-    val manager by KoinJavaComponent.inject(NotificationManager::class.java)
+fun NotificationManager.createNotificationChannel(channelId: String, channelName: String) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val notificationChannel = NotificationChannel(
             channelId,
@@ -39,7 +33,7 @@ fun createNotificationChannel(channelId: String, channelName: String) {
             enableVibration(true)
         }
 
-        manager.createNotificationChannel(notificationChannel)
+        createNotificationChannel(notificationChannel)
     }
 }
 

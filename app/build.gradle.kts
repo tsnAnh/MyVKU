@@ -11,14 +11,14 @@ plugins {
     id(BuildPlugins.ktlint)
     id(BuildPlugins.navigationSafeArgsKotlin)
     id(BuildPlugins.googleServices)
-    id(BuildPlugins.koin)
     id("com.google.firebase.crashlytics")
+    id("dagger.hilt.android.plugin")
 }
 apply(plugin = "name.remal.check-dependency-updates")
 
 android {
     compileSdkVersion(AndroidSdk.compile)
-    buildToolsVersion = "30.0.0"
+    buildToolsVersion = "30.0.2"
 
     defaultConfig {
         applicationId = "dev.tsnanh.vku"
@@ -43,6 +43,7 @@ android {
         dataBinding = true
     }
     compileOptions {
+        coreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -55,9 +56,11 @@ android {
 dependencies {
     implementation(fileTree("dir" to "libs", "include" to arrayOf("*.jar")))
     implementation(project(":domain"))
+
+    coreLibraryDesugaring(Libraries.desugarJDKLibs)
+
     implementation("androidx.gridlayout:gridlayout:1.0.0")
     ktlint("com.pinterest:ktlint:0.37.2")
-
     implementation(Libraries.kotlinStdLib)
     implementation(Libraries.appcompat)
     implementation(Libraries.coreKtx)
@@ -82,22 +85,15 @@ dependencies {
     testImplementation(Libraries.testRoom)
     implementation(Libraries.glide)
     kapt(Libraries.kaptGlide)
-    implementation(Libraries.paging)
+
+    // Retrofit
     implementation(Libraries.retrofit)
     implementation(Libraries.retrofitConverterMoshi)
+    // Moshi
     implementation(Libraries.moshiKotlin)
     kapt(Libraries.moshiKotlinCodeGen)
 
-    // Koin for Android
-    implementation(Libraries.koin)
-    implementation(Libraries.koinAndroidXScope)
-    // Koin AndroidX ViewModel features
-    implementation(Libraries.koinAndroidXViewModel)
-    // Koin AndroidX Fragment features
-    implementation(Libraries.koinAndroidXFragment)
-    // Koin AndroidX Experimental features
-    implementation(Libraries.koinAndroidExt)
-
+    // Work Manager
     implementation(Libraries.workManager)
     androidTestImplementation(Libraries.androidTestWorkManager)
     // Testing
@@ -110,8 +106,6 @@ dependencies {
     implementation(Libraries.material)
     // Androidx Browser
     implementation(Libraries.androidxBrowser)
-    // Firebase UI Auth
-//    implementation(Libraries.firebaseUI)
     // Flexbox Layout
     implementation(Libraries.flexbox)
     // Timber Log
@@ -126,6 +120,20 @@ dependencies {
     implementation(Libraries.firebaseCrashlytics)
     implementation(Libraries.firebaseAnalytics)
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+
+    // Dagger Hilt
+    implementation(Libraries.hiltDagger)
+    kapt(Libraries.hiltDaggerCompilerKapt)
+    implementation(Libraries.hiltLifecycleViewModel)
+    kapt(Libraries.hiltCompilerAndroidx)
+    implementation(Libraries.hiltWorkManager)
+
+    // Paging 3
+    implementation(Libraries.paging3Common)
+    testImplementation(Libraries.paging3Test)
+
+    implementation(Libraries.kotlinCoroutinesCore)
+    implementation(Libraries.kotlinCoroutinesAndroid)
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"

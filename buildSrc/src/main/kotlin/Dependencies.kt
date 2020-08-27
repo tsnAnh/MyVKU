@@ -1,8 +1,9 @@
-const val kotlinVersion = "1.3.72"
+const val kotlinVersion = "1.4.0"
 
 object BuildPlugins {
     object Versions {
         const val buildToolsVersion = "4.0.1"
+        const val hiltDagger = "2.28-alpha"
     }
 
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.buildToolsVersion}"
@@ -11,7 +12,7 @@ object BuildPlugins {
         "androidx.navigation:navigation-safe-args-gradle-plugin:2.2.2"
     const val googleServicesPlugin = "com.google.gms:google-services:4.3.3"
     const val ktlintPlugin = "org.jlleitschuh.gradle:ktlint-gradle:9.2.1"
-    const val koinGradlePlugin = "org.koin:koin-gradle-plugin:2.1.5"
+    const val daggerHiltPlugin = "com.google.dagger:hilt-android-gradle-plugin:${Versions.hiltDagger}"
 
     const val androidApplication = "com.android.application"
     const val kotlinAndroid = "kotlin-android"
@@ -38,11 +39,14 @@ object Libraries {
         const val navigation = "2.3.0"
         const val roomVersion = "2.2.5"
         const val glideVersion = "4.11.0"
-        const val pagingVersion = "2.1.2"
         const val retrofitVersion = "2.9.0"
-        const val koinVersion = "2.1.6"
-        const val workManagerVersion = "2.3.4"
-        const val materialVersion = "1.2.0-beta01"
+        const val workManagerVersion = "2.4.0"
+        const val materialVersion = "1.2.0"
+        const val hiltDagger = "2.28-alpha"
+        const val hiltJetpack = "1.0.0-alpha01"
+        const val paging3Version = "3.0.0-alpha05"
+        const val desugarJDKLibsVersion = "1.0.9"
+        const val coroutineVersion = "1.3.9"
     }
 
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
@@ -60,7 +64,7 @@ object Libraries {
     const val lifecycleCommonJava8 =
         "androidx.lifecycle:lifecycle-common-java8:${Versions.lifecycleVersion}"
     const val appcompat = "androidx.appcompat:appcompat:1.1.0"
-    const val coreKtx = "androidx.core:core-ktx:1.3.0"
+    const val coreKtx = "androidx.core:core-ktx:1.3.1"
     const val constraintLayout =
         "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
     const val legacySupport = "androidx.legacy:legacy-support-v4:1.0.0"
@@ -76,32 +80,36 @@ object Libraries {
     const val testRoom = "androidx.room:room-testing:${Versions.roomVersion}"
     const val glide = "com.github.bumptech.glide:glide:${Versions.glideVersion}"
     const val kaptGlide = "com.github.bumptech.glide:compiler:${Versions.glideVersion}"
-    const val paging = "androidx.paging:paging-runtime-ktx:${Versions.pagingVersion}"
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
     const val retrofitConverterMoshi =
         "com.squareup.retrofit2:converter-moshi:${Versions.retrofitVersion}"
     const val moshiKotlin = "com.squareup.moshi:moshi-kotlin:1.9.3"
     const val moshiKotlinCodeGen = "com.squareup.moshi:moshi-kotlin-codegen:1.9.3"
-    const val koin = "org.koin:koin-android:${Versions.koinVersion}"
-    const val koinAndroidXScope = "org.koin:koin-androidx-scope:${Versions.koinVersion}"
-    const val koinAndroidXViewModel = "org.koin:koin-androidx-viewmodel:${Versions.koinVersion}"
-    const val koinAndroidXFragment = "org.koin:koin-androidx-fragment:${Versions.koinVersion}"
-    const val koinAndroidExt = "org.koin:koin-androidx-ext:${Versions.koinVersion}"
     const val workManager = "androidx.work:work-runtime-ktx:${Versions.workManagerVersion}"
     const val androidTestWorkManager = "androidx.work:work-testing:${Versions.workManagerVersion}"
     const val material = "com.google.android.material:material:${Versions.materialVersion}"
-    const val firebaseAuthKtx = "com.google.firebase:firebase-auth-ktx:19.3.1"
+    const val firebaseAuthKtx = "com.google.firebase:firebase-auth-ktx:19.3.2"
     const val androidxBrowser = "androidx.browser:browser:1.2.0"
     const val flexbox = "com.google.android:flexbox:2.0.1"
     const val timber = "com.jakewharton.timber:timber:4.7.1"
     const val viewPager2 = "androidx.viewpager2:viewpager2:1.0.0"
-    const val playServicesAuth = "com.google.android.gms:play-services-auth:18.0.0"
-    const val cloudMessaging = "com.google.firebase:firebase-messaging:20.2.1"
+    const val playServicesAuth = "com.google.android.gms:play-services-auth:18.1.0"
+    const val cloudMessaging = "com.google.firebase:firebase-messaging:20.2.4"
     const val collectionKtx = "androidx.collection:collection-ktx:1.1.0"
     const val activityKtx = "androidx.activity:activity-ktx:1.1.0"
     const val recyclerView = "androidx.recyclerview:recyclerview:1.2.0-alpha04"
-    const val firebaseCrashlytics = "com.google.firebase:firebase-crashlytics:17.1.0"
-    const val firebaseAnalytics = "com.google.firebase:firebase-analytics-ktx:17.4.3"
+    const val firebaseCrashlytics = "com.google.firebase:firebase-crashlytics:17.2.1"
+    const val firebaseAnalytics = "com.google.firebase:firebase-analytics-ktx:17.5.0"
+    const val hiltDagger = "com.google.dagger:hilt-android:${Versions.hiltDagger}"
+    const val hiltDaggerCompilerKapt = "com.google.dagger:hilt-android-compiler:${Versions.hiltDagger}"
+    const val hiltLifecycleViewModel = "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hiltJetpack}"
+    const val hiltCompilerAndroidx = "androidx.hilt:hilt-compiler:${Versions.hiltJetpack}"
+    const val paging3Common = "androidx.paging:paging-runtime:${Versions.paging3Version}"
+    const val paging3Test = "androidx.paging:paging-common:${Versions.paging3Version}"
+    const val desugarJDKLibs = "com.android.tools:desugar_jdk_libs:${Versions.desugarJDKLibsVersion}"
+    const val hiltWorkManager = "androidx.hilt:hilt-work:${Versions.hiltJetpack}"
+    const val kotlinCoroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutineVersion}"
+    const val kotlinCoroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutineVersion}"
 }
 
 object TestLibraries {

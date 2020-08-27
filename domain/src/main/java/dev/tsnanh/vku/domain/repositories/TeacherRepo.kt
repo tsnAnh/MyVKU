@@ -6,18 +6,19 @@ import dev.tsnanh.vku.domain.handler.ErrorHandler
 import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 interface TeacherRepo {
-    fun getTeachers(url: String): Flow<Resource<List<Teacher>>>
+    fun getTeachers(): Flow<Resource<List<Teacher>>>
 }
 
-class TeacherRepoImpl : TeacherRepo {
-    override fun getTeachers(url: String): Flow<Resource<List<Teacher>>> = flow {
+class TeacherRepoImpl @Inject constructor() : TeacherRepo {
+    override fun getTeachers(): Flow<Resource<List<Teacher>>> = flow {
         emit(Resource.Loading())
         try {
-            emit(Resource.Success(VKUServiceApi.network.getAllTeachers(url)))
+            emit(Resource.Success(VKUServiceApi.network.getAllTeachers()))
         } catch (e: Exception) {
-            emit(ErrorHandler.handleError(e))
+            emit(ErrorHandler.handleError<List<Teacher>>(e))
         }
     }
 }

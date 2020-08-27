@@ -4,10 +4,12 @@
 
 package dev.tsnanh.vku.viewmodels
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.card.MaterialCardView
 import dev.tsnanh.vku.domain.entities.NetworkForumThread
 import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
@@ -16,18 +18,15 @@ import dev.tsnanh.vku.domain.entities.UpdateThreadBody
 import dev.tsnanh.vku.domain.usecases.DeleteThreadUseCase
 import dev.tsnanh.vku.domain.usecases.RetrieveThreadsUseCase
 import dev.tsnanh.vku.domain.usecases.UpdateThreadTitleUseCase
-import org.koin.java.KoinJavaComponent.inject
 
-class ThreadViewModel(private val forumId: String) : ViewModel() {
-    // Use case
-    private val retrieveThreadsUseCase by inject(RetrieveThreadsUseCase::class.java)
-    private val deleteThreadUseCase by inject(DeleteThreadUseCase::class.java)
-    private val updateThreadTitleUseCase by inject(UpdateThreadTitleUseCase::class.java)
-
+class ThreadViewModel @ViewModelInject constructor(
+    private val retrieveThreadsUseCase: RetrieveThreadsUseCase,
+    private val updateThreadTitleUseCase: UpdateThreadTitleUseCase,
+    private val deleteThreadUseCase: DeleteThreadUseCase,
+    @Assisted savedStateHandle: SavedStateHandle,
+) : ViewModel() {
     // Data source LiveData
-    private var _threads = retrieveThreadsUseCase.invoke(forumId)
-    val threads: LiveData<Resource<List<NetworkForumThreadCustom>>>
-        get() = _threads
+    fun getThreads(forumId: String) = retrieveThreadsUseCase.invoke(forumId)
 
     // Functional LiveData
     private val _navigateToReplies =
@@ -43,16 +42,6 @@ class ThreadViewModel(private val forumId: String) : ViewModel() {
         _navigateToReplies.value = null
     }
 
-    fun refreshThreads() {
-        _threads = retrieveThreadsUseCase
-            .invoke(forumId)
-    }
-
-    fun refreshThreadsLiveData(): LiveData<Resource<List<NetworkForumThreadCustom>>> {
-        return retrieveThreadsUseCase
-            .invoke(forumId)
-    }
-
     fun updateThreadTitle(
         idToken: String,
         threadId: String,
@@ -63,17 +52,5 @@ class ThreadViewModel(private val forumId: String) : ViewModel() {
 
     fun deleteThread(idToken: String, threadId: String): LiveData<String> {
         return deleteThreadUseCase.invoke(idToken, threadId)
-    }
-}
-
-class ThreadViewModelFactory(
-    private val forumId: String
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ThreadViewModel::class.java)) {
-            return ThreadViewModel(forumId) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel")
     }
 }

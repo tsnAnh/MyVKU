@@ -5,20 +5,18 @@ import dev.tsnanh.vku.domain.entities.MakeUpClass
 import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 interface NoticeRepo {
     fun getAbsenceNotice(time: String): Flow<List<Absence>>
     fun getMakeUpClass(time: String): Flow<List<MakeUpClass>>
 }
 
-class NoticeRepoImpl : NoticeRepo {
+class NoticeRepoImpl @Inject constructor() : NoticeRepo {
     override fun getAbsenceNotice(time: String): Flow<List<Absence>> {
         return flow {
             emit(
-                VKUServiceApi.network.getAbsenceNotice(
-                    "http://daotao.sict.udn.vn/thongbaonghi",
-                    time
-                )
+                VKUServiceApi.network.getAbsenceNotice(time = time)
             )
         }
     }
@@ -26,10 +24,7 @@ class NoticeRepoImpl : NoticeRepo {
     override fun getMakeUpClass(time: String): Flow<List<MakeUpClass>> {
         return flow {
             emit(
-                VKUServiceApi.network.getMakeUpClassNotice(
-                    "http://daotao.sict.udn.vn/thongbaobu",
-                    time
-                )
+                VKUServiceApi.network.getMakeUpClassNotice(time = time)
             )
         }
     }

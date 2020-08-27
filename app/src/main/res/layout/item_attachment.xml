@@ -15,11 +15,14 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:clickable="true"
         android:focusable="true"
         android:onClick="@{ () -> listener.onClick(attachment) }"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp">
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/material_on_surface_stroke"
+        app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

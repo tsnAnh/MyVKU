@@ -5,7 +5,7 @@ import dev.tsnanh.vku.domain.entities.WorkResult
 import dev.tsnanh.vku.domain.repositories.ReplyRepo
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.koin.java.KoinJavaComponent.inject
+import javax.inject.Inject
 
 interface UpdateReplyUseCase {
     suspend fun invoke(
@@ -17,8 +17,9 @@ interface UpdateReplyUseCase {
     ): WorkResult<NetworkReply>
 }
 
-class UpdateReplyUseCaseImpl : UpdateReplyUseCase {
-    private val replyRepo by inject(ReplyRepo::class.java)
+class UpdateReplyUseCaseImpl @Inject constructor(
+    private val replyRepo: ReplyRepo
+) : UpdateReplyUseCase {
     override suspend fun invoke(
         idToken: String,
         replyId: String,

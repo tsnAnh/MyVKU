@@ -5,10 +5,9 @@
 package dev.tsnanh.vku.viewmodels
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.*
 import androidx.work.*
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,29 +23,29 @@ import dev.tsnanh.vku.utils.toListStringUri
 import dev.tsnanh.vku.workers.CreateNewReplyWorker
 import dev.tsnanh.vku.workers.CreateNewThreadWorker
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
-class MainViewModel : ViewModel() {
-    private val workManager by inject(WorkManager::class.java)
-    private val mGoogleSignInClient by inject(GoogleSignInClient::class.java)
-//    private val notificationManager by inject(NotificationManager::class.java)
-
-    // Get Moshi instance from DI
-    private val moshi by inject(Moshi::class.java)
-
-    // Use Case
-    private val retrieveNewsUseCase by inject(RetrieveNewsUseCase::class.java)
-    private val retrieveUserTimetableUseCase by inject(RetrieveUserTimetableLiveDataUseCase::class.java)
+class MainViewModel @ViewModelInject constructor(
+    private val retrieveNewsUseCase: RetrieveNewsUseCase,
+    private val retrieveUserTimetableLiveDataUseCase: RetrieveUserTimetableLiveDataUseCase,
+    private val workManager: WorkManager,
+    moshi: Moshi,
+    private val mGoogleSignInClient: GoogleSignInClient,
+    private val checkHasUserUseCase: LoginUseCase,
+    @Assisted savedStateHandle: SavedStateHandle,
+) : ViewModel() {
 
     init {
         mGoogleSignInClient.silentSignIn().addOnSuccessListener {
             viewModelScope.launch {
-                it.email?.let { it1 -> retrieveUserTimetableUseCase.refresh(it1) }
-                retrieveNewsUseCase.refresh()
+                try {
+                    it.email?.let { it1 -> retrieveUserTimetableLiveDataUseCase.refresh(it1) }
+                    retrieveNewsUseCase.refresh()
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
             }
         }
-
     }
 
     // Create JsonAdapter
@@ -63,18 +62,6 @@ class MainViewModel : ViewModel() {
         .setRequiredNetworkType(NetworkType.CONNECTED)
         .build()
 
-    private val _notificationCount = MutableLiveData<Int>()
-    val notificationCount: LiveData<Int>
-        get() = _notificationCount
-
-    fun setNotificationCount(count: Int) {
-        _notificationCount.value = count
-    }
-
-    fun onNotificationCountCount() {
-        _notificationCount.value = null
-    }
-
     private val _accountStatus = MutableLiveData<Resource<GoogleSignInAccount>>()
     val accountStatus: LiveData<Resource<GoogleSignInAccount>>
         get() = _accountStatus
@@ -82,8 +69,6 @@ class MainViewModel : ViewModel() {
     fun updateAccount(account: Resource<GoogleSignInAccount>) {
         _accountStatus.value = account
     }
-
-    private val checkHasUserUseCase by inject(LoginUseCase::class.java)
 
     suspend fun login(token: String, loginBody: LoginBody): Resource<LoginResponse> {
         return checkHasUserUseCase.execute(token, loginBody)
@@ -123,7 +108,9 @@ class MainViewModel : ViewModel() {
                             .build()
 
                     // Enqueue Work Process
-                    workManager.beginWith(createThreadRequest).then(createReplyRequest)
+                    workManager
+                        .beginWith(createThreadRequest)
+                        .then(createReplyRequest)
                         .enqueue()
                 } catch (e: Exception) {
                     Timber.e(e)
@@ -142,7 +129,7 @@ class MainViewModel : ViewModel() {
         mGoogleSignInClient.silentSignIn().addOnCompleteListener {
             if (it.isComplete) {
                 try {
-                    val token = it.getResult(ApiException::class.java)!!.idToken
+                    val token = it.getResult(ApiException::class.java)?.idToken
 
                     val replyData = workDataOf(
                         Constants.REPLY_KEY to replyJsonAdapter.toJson(reply),

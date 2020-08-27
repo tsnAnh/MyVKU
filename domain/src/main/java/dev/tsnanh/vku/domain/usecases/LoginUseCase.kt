@@ -5,14 +5,15 @@ import dev.tsnanh.vku.domain.entities.LoginResponse
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.handler.ErrorHandler
 import dev.tsnanh.vku.domain.repositories.UserRepo
-import org.koin.java.KoinJavaComponent.inject
+import javax.inject.Inject
 
 interface LoginUseCase {
     suspend fun execute(idToken: String, body: LoginBody): Resource<LoginResponse>
 }
 
-class LoginUseCaseImpl : LoginUseCase {
-    private val userRepo by inject(UserRepo::class.java)
+class LoginUseCaseImpl @Inject constructor(
+    private val userRepo: UserRepo
+) : LoginUseCase {
     override suspend fun execute(idToken: String, body: LoginBody): Resource<LoginResponse> {
         return try {
             userRepo.login(idToken, body)

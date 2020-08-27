@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.viewholders.NewsViewHolder
+import javax.inject.Inject
 
-class NewsAdapter(
+class NewsAdapter @Inject constructor(
     private val clickListener: NewsClickListener
 ) : ListAdapter<News, NewsViewHolder>(NewsDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

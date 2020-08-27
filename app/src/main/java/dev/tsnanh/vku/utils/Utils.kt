@@ -200,4 +200,3 @@ fun String.getTypeDrawable(): Int {
         else -> R.drawable.file
     }
 }
-fun <T> merge(vararg flows: Flow<T>): Flow<T> = flowOf(*flows).flattenMerge()

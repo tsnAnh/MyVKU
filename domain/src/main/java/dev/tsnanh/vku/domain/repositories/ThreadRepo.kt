@@ -6,6 +6,7 @@ import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 interface ThreadRepo {
     fun getThreads(forumId: String): Flow<Resource<List<NetworkForumThreadCustom>>>
@@ -24,7 +25,7 @@ interface ThreadRepo {
     suspend fun deleteThread(idToken: String, threadId: String): String
 }
 
-class ThreadRepoImpl : ThreadRepo {
+class ThreadRepoImpl @Inject constructor() : ThreadRepo {
     override fun getThreads(forumId: String): Flow<Resource<List<NetworkForumThreadCustom>>> =
         flow {
             emit(Resource.Loading())
@@ -32,7 +33,7 @@ class ThreadRepoImpl : ThreadRepo {
             try {
                 emit(Resource.Success(VKUServiceApi.network.getThreads(forumId)))
             } catch (e: Exception) {
-                emit(ErrorHandler.handleError(e))
+                emit(ErrorHandler.handleError<List<NetworkForumThreadCustom>>(e))
             }
         }
 
@@ -65,7 +66,7 @@ class ThreadRepoImpl : ThreadRepo {
             try {
                 emit(Resource.Success(VKUServiceApi.network.editThread(idToken, threadId, body)))
             } catch (e: Exception) {
-                emit(ErrorHandler.handleError(e))
+                emit(ErrorHandler.handleError<NetworkForumThread>(e))
             }
         }
 }

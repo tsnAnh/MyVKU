@@ -5,7 +5,7 @@ import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.repositories.ReplyRepo
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.koin.java.KoinJavaComponent.inject
+import javax.inject.Inject
 
 interface CreateNewReplyUseCase {
     @Throws(Exception::class)
@@ -18,9 +18,9 @@ interface CreateNewReplyUseCase {
     ): Resource<Reply>
 }
 
-class CreateNewReplyUseCaseImpl : CreateNewReplyUseCase {
-    private val replyRepo by inject(ReplyRepo::class.java)
-
+class CreateNewReplyUseCaseImpl @Inject constructor(
+    private val replyRepo: ReplyRepo
+) : CreateNewReplyUseCase {
     @Throws(Exception::class)
     override suspend fun execute(
         idToken: String, threadId: String, content: RequestBody,

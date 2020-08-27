@@ -1,30 +1,25 @@
 package dev.tsnanh.vku.viewmodels
 
 import android.net.Uri
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.work.*
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.domain.entities.UserPopulatedNetworkReply
 import dev.tsnanh.vku.domain.usecases.RetrieveReplyByIdUseCase
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.workers.UpdateReplyWorker
-import org.koin.java.KoinJavaComponent.inject
 
-class UpdateReplyViewModel(
-    private val replyId: String
+class UpdateReplyViewModel @ViewModelInject constructor(
+    retrieveReplyUseCase: RetrieveReplyByIdUseCase,
+    private val client: GoogleSignInClient,
+    private val workManager: WorkManager,
 ) : ViewModel() {
-    // Use Case
-    private val retrieveReplyUseCase by inject(RetrieveReplyByIdUseCase::class.java)
-
-    // Work Manager instance
-    private val workManager by inject(WorkManager::class.java)
-
-    // GoogleSignIn client
-    private val client by inject(GoogleSignInClient::class.java)
-
-    val reply = retrieveReplyUseCase.execute(replyId)
+    val reply: (String) -> LiveData<Resource<UserPopulatedNetworkReply>> =
+        { retrieveReplyUseCase.execute(it) }
     private val _pickerHasImage = MutableLiveData(false)
     val pickerHasImage: LiveData<Boolean>
         get() = _pickerHasImage
@@ -39,9 +34,10 @@ class UpdateReplyViewModel(
     }
 
     fun editReply(
+        replyId: String,
         newImage: List<Uri>? = null,
         content: String,
-        images: List<String>? = null
+        images: List<String>? = null,
     ) {
         client.silentSignIn().addOnSuccessListener { account ->
             // Token
@@ -77,15 +73,3 @@ class UpdateReplyViewModel(
 }
 
 private const val UPDATE_REPLY_TAG = "updateReply"
-
-class UpdateReplyViewModelFactory(
-    private val replyId: String
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(UpdateReplyViewModel::class.java)) {
-            return UpdateReplyViewModel(replyId) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel")
-    }
-}

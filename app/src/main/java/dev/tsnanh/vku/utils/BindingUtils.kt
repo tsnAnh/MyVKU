@@ -113,15 +113,15 @@ fun FlexboxLayout.setImages(reply: NetworkCustomReply?) {
         it.images.mapIndexed { i, image ->
             val imageView = AppCompatImageView(this.context)
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            val metrics = context.resources.displayMetrics
+            val width = this.measuredWidth
             val params = FlexboxLayout.LayoutParams(
                 when (imageCount) {
-                    1, 2 -> metrics.widthPixels / imageCount
-                    else -> metrics.widthPixels / 3
+                    1, 2 -> width / imageCount
+                    else -> width / 3
                 },
                 when (imageCount) {
-                    1, 2 -> metrics.widthPixels / imageCount
-                    else -> metrics.widthPixels / 3
+                    1, 2 -> width / imageCount
+                    else -> width / 3
                 }
             )
 //            params.flexBasisPercent = 30F

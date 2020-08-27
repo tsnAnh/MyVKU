@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import dev.tsnanh.vku.domain.entities.NetworkCustomForum
 import dev.tsnanh.vku.viewholders.ForumViewHolder
+import javax.inject.Inject
 
 /**
  * A recycler view adapter for display list of Forum
  */
-class ForumAdapter(
+class ForumAdapter @Inject constructor(
     private var forums: List<NetworkCustomForum>,
     private val listener: ForumClickListener
 ) : RecyclerView.Adapter<ForumViewHolder>() {

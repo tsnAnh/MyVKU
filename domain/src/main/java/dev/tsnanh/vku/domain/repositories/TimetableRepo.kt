@@ -8,7 +8,7 @@ import dev.tsnanh.vku.domain.handler.ErrorHandler
 import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.java.KoinJavaComponent
+import javax.inject.Inject
 
 interface TimetableRepo {
     fun getTimetableLiveData(): LiveData<List<Subject>>
@@ -16,9 +16,9 @@ interface TimetableRepo {
     suspend fun getTimetable(email: String): Resource<List<Subject>>
 }
 
-class TimetableRepoImpl : TimetableRepo {
-    private val dao by KoinJavaComponent.inject(VKUDao::class.java)
-
+class TimetableRepoImpl @Inject constructor(
+    private val dao: VKUDao
+) : TimetableRepo {
     override fun getTimetableLiveData(): LiveData<List<Subject>> {
         return dao.getAllSubjectsLiveData()
     }
@@ -26,7 +26,7 @@ class TimetableRepoImpl : TimetableRepo {
     override suspend fun refreshSubjects(email: String) {
         withContext(Dispatchers.IO) {
             val subjects =
-                VKUServiceApi.network.getTimetable("http://daotao.sict.udn.vn/tkb", email)
+                VKUServiceApi.network.getTimetable(email = email)
             dao.insertAllSubjects(*subjects.toTypedArray())
         }
     }

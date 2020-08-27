@@ -146,17 +146,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/name"
                         tools:text="tsnanh0812@gmail.com" />
 
-                    <ImageButton
-                        android:id="@+id/button_dark_mode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@null"
-                        android:padding="8dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_round_nights_stay_24" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.card.MaterialCardView
@@ -168,9 +157,12 @@
                     android:layout_marginEnd="16dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:transitionName="teacherEvaluation"
                     android:onClick="@{ () -> viewModel.onNavigateToTeacherEvaluation() }"
-                    app:cardCornerRadius="4dp">
+                    android:transitionName="teacherEvaluation"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/material_on_surface_stroke"
+                    app:strokeWidth="1dp">
 
                     <TextView
                         android:id="@+id/teacher_evaluation"
@@ -194,7 +186,10 @@
                     android:focusable="true"
                     android:onClick="@{ () -> viewModel.onNavigateToTeacherEvaluation() }"
                     android:transitionName="attendance"
-                    app:cardCornerRadius="4dp">
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/material_on_surface_stroke"
+                    app:strokeWidth="1dp">
 
                     <TextView
                         android:id="@+id/attendance"
@@ -217,7 +212,10 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:onClick="@{ () -> viewModel.onNavigateToElearning() }"
-                    app:cardCornerRadius="4dp">
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/material_on_surface_stroke"
+                    app:strokeWidth="1dp">
 
                     <TextView
                         android:id="@+id/back_to_my_vku"
@@ -241,7 +239,10 @@
                     android:focusable="true"
                     android:onClick="@{ () -> viewModel.onNavigateToSettings() }"
                     android:transitionName="settings"
-                    app:cardCornerRadius="4dp">
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/material_on_surface_stroke"
+                    app:strokeWidth="1dp">
 
                     <TextView
                         android:id="@+id/settings"
@@ -265,7 +266,10 @@
                     android:focusable="true"
                     android:onClick="@{ () -> viewModel.onSignOut() }"
                     android:transitionName="sign_out"
-                    app:cardCornerRadius="4dp">
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/material_on_surface_stroke"
+                    app:strokeWidth="1dp">
 
                     <TextView
                         android:id="@+id/sign_out"

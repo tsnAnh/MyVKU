@@ -6,7 +6,7 @@ plugins {
 }
 android {
     compileSdkVersion(AndroidSdk.compile)
-    buildToolsVersion = "30.0.0"
+    buildToolsVersion = "30.0.2"
 
     defaultConfig {
         minSdkVersion(AndroidSdk.min)
@@ -50,16 +50,6 @@ dependencies {
     implementation(Libraries.moshiKotlin)
     kapt(Libraries.moshiKotlinCodeGen)
 
-    // Koin for Android
-    implementation(Libraries.koin)
-    implementation(Libraries.koinAndroidXScope)
-    // Koin AndroidX ViewModel features
-    implementation(Libraries.koinAndroidXViewModel)
-    // Koin AndroidX Fragment features
-    implementation(Libraries.koinAndroidXFragment)
-    // Koin AndroidX Experimental features
-    implementation(Libraries.koinAndroidExt)
-
     // Lifecycle
     implementation(Libraries.lifecycleExtensions)
     implementation(Libraries.lifecycleViewModelKtx)
@@ -75,4 +65,10 @@ dependencies {
     implementation(Libraries.timber)
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("org.jsoup:jsoup:1.13.1")
+
+    implementation(Libraries.hiltDagger)
+    kapt(Libraries.hiltDaggerCompilerKapt)
+
+    implementation(Libraries.kotlinCoroutinesCore)
+    implementation(Libraries.kotlinCoroutinesAndroid)
 }

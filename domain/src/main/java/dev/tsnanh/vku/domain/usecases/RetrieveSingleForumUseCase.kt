@@ -6,18 +6,17 @@ import dev.tsnanh.vku.domain.entities.Forum
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.handler.ErrorHandler
 import dev.tsnanh.vku.domain.network.VKUServiceApi
+import dev.tsnanh.vku.domain.repositories.ForumRepo
+import javax.inject.Inject
 
 interface RetrieveSingleForumUseCase {
     fun execute(forumId: String): LiveData<Resource<Forum>>
 }
 
-class RetrieveSingleForumUseCaseImpl : RetrieveSingleForumUseCase {
+class RetrieveSingleForumUseCaseImpl @Inject constructor(
+    private val forumRepo: ForumRepo
+) : RetrieveSingleForumUseCase {
     override fun execute(forumId: String): LiveData<Resource<Forum>> = liveData {
-        emit(Resource.Loading<Forum>())
-        try {
-            emit(Resource.Success(VKUServiceApi.network.getForumById(forumId)))
-        } catch (e: Exception) {
-            emit(ErrorHandler.handleError<Forum>(e))
-        }
+
     }
 }

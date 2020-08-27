@@ -2,6 +2,6 @@
  * Copyright (c) 2020 My VKU by tsnAnh
  */
 include ':domain'
-rootProject.name='VKU'
+rootProject.name='MyVKU'
 include ':app'
 setBinding(new Binding([gradle: this]))

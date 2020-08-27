@@ -7,33 +7,32 @@ package dev.tsnanh.vku
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.Preference
-import androidx.preference.PreferenceManager
-import dev.tsnanh.vku.domain.di.module
-import dev.tsnanh.vku.koin.vkuModule
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
+import dagger.hilt.android.HiltAndroidApp
 import dev.tsnanh.vku.utils.Constants
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
 import timber.log.Timber
+import javax.inject.Inject
 
-class VKUApplication : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
+@HiltAndroidApp
+class VKUApplication : Application(), Configuration.Provider {
+    @Inject
+    lateinit var preferences: SharedPreferences
+    @Inject lateinit var workerFactory: HiltWorkerFactory
     override fun onCreate() {
         super.onCreate()
 
         // Timber debug
         Timber.plant(Timber.DebugTree())
 
-        //Koin DI
-        startKoin {
-            androidLogger()
-            androidContext(this@VKUApplication)
-            modules(vkuModule, module)
-        }
-
         // UI Mode
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        preferences.registerOnSharedPreferenceChangeListener(this)
+        preferences.registerOnSharedPreferenceChangeListener { pref, _ ->
+            when (pref?.getString(getString(R.string.night_mode_key), Constants.MODE_SYSTEM)) {
+                Constants.MODE_DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                Constants.MODE_LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+        }
         when (preferences.getString(getString(R.string.night_mode_key), Constants.MODE_SYSTEM)) {
             Constants.MODE_DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             Constants.MODE_LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -41,12 +40,9 @@ class VKUApplication : Application(), SharedPreferences.OnSharedPreferenceChange
         }
     }
 
-    override fun onSharedPreferenceChanged(pref: SharedPreferences?, p1: String?) =
-        when (pref?.getString(getString(R.string.night_mode_key), Constants.MODE_SYSTEM)) {
-            Constants.MODE_DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            Constants.MODE_LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        }
+    override fun getWorkManagerConfiguration() = Configuration.Builder()
+        .setWorkerFactory(workerFactory)
+        .build()
 
 
 }

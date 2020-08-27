@@ -7,8 +7,9 @@ package dev.tsnanh.vku.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.viewholders.ImageViewerViewHolder
+import javax.inject.Inject
 
-class ImageViewerPagerAdapter(
+class ImageViewerPagerAdapter @Inject constructor(
     private val listImage: Array<String>
 ) : RecyclerView.Adapter<ImageViewerViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

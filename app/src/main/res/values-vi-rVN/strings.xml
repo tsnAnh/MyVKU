@@ -33,8 +33,7 @@
     <string name="text_cancel">Hủy bỏ</string>
     <string name="text_new_reply">Câu trả lời mới</string>
     <string name="text_reply">Trả lời</string>
-    <string name="text_my_class">Lớp tuii</string>
-    <string name="text_set_alarm">Đặt báo thức</string>
+    <string name="text_set_alarm">Hẹn giờ</string>
     <string name="text_attendance">Điểm danh</string>
     <string name="text_monday">Thứ Hai</string>
     <string name="text_tuesday">Thứ Ba</string>
@@ -75,16 +74,16 @@
     <string name="text_create_new_thread">Tạo chủ đề mới</string>
     <string name="msg_creating_your_thread">Đang tạo chủ đề của bạn…</string>
     <string name="msg_no_image_selected">Không có ảnh nào được chọn!</string>
-    <string name="err_msg_something_went_wrong">Có cái gì đó sai sai :((</string>
-    <string name="err_msg_socket_exception">Không thể tải được tin tức. Tứk!</string>
+    <string name="err_msg_something_went_wrong">Đã xảy ra lỗi. Vui lòng thử lại sau.</string>
+    <string name="err_msg_socket_exception">Không thể tải được tin tức</string>
     <string name="err_msg_request_timeout">Yêu cầu đã hết thời gian chờ!</string>
     <string name="text_uploading">Đang tải lên</string>
     <string name="msg_permission_granted">Đã được cho phép</string>
-    <string name="msg_thread_creating">Chủ đề của bạn đang được tạo…</string>
+    <string name="msg_thread_creating">Chủ đề của bạn đang được khởi tạo…</string>
     <string name="text_show_all">Xem tất cả</string>
-    <string name="content_notification_school_reminder_no_subject_afternoon">Bạn không có tiết học nào trong buổi chiều hôm nay. Thăm ngàn vì tương lai hoặc làm vài trận Liên minh \"giải trí\" đi nào :v!</string>
-    <string name="content_notification_school_reminder_no_subject_morning">Bạn không có tiết học nào trong buối sáng hôm nay. Ngại gì mà không đi ra ngoài xả stress hay test nhân phẩm bằng vài ván \"Đấu trường vô lý\" :v?</string>
-    <string name="content_notification_school_reminder_no_subject">Bạn được nghỉ cả ngày hôm nay. Hãy tận hưởng nhé!</string>
+    <string name="content_notification_school_reminder_no_subject_afternoon">Bạn không có tiết học nào trong buổi chiều hôm nay.</string>
+    <string name="content_notification_school_reminder_no_subject_morning">Bạn không có tiết học nào trong buối sáng hôm nay.</string>
+    <string name="content_notification_school_reminder_no_subject">Hôm nay, bạn được nghỉ cả ngày. Hãy thư giãn và tận hưởng nhé!</string>
     <string name="msg_pick_image_canceled">Đã hủy!</string>
     <string name="text_exit">Thoát</string>
     <string name="text_notifications">Thông báo</string>
@@ -109,4 +108,5 @@
     <string name="text_write_a_review">Viết đánh giá</string>
     <string name="text_no_internet_connection">Không có kết nối</string>
     <string name="text_no_attachment">Không có tệp đính kèm</string>
+    <string name="text_come_in_class">Vào lớp</string>
 </resources>

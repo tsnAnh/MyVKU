@@ -1,4 +1,4 @@
-package dev.tsnanh.vku.views.teacherEvaluation
+package dev.tsnanh.vku.viewmodels
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel

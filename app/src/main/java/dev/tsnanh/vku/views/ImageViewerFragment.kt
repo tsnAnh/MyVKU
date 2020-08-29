@@ -2,7 +2,7 @@
  * Copyright (c) 2020 My VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.views.imageViewer
+package dev.tsnanh.vku.views
 
 import android.Manifest
 import android.app.DownloadManager

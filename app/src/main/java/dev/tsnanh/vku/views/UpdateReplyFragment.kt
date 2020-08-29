@@ -1,4 +1,4 @@
-package dev.tsnanh.vku.views.updateReply
+package dev.tsnanh.vku.views
 
 import android.Manifest
 import android.app.Activity
@@ -15,7 +15,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs

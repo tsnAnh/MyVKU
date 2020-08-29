@@ -4,7 +4,6 @@
 
 <resources>
     <string name="app_name" translatable="false">My VKU</string>
-    <string name="app_version" translatable="false">0.1.1-dev06</string>
     <string name="server_client_id" translatable="false">880553460800-avf5t7quhmfggpitm8adc83oqd2gojlo.apps.googleusercontent.com</string>
     <string name="elearning_mode" translatable="false">elearning</string>
     <string name="firebase_forum_notification_channel" translatable="false">dev.tsnanh.vku.firebase_forum_notification_channel</string>
@@ -52,7 +51,6 @@
     <string name="text_bug_report">Bug Report</string>
     <string name="text_archive">Archive</string>
     <string name="text_report">Report</string>
-    <string name="text_my_class">My Class</string>
     <string name="text_set_alarm">Set Alarm</string>
     <string name="text_attendance">Attendance</string>
     <string name="text_monday">Monday</string>
@@ -147,4 +145,5 @@
     <string name="text_makeup_class">Make up class</string>
     <string name="makeup_class_name" translatable="false">%s ngày %s</string>
     <string name="text_no_attachment">No Attachment</string>
+    <string name="text_come_in_class">Come in class</string>
 </resources>

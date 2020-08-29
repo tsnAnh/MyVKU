@@ -40,7 +40,7 @@ class MainViewModel @ViewModelInject constructor(
             viewModelScope.launch {
                 try {
                     it.email?.let { it1 -> retrieveUserTimetableLiveDataUseCase.refresh(it1) }
-                    retrieveNewsUseCase.refresh()
+                    retrieveNewsUseCase::refresh
                 } catch (e: Exception) {
                     Timber.e(e)
                 }

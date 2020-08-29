@@ -1,4 +1,4 @@
-package dev.tsnanh.vku.views.listReplies
+package dev.tsnanh.vku.views
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,10 +20,9 @@ import dev.tsnanh.vku.databinding.FragmentListRepliesBinding
 import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.viewmodels.ListRepliesViewModel
-import dev.tsnanh.vku.views.reply.ReplyFragment.Companion.DELETE_ITEM_ORDER
-import dev.tsnanh.vku.views.reply.ReplyFragment.Companion.EDIT_ITEM_ORDER
-import dev.tsnanh.vku.views.reply.ReplyFragment.Companion.REPORT_ITEM_ORDER
-import dev.tsnanh.vku.views.reply.ReplyFragmentDirections
+import dev.tsnanh.vku.views.ReplyFragment.Companion.DELETE_ITEM_ORDER
+import dev.tsnanh.vku.views.ReplyFragment.Companion.EDIT_ITEM_ORDER
+import dev.tsnanh.vku.views.ReplyFragment.Companion.REPORT_ITEM_ORDER
 
 @AndroidEntryPoint
 class ListRepliesFragment(

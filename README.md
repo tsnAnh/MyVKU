@@ -9,7 +9,7 @@ git clone https://github.com/tsnanh/MyVKU.git
 ``
 
 and open project folder using Android Studio.
-## Clean Architecture
+## Clean Architecture + MVVM
 A strong base architecture is extremely important for an app to scale and meet the expectation of the user base.
 
 ## Gradle Kotlin DSL
@@ -45,17 +45,19 @@ Gradle’s Kotlin DSL provides an alternative syntax to the traditional Groovy D
   * [Fragment](https://developer.android.com/guide/components/fragments)
   * [Layout](https://developer.android.com/guide/topics/ui/declaring-layout) - Lay out widgets using different algorithms.
   * [ViewPager2](https://developer.android.com/training/animation/vp2-migration) - an improved version of the ViewPager.
+  * [Dagger Hilt](https://developer.android.com/training/dependency-injection/hilt-android) - Hilt is a dependency injection library for Android that reduces the boilerplate of doing manual dependency injection in your project.
+  * [Java 8+ API](https://developer.android.com/studio/write/java8-support) - Java 8+ API desugaring support
 * Third party
   * [Glide](https://bumptech.github.io/glide/) - for image loading.
   * [Retrofit](https://square.github.io/retrofit/) for REST API call.
-  * [Koin](https://insert-koin.io/) - Dependency Injection for Kotlin
   * [Timber](https://github.com/JakeWharton/timber) - A logger with a small, extensible API which provides utility on top of Android's normal Log class. 
 * Firebase
   * [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging)
+  * [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics)
 * Machine Learning (pending)
 
 ## Support
-If you've found an error in this sample, please file an issue: https://github.com/tsnanh/MyVKU/issues
+If you've found an error, please file an issue: https://github.com/tsnanh/MyVKU/issues
 
 Patches are encouraged, and may be submitted by forking this project and submitting a pull request through GitHub.
 

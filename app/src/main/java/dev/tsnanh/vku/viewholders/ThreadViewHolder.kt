@@ -11,7 +11,7 @@ import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.ItemThreadBinding
 import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
 import dev.tsnanh.vku.utils.convertToDateString
-import dev.tsnanh.vku.views.thread.ThreadFragment
+import dev.tsnanh.vku.views.ThreadFragment
 
 class ThreadViewHolder(
     private val binding: ItemThreadBinding

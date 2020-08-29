@@ -2,7 +2,7 @@
  * Copyright (c) 2020 My VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.views.forum
+package dev.tsnanh.vku.views
 
 import android.content.Context
 import android.os.Build

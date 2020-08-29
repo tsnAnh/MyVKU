@@ -1,4 +1,4 @@
-package dev.tsnanh.vku.views.teacherEvaluation
+package dev.tsnanh.vku.views
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +21,7 @@ import dev.tsnanh.vku.databinding.FragmentTeacherEvaluationBinding
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.entities.Resource.Loading
 import dev.tsnanh.vku.domain.entities.Teacher
+import dev.tsnanh.vku.viewmodels.TeacherEvaluationViewModel
 
 @AndroidEntryPoint
 class TeacherEvaluationFragment : Fragment() {

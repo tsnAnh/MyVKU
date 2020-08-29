@@ -6,6 +6,7 @@ package dev.tsnanh.vku.activities
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -37,13 +38,23 @@ import javax.inject.Inject
 class WelcomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWelcomeBinding
     private val viewModel: WelcomeViewModel by viewModels()
-    @Inject lateinit var mGoogleSignInClient: GoogleSignInClient
-    @Inject lateinit var sharedPreferences: SharedPreferences
+
+    @Inject
+    lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // hide status bar and toolbar
         binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome)
+
+        binding.appVersion.text = try {
+            packageManager.getPackageInfo(packageName, 0).versionName
+        } catch (e: PackageManager.NameNotFoundException) {
+            "Unknown Version"
+        }
 
         binding.lifecycleOwner = this
         binding.googleSignInButton.setSize(SignInButton.SIZE_WIDE)
@@ -122,12 +133,13 @@ class WelcomeActivity : AppCompatActivity() {
                                         Snackbar
                                             .make(
                                                 binding.root,
-                                                "Bạn phải sử dụng email \"sict.udn.vn\" để có " +
+                                                "Bạn phải sử dụng email \"vku.udn.vn\" để có " +
                                                         "thể đăng nhập vào ứng dụng!",
                                                 Snackbar.LENGTH_LONG
                                             )
                                             .show()
-                                    } else
+                                    } else {
+                                        mGoogleSignInClient.signOut()
                                         Snackbar
                                             .make(
                                                 binding.root,
@@ -138,6 +150,7 @@ class WelcomeActivity : AppCompatActivity() {
                                                 this@WelcomeActivity.finish()
                                             }
                                             .show()
+                                    }
                                 }
                             }
                         }

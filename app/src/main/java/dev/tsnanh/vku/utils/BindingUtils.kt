@@ -5,7 +5,6 @@
 package dev.tsnanh.vku.utils
 
 import android.content.Context
-import android.net.Uri
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -26,7 +25,7 @@ import com.google.android.material.chip.Chip
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.domain.network.BASE_URL
-import dev.tsnanh.vku.views.reply.ReplyFragmentDirections
+import dev.tsnanh.vku.views.ReplyFragmentDirections
 import timber.log.Timber
 
 fun progressBar(context: Context) = CircularProgressDrawable(context).apply {
@@ -56,23 +55,6 @@ fun ImageView.setAvatar(user: GoogleSignInAccount?) {
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(progressBar(this.context))
             .circleCrop()
-            .into(this)
-    }
-}
-
-@BindingAdapter("imageChooser")
-fun ImageView.setChooserImage(uri: Uri?) {
-    uri?.let {
-        Glide
-            .with(this.context)
-            .load(if (it.toString().startsWith("http")) {
-                it.toString().also { str ->
-                    Timber.i(str)
-                }
-            } else {
-                it
-            })
-            .placeholder(progressBar(this.context))
             .into(this)
     }
 }
@@ -108,45 +90,49 @@ fun ImageView.setImage(url: String?) {
 fun FlexboxLayout.setImages(reply: NetworkCustomReply?) {
     this.removeAllViews()
     reply?.let {
-        val imageCount = it.images.size
-        val transitionName = this.context.getString(R.string.image_transition_name)
-        it.images.mapIndexed { i, image ->
-            val imageView = AppCompatImageView(this.context)
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            val width = this.measuredWidth
-            val params = FlexboxLayout.LayoutParams(
-                when (imageCount) {
-                    1, 2 -> width / imageCount
-                    else -> width / 3
-                },
-                when (imageCount) {
-                    1, 2 -> width / imageCount
-                    else -> width / 3
-                }
-            )
-//            params.flexBasisPercent = 30F
-            params.order = 1
-            params.flexShrink = 1F
-            imageView.layoutParams = params
-            Glide
-                .with(imageView)
-                .load("$BASE_URL/images/$image")
-                .placeholder(progressBar(this.context))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView)
-            imageView.transitionName = transitionName
-            imageView.setOnClickListener {
-                val extras =
-                    FragmentNavigatorExtras(imageView to transitionName)
-                this.findNavController().navigate(
-                    ReplyFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
-                        reply.images.toTypedArray(),
-                        i
-                    ),
-                    extras
+        this.post {
+            val imageCount = it.images.size
+            val transitionName = this.context.getString(R.string.image_transition_name)
+            it.images.mapIndexed { i, image ->
+                val imageView = AppCompatImageView(this.context)
+                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+//                val metrics = context.resources.displayMetrics
+//                Timber.i("${this.measuredWidth}")
+                val width = this.measuredWidth
+                val params = FlexboxLayout.LayoutParams(
+                    when (imageCount) {
+                        1, 2 -> width / imageCount
+                        else -> width / 3
+                    },
+                    when (imageCount) {
+                        1, 2 -> width / imageCount
+                        else -> width / 3
+                    }
                 )
+//            params.flexBasisPercent = 30F
+                params.order = 1
+                params.flexShrink = 1F
+                imageView.layoutParams = params
+                Glide
+                    .with(imageView)
+                    .load("$BASE_URL/images/$image")
+                    .placeholder(progressBar(this.context))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView)
+                imageView.transitionName = transitionName
+                imageView.setOnClickListener {
+                    val extras =
+                        FragmentNavigatorExtras(imageView to transitionName)
+                    this.findNavController().navigate(
+                        ReplyFragmentDirections.actionNavigationRepliesToNavigationImageViewer(
+                            reply.images.toTypedArray(),
+                            i
+                        ),
+                        extras
+                    )
+                }
+                this.addView(imageView, params)
             }
-            this.addView(imageView, params)
         }
     }
 }

@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2020 My VKU by tsnAnh
- */
-
-package dev.tsnanh.vku.views.news
+package dev.tsnanh.vku.views
 
 import android.Manifest
 import android.app.Activity
@@ -23,63 +19,54 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
-import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.adapters.*
+import dev.tsnanh.vku.adapters.AttachmentAdapter
+import dev.tsnanh.vku.adapters.AttachmentClickListener
+import dev.tsnanh.vku.adapters.NewsAdapter
+import dev.tsnanh.vku.adapters.NewsClickListener
 import dev.tsnanh.vku.databinding.AttachmentDialogLayoutBinding
-import dev.tsnanh.vku.databinding.FragmentNewsBinding
+import dev.tsnanh.vku.databinding.FragmentPageNewsBinding
 import dev.tsnanh.vku.domain.constants.SecretConstants
 import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.receivers.AttachmentReceiver
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.CustomTabHelper
 import dev.tsnanh.vku.utils.showSnackbarWithAction
-import dev.tsnanh.vku.viewmodels.NewsViewModel
-import kotlinx.coroutines.Dispatchers
+import dev.tsnanh.vku.viewmodels.PageNewsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.net.URLConnection
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class NewsFragment : Fragment() {
-    private val viewModel: NewsViewModel by viewModels()
-    private lateinit var binding: FragmentNewsBinding
+class PageNewsFragment : Fragment() {
+
+    companion object {
+        fun newInstance() = PageNewsFragment()
+    }
+
+    private val viewModel: PageNewsViewModel by viewModels()
+    private lateinit var binding: FragmentPageNewsBinding
     private val customTabHelper = CustomTabHelper()
     private lateinit var adapterNews: NewsAdapter
-    private lateinit var adapterAbsence: NoticeAdapter
-    private lateinit var adapterMakeUpClass: NoticeAdapter
-    @Inject lateinit var preferences: SharedPreferences
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enterTransition = MaterialFadeThrough()
-        exitTransition = MaterialFadeThrough()
-    }
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
-        binding = DataBindingUtil
-            .inflate(inflater, R.layout.fragment_news, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page_news, container, false)
 
-        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -87,99 +74,53 @@ class NewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
-        adapterNews = NewsAdapter(
-            NewsClickListener(
-                viewClickListener = viewClick,
-                shareClickListener = shareClick
-            )
-        )
-        adapterAbsence = NoticeAdapter(emptyList())
-        adapterMakeUpClass = NoticeAdapter(emptyList())
-        binding.chipsFilterNews.apply {
-            check(binding.newsChip.id)
-            setOnCheckedChangeListener { _, checkedId ->
-                when (checkedId) {
-                    binding.absence.id -> {
-                        isShowProgressBar(false)
-                        binding.listNews.isVisible = false
-                        binding.listNotices.apply {
-                            adapter = adapterAbsence
-                            isVisible = true
-                        }
-                    }
-                    binding.makeup.id -> {
-                        isShowProgressBar(false)
-                        binding.listNews.isVisible = false
-                        binding.listNotices.apply {
-                            adapter = adapterMakeUpClass
-                            isVisible = true
-                        }
-                    }
-                    binding.confession.id -> TODO("confessionAdapter")
-                    else -> {
-                        binding.apply {
-                            listNotices.isVisible = false
-                            listNews.isVisible = true
-                        }
-                    }
+        adapterNews = NewsAdapter(NewsClickListener(
+            viewClickListener = this::launchNews,
+            shareClickListener = { news ->
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_SUBJECT, news.title)
+                    putExtra(Intent.EXTRA_TEXT, "${news.content?.take(30)}...")
                 }
+                startActivity(Intent.createChooser(intent, "Share via"))
             }
+        ))
+
+        binding.listNews.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = adapterNews
         }
-        binding.listNews.configureList()
-        binding.listNotices.configureList()
-
-        lifecycleScope.launch {
-            viewModel.absences("")
-                .flowOn(Dispatchers.IO)
-                .catch { updateUIError(it.message) }
-                .collectLatest {
-                    adapterAbsence.updateList(it)
-                    isShowProgressBar(false)
-                }
-
-            viewModel
-                .makeUpClass("")
-                .catch { updateUIError(it.message) }
-                .collectLatest {
-                    adapterMakeUpClass.updateList(it)
-                    isShowProgressBar(false)
-                }
-
-            viewModel.news
-                .onStart {
-                    isShowProgressBar(true)
-                }
-                .catch { updateUIError(it.message) }
-                .collectLatest {
-                    adapterNews.submitList(it)
-                    isShowProgressBar(false)
-                }
-        }
+        viewModel.news
+            .observe<List<News>>(viewLifecycleOwner) { result ->
+                adapterNews.submitList(result)
+            }
     }
 
-    private fun RecyclerView.configureList() {
-        setHasFixedSize(true)
-        layoutManager = LinearLayoutManager(requireContext())
-        this.adapter = adapterNews
-    }
-
-    private fun updateUIError(message: String?) {
-        if (message != null) {
-            showSnackbarWithAction(requireView(), message)
-        }
-    }
-
-    private fun isShowProgressBar(boolean: Boolean) {
-        binding.progressBar.isVisible = boolean
-    }
-
-    private val viewClick: (News) -> Unit = {
-        launchNews(it)
-    }
-
-    private val shareClick: (News) -> Unit = {
+    private fun downloadAndOpenFile(it: String) {
+        val downloadManager =
+            requireContext().getSystemService<DownloadManager>()
+        val fileNameMap = URLConnection.getFileNameMap()
+        val request = DownloadManager.Request("${Constants.DAO_TAO_UPLOAD_URL}/$it".toUri())
+            .setTitle(it)
+            .setAllowedNetworkTypes(
+                DownloadManager.Request.NETWORK_MOBILE or
+                        DownloadManager.Request.NETWORK_WIFI
+            )
+            .setDestinationInExternalPublicDir(
+                Environment.DIRECTORY_DOWNLOADS,
+                it
+            )
+            .setMimeType(
+                fileNameMap.getContentTypeFor(it)
+            )
+        requireActivity().registerReceiver(
+            AttachmentReceiver(),
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        )
+        downloadManager?.enqueue(request)
     }
 
     private fun launchNews(news: News) {
@@ -307,40 +248,5 @@ class NewsFragment : Fragment() {
                 requireContext().getString(R.string.msg_permission_granted)
             )
         }
-    }
-
-    private fun downloadAndOpenFile(it: String) {
-        val downloadManager =
-            requireContext().getSystemService<DownloadManager>()
-        val fileNameMap = URLConnection.getFileNameMap()
-        val request = DownloadManager.Request("${Constants.DAO_TAO_UPLOAD_URL}/$it".toUri())
-            .setTitle(it)
-            .setAllowedNetworkTypes(
-                DownloadManager.Request.NETWORK_MOBILE or
-                        DownloadManager.Request.NETWORK_WIFI
-            )
-            .setDestinationInExternalPublicDir(
-                Environment.DIRECTORY_DOWNLOADS,
-                it
-            )
-            .setMimeType(
-                fileNameMap.getContentTypeFor(it)
-            )
-        requireActivity().registerReceiver(
-            AttachmentReceiver(),
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-        )
-//                            if (it.substringAfterLast('.', "") in arrayOf(
-//                                    "jpg",
-//                                    "jpeg",
-//                                    "png",
-//                                    "webp",
-//                                    "gif"
-//                                )
-//                            ) {
-        downloadManager?.enqueue(request)
-//                            } else {
-//                                downloadManager?.enqueue()
-//                            }
     }
 }

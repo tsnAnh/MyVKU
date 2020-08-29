@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/navigation_forum"
-        android:name="dev.tsnanh.vku.views.forum.ForumFragment"
+        android:name="dev.tsnanh.vku.views.ForumFragment"
         android:label="@string/text_forum"
         tools:layout="@layout/fragment_forum">
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_news"
-        android:name="dev.tsnanh.vku.views.news.NewsFragment"
+        android:name="dev.tsnanh.vku.views.NewsFragment"
         android:label="@string/text_news"
         tools:layout="@layout/fragment_news">
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_more"
-        android:name="dev.tsnanh.vku.views.more.MoreFragment"
+        android:name="dev.tsnanh.vku.views.MoreFragment"
         android:label="@string/text_more">
         <action
             android:id="@+id/activity_settings"
@@ -59,7 +59,7 @@
     </activity>
     <fragment
         android:id="@+id/navigation_new_thread"
-        android:name="dev.tsnanh.vku.views.createNewThread.CreateNewThreadFragment"
+        android:name="dev.tsnanh.vku.views.CreateNewThreadFragment"
         android:label="@string/text_new_thread">
         <argument
             android:name="forumId"
@@ -75,7 +75,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_thread"
-        android:name="dev.tsnanh.vku.views.thread.ThreadFragment"
+        android:name="dev.tsnanh.vku.views.ThreadFragment"
         android:label="ThreadFragment">
         <argument
             android:name="id"
@@ -92,15 +92,15 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_timetable"
-        android:name="dev.tsnanh.vku.views.timetable.TimetableFragment"
+        android:name="dev.tsnanh.vku.views.TimetableFragment"
         android:label="Timetable" />
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="dev.tsnanh.vku.views.notifications.NotificationsFragment"
+        android:name="dev.tsnanh.vku.views.NotificationsFragment"
         android:label="@string/text_notification" />
     <fragment
         android:id="@+id/navigation_replies"
-        android:name="dev.tsnanh.vku.views.reply.ReplyFragment"
+        android:name="dev.tsnanh.vku.views.ReplyFragment"
         android:label="Replies">
         <argument
             android:name="threadId"
@@ -121,7 +121,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_image_viewer"
-        android:name="dev.tsnanh.vku.views.imageViewer.ImageViewerFragment"
+        android:name="dev.tsnanh.vku.views.ImageViewerFragment"
         android:label="ImageViewerFragment">
         <argument
             android:name="urls"
@@ -140,10 +140,10 @@
         android:label="WelcomeActivity" />
     <fragment
         android:id="@+id/navigation_teacher_evaluation"
-        android:name="dev.tsnanh.vku.views.teacherEvaluation.TeacherEvaluationFragment" />
+        android:name="dev.tsnanh.vku.views.TeacherEvaluationFragment" />
     <fragment
         android:id="@+id/navigation_new_reply"
-        android:name="dev.tsnanh.vku.views.createNewReply.CreateNewReplyFragment"
+        android:name="dev.tsnanh.vku.views.CreateNewReplyFragment"
         android:label="NewReplyFragment">
         <argument
             android:name="threadId"
@@ -160,7 +160,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_list_replies"
-        android:name="dev.tsnanh.vku.views.listReplies.ListRepliesFragment"
+        android:name="dev.tsnanh.vku.views.ListRepliesFragment"
         android:label="ListRepliesFragment">
         <action
             android:id="@+id/action_navigation_list_replies_to_navigation_new_reply"
@@ -168,7 +168,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_update_reply"
-        android:name="dev.tsnanh.vku.views.updateReply.UpdateReplyFragment"
+        android:name="dev.tsnanh.vku.views.UpdateReplyFragment"
         android:label="fragment_update_reply"
         tools:layout="@layout/fragment_update_reply">
         <argument

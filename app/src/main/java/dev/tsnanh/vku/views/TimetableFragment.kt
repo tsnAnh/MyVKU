@@ -2,7 +2,7 @@
  * Copyright (c) 2020 My VKU by tsnAnh
  */
 
-package dev.tsnanh.vku.views.timetable
+package dev.tsnanh.vku.views
 
 import android.content.Intent
 import android.content.SharedPreferences

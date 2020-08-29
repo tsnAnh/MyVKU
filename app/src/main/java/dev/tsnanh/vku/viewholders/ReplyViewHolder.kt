@@ -12,7 +12,7 @@ import dev.tsnanh.vku.adapters.ReplyClickListener
 import dev.tsnanh.vku.databinding.ItemReplyBinding
 import dev.tsnanh.vku.domain.entities.NetworkCustomReply
 import dev.tsnanh.vku.utils.convertToDateString
-import dev.tsnanh.vku.views.reply.ReplyFragment
+import dev.tsnanh.vku.views.ReplyFragment
 
 class ReplyViewHolder private constructor(
     private val binding: ItemReplyBinding

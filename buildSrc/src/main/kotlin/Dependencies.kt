@@ -21,7 +21,6 @@ object BuildPlugins {
     const val ktlint = "org.jlleitschuh.gradle.ktlint-idea"
     const val navigationSafeArgsKotlin = "androidx.navigation.safeargs.kotlin"
     const val googleServices = "com.google.gms.google-services"
-    const val koin = "koin"
 }
 
 object AndroidSdk {
@@ -32,7 +31,7 @@ object AndroidSdk {
 
 object Libraries {
     private object Versions {
-        const val constraintLayout = "1.1.3"
+        const val constraintLayout = "2.0.1"
         const val fragmentVersion = "1.2.5"
         const val lifecycleVersion = "2.2.0"
         const val savedStateVersion = "2.2.0"
@@ -45,7 +44,7 @@ object Libraries {
         const val hiltDagger = "2.28-alpha"
         const val hiltJetpack = "1.0.0-alpha01"
         const val paging3Version = "3.0.0-alpha05"
-        const val desugarJDKLibsVersion = "1.0.9"
+        const val desugarJDKLibsVersion = "1.0.10"
         const val coroutineVersion = "1.3.9"
     }
 
@@ -63,7 +62,7 @@ object Libraries {
         "androidx.lifecycle:lifecycle-viewmodel-savedstate:${Versions.savedStateVersion}"
     const val lifecycleCommonJava8 =
         "androidx.lifecycle:lifecycle-common-java8:${Versions.lifecycleVersion}"
-    const val appcompat = "androidx.appcompat:appcompat:1.1.0"
+    const val appcompat = "androidx.appcompat:appcompat:1.2.0"
     const val coreKtx = "androidx.core:core-ktx:1.3.1"
     const val constraintLayout =
         "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
@@ -115,8 +114,8 @@ object Libraries {
 object TestLibraries {
     private object Versions {
         const val junitVersion = "4.13"
-        const val androidJunit = "1.1.1"
-        const val espressoVersion = "3.2.0"
+        const val androidJunit = "1.1.2"
+        const val espressoVersion = "3.3.0"
     }
 
     const val junit = "junit:junit:${Versions.junitVersion}"
@@ -126,6 +125,6 @@ object TestLibraries {
 }
 
 object Version {
-    const val name = "0.1.2-dev05"
+    const val name = "0.2.0-dev01"
     const val code = 1
 }

@@ -11,6 +11,7 @@ import androidx.core.content.getSystemService
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.domain.entities.Subject
 import dev.tsnanh.vku.domain.usecases.RetrieveUserTimetableUseCase
 import dev.tsnanh.vku.receivers.SchoolReminderReceiver
 import dev.tsnanh.vku.utils.*
@@ -23,17 +24,19 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.random.Random
 
-private const val MORNING = 0
-private const val AFTERNOON = 1
-private const val EVENING = 2
-private const val NIGHT = 3
-private const val DAY_OFF = 9999
+private const val MORNING_GROUP = "dev.tsnanh.vku.schoolReminder.morning"
+private const val AFTERNOON_GROUP = "dev.tsnanh.vku.schoolReminder.afternoon"
+private const val EVENING_GROUP = "dev.tsnanh.vku.schoolReminder.evening"
+private const val NIGHT_GROUP = "dev.tsnanh.vku.schoolReminder.night"
+private const val DAY_OFF_GROUP = "dev.tsnanh.vku.schoolReminder.dayOff"
+private const val ERROR_GROUP = "dev.tsnanh.vku.schoolReminder.error"
 
 @AndroidEntryPoint
 class SchoolReminderService : Service() {
     private val notificationManager by lazy {
         getSystemService<NotificationManager>()
     }
+
     @Inject
     lateinit var retrieveTimetableUseCase: RetrieveUserTimetableUseCase
     override fun onBind(p0: Intent?): IBinder? {
@@ -55,7 +58,7 @@ class SchoolReminderService : Service() {
                     .setContentTitle("My VKU is running...")
                     .build()
             }
-        startForeground(88, builder)
+        startForeground(1, builder)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -75,11 +78,7 @@ class SchoolReminderService : Service() {
                 // [END]
                 when (val result =
                     withContext(Dispatchers.IO) {
-                        email?.let {
-                            retrieveTimetableUseCase.invoke(
-                                it
-                            )
-                        }
+                        email?.let { retrieveTimetableUseCase.invoke(it) }
                     }) {
                     is Resource.Error -> Timber.d(result.message)
                     is Resource.Success -> {
@@ -96,103 +95,45 @@ class SchoolReminderService : Service() {
                             // day off
                             if (partOfTheDay == 0) {
                                 notificationManager?.sendSchoolReminderNotification(
-                                    DAY_OFF,
+                                    Random.nextInt(),
                                     context
                                         .getString(R.string.title_notification_school_reminder_no_subject),
                                     context
                                         .getString(R.string.content_notification_school_reminder_no_subject),
                                     null,
+                                    DAY_OFF_GROUP,
                                     context
                                 )
                             }
                         } else {
                             when (partOfTheDay) {
                                 // Morning
-                                0 -> {
-                                    // Filter morning subjects
-                                    val morningSubjects = list.filter { subject ->
-                                        subject.week.trim()
-                                            .isNotEmpty() && subject.lesson.trim()[0].toString()
-                                            .matches(Regex("[1-5]"))
-                                    }
-                                    if (morningSubjects.isEmpty()) {
-                                        notificationManager?.sendSchoolReminderNotification(
-                                            MORNING,
-                                            context
-                                                .getString(R.string.title_notification_school_reminder_no_subject_morning),
-                                            context
-                                                .getString(R.string.content_notification_school_reminder_no_subject_morning),
-                                            null,
-                                            context
-                                        )
-                                    } else {
-                                        morningSubjects.forEach { subject ->
-                                            if (!subject.dayOfWeek.startsWith("_")) {
-                                                notificationManager?.sendSchoolReminderNotification(
-                                                    MORNING,
-                                                    subject.className,
-                                                    "You have ${subject.className} at " +
-                                                            "${subject.lesson.getHourFromStringLesson()} at " +
-                                                            "${subject.room} in this morning!",
-                                                    subject.className,
-                                                    context
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
+                                0 -> notifyMorningSubjects(list, false)
                                 // Afternoon
-                                1 -> {
-                                    // Filter afternoon subject
-                                    val afternoonSubjects = list.filter { subject ->
-                                        subject.week.trim()
-                                            .isNotEmpty() && subject.lesson.trim()[0].toString()
-                                            .matches(Regex("[6-9]"))
-                                    }
-                                    if (afternoonSubjects.isEmpty()) {
-                                        notificationManager?.sendSchoolReminderNotification(
-                                            AFTERNOON,
-                                            context
-                                                .getString(R.string.title_notification_school_reminder_no_subject_afternoon),
-                                            context
-                                                .getString(R.string.content_notification_school_reminder_no_subject_afternoon),
-                                            null,
-                                            context
-                                        )
-                                    } else {
-                                        afternoonSubjects.forEach { subject ->
-                                            if (!subject.dayOfWeek.startsWith("_")) {
-                                                notificationManager?.sendSchoolReminderNotification(
-                                                    AFTERNOON,
-                                                    subject.className,
-                                                    "You have ${subject.className} at " +
-                                                            "${subject.lesson.getHourFromStringLesson()} at " +
-                                                            "${subject.room} in this afternoon!",
-                                                    subject.className,
-                                                    context
-                                                )
-                                            }
+                                1 -> notifyAfternoonSubjects(list)
+                                2 -> notificationManager?.sendSchoolReminderNotification(
+                                    Random.nextInt(),
+                                    getString(R.string.title_school_reminder_how_is_your_day),
+                                    "Good evening here!",
+                                    null,
+                                    EVENING_GROUP,
+                                    context
+                                )
+                                3 -> when (val subjects =
+                                    email?.let { retrieveTimetableUseCase.invoke(it) }) {
+                                    is Resource.Success -> subjects.data?.let { allSubjects ->
+                                        val tomorrowSubjects = allSubjects.filter {
+                                            dayOfWeekFilter(
+                                                it, when (Calendar.DAY_OF_WEEK) {
+                                                    7 -> 1
+                                                    else -> Calendar.DAY_OF_WEEK + 1
+                                                }
+                                            )
                                         }
+                                        notifyMorningSubjects(
+                                            tomorrowSubjects, true
+                                        )
                                     }
-                                }
-                                2 -> {
-                                    notificationManager?.sendSchoolReminderNotification(
-                                        EVENING,
-                                        "How is your day?",
-                                        "Good evening here!",
-                                        null,
-                                        context
-                                    )
-                                }
-                                3 -> {
-                                    // TODO: create notification good night user
-                                    notificationManager?.sendSchoolReminderNotification(
-                                        NIGHT,
-                                        "Good night",
-                                        "Good night here!",
-                                        null,
-                                        context
-                                    )
                                 }
                             }
                         }
@@ -200,8 +141,10 @@ class SchoolReminderService : Service() {
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     val newIntent =
-                        Intent(this@SchoolReminderService,
-                            SchoolReminderReceiver::class.java).apply {
+                        Intent(
+                            this@SchoolReminderService,
+                            SchoolReminderReceiver::class.java
+                        ).apply {
                             putExtra("email", email)
                         }
                     setAlarmApi23AndAbove(context, newIntent)
@@ -213,6 +156,7 @@ class SchoolReminderService : Service() {
                     "Something went wrong!",
                     "We are sorry for unconvenient.",
                     null,
+                    ERROR_GROUP,
                     applicationContext
                 )
             }
@@ -220,6 +164,80 @@ class SchoolReminderService : Service() {
         stopForeground(true)
         stopSelf()
         return START_NOT_STICKY
+    }
+
+    private fun notifyMorningSubjects(list: List<Subject>, fromNight: Boolean) {
+        val morningSubjects = list.filter { subject ->
+            subject.week.trim()
+                .isNotEmpty() && subject.lesson.trim()[0].toString()
+                .matches(Regex("[1-5]"))
+        }
+        if (morningSubjects.isEmpty()) {
+            notificationManager?.sendSchoolReminderNotification(
+                Random.nextInt(),
+                getString(R.string.title_notification_school_reminder_no_subject_morning),
+                if (!fromNight) getString(R.string.message_notification_school_reminder_no_subject_morning)
+                else getString(R.string.content_notification_school_reminder_no_subject_tomorrow_morning),
+                null,
+                if (!fromNight) MORNING_GROUP else NIGHT_GROUP,
+                this
+            )
+        } else {
+            morningSubjects.forEach { subject ->
+                if (!subject.dayOfWeek.startsWith("_")) {
+                    notificationManager?.sendSchoolReminderNotification(
+                        Random.nextInt(),
+                        subject.className,
+                        getString(
+                            if (!fromNight) R.string.message_notification_school_reminder_has_subject_morning else R.string.message_notification_school_reminder_has_subject_morning,
+                            subject.className,
+                            subject.lesson.getExactHourStringFromLesson(),
+                            subject.room
+                        ),
+                        subject.className,
+                        if (!fromNight) MORNING_GROUP else NIGHT_GROUP,
+                        this
+                    )
+                }
+            }
+        }
+    }
+
+    private fun notifyAfternoonSubjects(list: List<Subject>) {
+        // Filter afternoon subject
+        val afternoonSubjects = list.filter { subject ->
+            subject.week.trim()
+                .isNotEmpty() && subject.lesson.trim()[0].toString()
+                .matches(Regex("[6-9]"))
+        }
+        if (afternoonSubjects.isEmpty()) {
+            notificationManager?.sendSchoolReminderNotification(
+                Random.nextInt(),
+                getString(R.string.title_notification_school_reminder_no_subject_afternoon),
+                getString(R.string.message_notification_school_reminder_no_subject_afternoon),
+                null,
+                AFTERNOON_GROUP,
+                this
+            )
+        } else {
+            afternoonSubjects.forEach { subject ->
+                if (!subject.dayOfWeek.startsWith("_")) {
+                    notificationManager?.sendSchoolReminderNotification(
+                        Random.nextInt(),
+                        subject.className,
+                        getString(
+                            R.string.message_notification_school_reminder_has_subject_afternoon,
+                            subject.className,
+                            subject.lesson.getExactHourStringFromLesson(),
+                            subject.room
+                        ),
+                        subject.className,
+                        AFTERNOON_GROUP,
+                        this
+                    )
+                }
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

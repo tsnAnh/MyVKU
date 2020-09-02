@@ -137,6 +137,7 @@ dependencies {
 
     implementation(Libraries.kotlinCoroutinesCore)
     implementation(Libraries.kotlinCoroutinesAndroid)
+    implementation(Libraries.kotlinCoroutinesGooglePlayServices)
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"

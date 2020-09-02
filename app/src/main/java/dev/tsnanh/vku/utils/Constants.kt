@@ -56,5 +56,16 @@ class Constants {
         // Shared elements key
         const val FAB_TRANSFORM_TO_NEW_THREAD = "view"
         const val FAB_TRANSFORM_TO_NEW_REPLY = "view2"
+
+        val ROOMS = mapOf(
+            "B203" to "https://meet.google.com/cvg-epyu-jua",
+            "B204" to "https://meet.google.com/wso-vdsq-qsg",
+            "B205" to "https://meet.google.com/hjj-ndar-kcc",
+            "B403" to "https://meet.google.com/npt-szam-ccs",
+            "B404" to "https://meet.google.com/cmj-ppvs-qnz",
+            "A402" to "https://meet.google.com/par-bhho-hnu",
+            "A403" to "https://meet.google.com/yww-wcef-piu",
+            "A502" to "https://meet.google.com/cto-bjro-txq"
+        )
     }
 }

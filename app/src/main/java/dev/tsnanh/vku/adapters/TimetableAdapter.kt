@@ -31,5 +31,5 @@ class TimetableClickListener(
     val attendanceClickListener: (Subject) -> Unit
 ) {
     fun onSetAlarm(subject: Subject) = setAlarmClickListener(subject)
-    fun onAttendance(subject: Subject) = attendanceClickListener(subject)
+    fun onComeIn(subject: Subject) = attendanceClickListener(subject)
 }

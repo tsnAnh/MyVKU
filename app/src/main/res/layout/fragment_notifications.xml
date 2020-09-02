@@ -33,5 +33,8 @@
         <include
             android:id="@+id/include"
             layout="@layout/layout_error" />
+        <include
+            android:id="@+id/layout_no_notifications"
+            layout="@layout/no_notifications_layout" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

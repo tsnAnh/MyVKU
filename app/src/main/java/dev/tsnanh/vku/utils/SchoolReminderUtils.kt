@@ -231,7 +231,7 @@ fun prepareCalendar(hourOfDay: Int, minute: Int): Calendar {
 }
 
 @Throws(IllegalArgumentException::class)
-fun String.getHourFromStringLesson(): Int {
+fun String.getHourFromLesson(): Int {
     return when (this[0]) {
         '1', '2' -> 7
         '3', '4' -> 9
@@ -243,6 +243,16 @@ fun String.getHourFromStringLesson(): Int {
         // add more later
         else -> throw IllegalArgumentException("Wrong lesson string")
     }
+}
+
+fun String.getExactHourStringFromLesson(): String = when (this[0]) {
+    '1', '2' -> "7h30"
+    '3', '4' -> "9h30"
+    '5' -> "11h30"
+    '6', '7' -> "13h00"
+    '8', '9' -> "15h00"
+    // add more later
+    else -> throw IllegalArgumentException("Wrong lesson string")
 }
 
 fun String.getMinutesFromStringLesson(): Int {

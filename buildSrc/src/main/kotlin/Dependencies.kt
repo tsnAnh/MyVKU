@@ -109,6 +109,7 @@ object Libraries {
     const val hiltWorkManager = "androidx.hilt:hilt-work:${Versions.hiltJetpack}"
     const val kotlinCoroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutineVersion}"
     const val kotlinCoroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutineVersion}"
+    const val kotlinCoroutinesGooglePlayServices = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.coroutineVersion}"
 }
 
 object TestLibraries {

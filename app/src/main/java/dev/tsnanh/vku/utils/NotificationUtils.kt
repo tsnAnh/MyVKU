@@ -29,8 +29,8 @@ fun NotificationManager.createNotificationChannel(channelId: String, channelName
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             setShowBadge(false)
-            enableLights(false)
-            enableVibration(true)
+            enableLights(shouldShowLights())
+            enableVibration(shouldVibrate())
         }
 
         createNotificationChannel(notificationChannel)
@@ -42,6 +42,7 @@ fun NotificationManager.sendSchoolReminderNotification(
     title: String,
     message: String,
     className: String?,
+    group: String,
     applicationContext: Context
 ) {
     val pendingIntent = NavDeepLinkBuilder(applicationContext)
@@ -61,6 +62,7 @@ fun NotificationManager.sendSchoolReminderNotification(
         setAutoCancel(true)
         setStyle(NotificationCompat.BigTextStyle().bigText(message))
         setAutoCancel(true)
+        setGroup(group)
     }
     notify(uid, builder.build())
 }

@@ -8,26 +8,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.NotificationAdapter
 import dev.tsnanh.vku.adapters.NotificationClickListener
 import dev.tsnanh.vku.databinding.FragmentNotificationsBinding
+import dev.tsnanh.vku.domain.entities.Notification
+import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.viewmodels.NotificationsViewModel
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class NotificationsFragment : Fragment() {
-
     private val viewModel: NotificationsViewModel by viewModels()
     private lateinit var binding: FragmentNotificationsBinding
-    @Inject lateinit var client: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,42 +60,35 @@ class NotificationsFragment : Fragment() {
             adapter = notificationAdapter
         }
 
-        /*client.silentSignIn().addOnCompleteListener { result ->
-            if (result.isSuccessful) {
-                // FIXME: 8/28/2020 cant access fragment view lifecycle owner when getView() is null
-                viewModel.getNotifications(result.result?.idToken!!)
-                    .observe(viewLifecycleOwner, {
-                        it?.let {
-                            when (it) {
-                                is Resource.Success -> {
-                                    binding.progressBar.isVisible = false
-                                    binding.include.errorLayout.isVisible = false
-                                    notificationAdapter.submitList(it.data)
-                                }
-                                is Resource.Loading -> {
-                                    binding.progressBar.isVisible = true
-                                    binding.include.errorLayout.isVisible = false
-                                }
-                                is Resource.Error -> {
-                                    binding.progressBar.isVisible = false
-                                    if (isInternetAvailable(requireContext())) {
-                                        showSnackbarWithAction(
-                                            requireView(),
-                                            requireContext().getString(
-                                                R.string.err_msg_something_went_wrong
-                                            )
-                                        )
-                                    } else {
-                                        binding.include.apply {
-                                            errorLayout.isVisible = true
-                                            textView7.text = "No Internet Connection"
-                                        }
-                                    }
-                                }
+        lifecycleScope.launchWhenCreated {
+            viewModel.getNotifications()
+                .observe<Resource<List<Notification>>>(viewLifecycleOwner) { resource ->
+                    fun toggleUI(progressBarVisibility: Boolean, errorLayoutVisibility: Boolean) {
+                        binding.progressBar.isVisible = progressBarVisibility
+                        binding.include.errorLayout.isVisible = errorLayoutVisibility
+                    }
+                    when (resource) {
+                        is Resource.Loading -> toggleUI(
+                            progressBarVisibility = true,
+                            errorLayoutVisibility = false
+                        )
+                        is Resource.Error -> toggleUI(
+                            progressBarVisibility = false,
+                            errorLayoutVisibility = true
+                        )
+                        is Resource.Success -> {
+                            toggleUI(
+                                progressBarVisibility = false,
+                                errorLayoutVisibility = false
+                            )
+                            resource.data?.let { notifications ->
+                                if (notifications.isEmpty()) binding.layoutNoNotifications.isVisible =
+                                    true
+                                notificationAdapter.submitList(resource.data)
                             }
                         }
-                    })
-            }
-        }*/
+                    }
+                }
+        }
     }
 }

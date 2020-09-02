@@ -26,10 +26,6 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.entities.Subject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flattenMerge
-import kotlinx.coroutines.flow.flowOf
-import org.json.JSONObject
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -63,7 +59,7 @@ fun ContentResolver.getFilePath(uri: Uri): String {
 }
 
 fun Subject.checkSubjectHasValidAlarm() = try {
-    lesson.getHourFromStringLesson()
+    lesson.getHourFromLesson()
     lesson.getMinutesFromStringLesson()
     dayOfWeek.getDayOfWeekFromString()
     true

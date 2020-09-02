@@ -157,11 +157,26 @@
                     android:layout_height="wrap_content"
                     android:text="@string/text_choose_image"
                     app:icon="@drawable/ic_round_camera_alt_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3"
+                    app:layout_constraintBottom_toBottomOf="@id/view3"
+                    app:layout_constraintEnd_toEndOf="@id/view3"
+                    app:layout_constraintStart_toStartOf="@id/view3"
+                    app:layout_constraintTop_toTopOf="@+id/view3"
                     app:pickerHasImage="@{ pickerHasImage }" />
+
+                <view
+                    android:id="@+id/view3"
+                    class="androidx.appcompat.widget.LinearLayoutCompat"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="#00ffffff"
+                    android:backgroundTint="#00FFFFFF"
+                    android:elevation="0dp"
+                    app:elevation="0dp"
+                    app:layout_constraintDimensionRatio="4:3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
                 <TextView
                     android:id="@+id/textView2"

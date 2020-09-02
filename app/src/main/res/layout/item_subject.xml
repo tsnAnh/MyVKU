@@ -124,12 +124,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/chip_group_scroll" />
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/comeInClass"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/text_come_in_class"
+                android:onClick="@{ () -> listener.onComeIn(subject) }"
                 app:icon="@drawable/ic_baseline_exit_to_app_24"
                 app:layout_constraintBottom_toBottomOf="@+id/set_alarm"
                 app:layout_constraintStart_toEndOf="@+id/set_alarm"

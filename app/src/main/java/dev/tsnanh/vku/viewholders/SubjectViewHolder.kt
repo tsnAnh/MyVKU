@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.adapters.TimetableClickListener
 import dev.tsnanh.vku.databinding.ItemSubjectBinding
 import dev.tsnanh.vku.domain.entities.Subject
+import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.checkSubjectHasValidAlarm
 import dev.tsnanh.vku.utils.checkValidWeek
 
@@ -25,10 +26,13 @@ class SubjectViewHolder(
         subject: Subject,
         listener: TimetableClickListener
     ) {
-        binding.subject = subject
-        binding.listener = listener
-        binding.setAlarm.isEnabled =
-            subject.checkSubjectHasValidAlarm() && subject.week.checkValidWeek()
-        binding.executePendingBindings()
+        binding.apply {
+            this.subject = subject
+            this.listener = listener
+            setAlarm.isEnabled =
+                subject.checkSubjectHasValidAlarm() && subject.week.checkValidWeek()
+            if (subject.room !in Constants.ROOMS.keys) comeInClass.isEnabled = false
+            executePendingBindings()
+        }
     }
 }

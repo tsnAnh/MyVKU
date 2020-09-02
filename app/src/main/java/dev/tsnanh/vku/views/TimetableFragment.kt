@@ -11,6 +11,7 @@ import android.provider.AlarmClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -30,7 +31,7 @@ import dev.tsnanh.vku.databinding.FragmentTimetableBinding
 import dev.tsnanh.vku.domain.entities.Subject
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.getDayOfWeekFromString
-import dev.tsnanh.vku.utils.getHourFromStringLesson
+import dev.tsnanh.vku.utils.getHourFromLesson
 import dev.tsnanh.vku.utils.getMinutesFromStringLesson
 import dev.tsnanh.vku.viewmodels.TimetableViewModel
 import timber.log.Timber
@@ -125,7 +126,7 @@ class TimetableFragment : Fragment() {
     private fun createTimetableAdapter(): TimetableAdapter {
         return TimetableAdapter(
             TimetableClickListener(
-                setAlarmClickListener, attendanceClickListener
+                setAlarmClickListener, comeInClassClickListener
             )
         )
     }
@@ -136,7 +137,7 @@ class TimetableFragment : Fragment() {
                 AlarmClock.EXTRA_MESSAGE,
                 subject.className
             )
-            putExtra(AlarmClock.EXTRA_HOUR, subject.lesson.getHourFromStringLesson())
+            putExtra(AlarmClock.EXTRA_HOUR, subject.lesson.getHourFromLesson())
             putExtra(AlarmClock.EXTRA_MINUTES, subject.lesson.getMinutesFromStringLesson())
             putExtra(AlarmClock.EXTRA_DAYS, subject.dayOfWeek.getDayOfWeekFromString())
             putExtra(AlarmClock.EXTRA_SKIP_UI, true)
@@ -148,11 +149,7 @@ class TimetableFragment : Fragment() {
             Snackbar.LENGTH_SHORT
         ).show()
     }
-    private val attendanceClickListener: (Subject) -> Unit = { subject ->
-        Snackbar.make(
-            requireView(),
-            requireContext().getString(R.string.msg_alarm_set),
-            Snackbar.LENGTH_SHORT
-        ).show()
+    private val comeInClassClickListener = { subject: Subject ->
+        startActivity(Intent(Intent.ACTION_VIEW, Constants.ROOMS[subject.room]?.toUri()))
     }
 }

@@ -81,8 +81,8 @@
     <string name="msg_permission_granted">Đã được cho phép</string>
     <string name="msg_thread_creating">Chủ đề của bạn đang được khởi tạo…</string>
     <string name="text_show_all">Xem tất cả</string>
-    <string name="content_notification_school_reminder_no_subject_afternoon">Bạn không có tiết học nào trong buổi chiều hôm nay.</string>
-    <string name="content_notification_school_reminder_no_subject_morning">Bạn không có tiết học nào trong buối sáng hôm nay.</string>
+    <string name="message_notification_school_reminder_no_subject_afternoon">Bạn không có tiết học nào trong buổi chiều hôm nay.</string>
+    <string name="message_notification_school_reminder_no_subject_morning">Bạn không có tiết học nào trong buối sáng hôm nay.</string>
     <string name="content_notification_school_reminder_no_subject">Hôm nay, bạn được nghỉ cả ngày. Hãy thư giãn và tận hưởng nhé!</string>
     <string name="msg_pick_image_canceled">Đã hủy!</string>
     <string name="text_exit">Thoát</string>
@@ -109,4 +109,9 @@
     <string name="text_no_internet_connection">Không có kết nối</string>
     <string name="text_no_attachment">Không có tệp đính kèm</string>
     <string name="text_come_in_class">Vào lớp</string>
+    <string name="content_notification_school_reminder_no_subject_tomorrow_morning">Bạn không có tiết học vào buổi sáng ngày mai!</string>
+    <string name="message_notification_school_reminder_has_subject_morning">Bạn có tiết %s vào lúc %s tại phòng %s vào sáng ngày hôm nay.</string>
+    <string name="message_notification_school_reminder_has_subject_tomorrow">Bạn có tiết %s vào lúc %s tại phòng %s vào sáng ngày mai. Chúc bạn ngủ ngon nhé hihi!</string>
+    <string name="title_school_reminder_how_is_your_day">Ngày hôm nay của bạn thế nào?</string>
+    <string name="message_notification_school_reminder_has_subject_afternoon">Bạn có tiết %s vào lúc %s tại phòng %s vào chiều hôm nay.</string>
 </resources>

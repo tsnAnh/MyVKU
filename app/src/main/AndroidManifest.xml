@@ -83,8 +83,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:name=".activities.MainActivity" />
     </application>
 
 </manifest>

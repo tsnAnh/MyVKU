@@ -57,6 +57,8 @@ class PageNewsFragment : Fragment() {
     private lateinit var binding: FragmentPageNewsBinding
     private val customTabHelper = CustomTabHelper()
     private lateinit var adapterNews: NewsAdapter
+    private val attachmentReceiver = AttachmentReceiver()
+    private lateinit var news: News
 
     @Inject
     lateinit var preferences: SharedPreferences
@@ -117,7 +119,7 @@ class PageNewsFragment : Fragment() {
                 fileNameMap.getContentTypeFor(it)
             )
         requireActivity().registerReceiver(
-            AttachmentReceiver(),
+            attachmentReceiver,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
         downloadManager?.enqueue(request)
@@ -164,80 +166,84 @@ class PageNewsFragment : Fragment() {
             customTabsIntent.intent.setPackage(packageName)
             customTabsIntent.launchUrl(requireActivity(), Uri.parse(url))
         }
+        requireContext().unregisterReceiver(attachmentReceiver)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        val news = adapterNews.currentList[item.itemId]
+        news = adapterNews.currentList[item.itemId]
         when (item.order) {
             0 -> launchNews(news)
-            1 -> {
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(
-                            requireActivity(),
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        )
-                    ) {
-                        with(requireContext()) {
-                            MaterialAlertDialogBuilder(requireContext())
-                                .setTitle(getString(R.string.msg_permission_required))
-                                .setMessage(getString(R.string.msg_need_permission))
-                                .setPositiveButton(getString(R.string.text_ok)) { d, _ ->
-                                    requestPermissions(
-                                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                                        Constants.RC_PERMISSION
-                                    )
-                                    d.dismiss()
-                                }
-                                .setNegativeButton(getString(R.string.text_cancel)) { d, _ ->
-                                    d.dismiss()
-                                }
-                                .create()
-                                .show()
-                        }
-                    } else {
-                        requestPermissions(
-                            arrayOf(
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
-                            ),
-                            Constants.RC_PERMISSION
-                        )
-                    }
-                } else {
-                    if (!news.attachment.isNullOrBlank()) {
-                        val files = news.attachment
-                            ?.removeSuffix("||")
-                            ?.split("||")
-                        Timber.d(files.toString())
-
-                        val attachmentBinding =
-                            AttachmentDialogLayoutBinding.inflate(LayoutInflater.from(requireContext()))
-                        if (!files.isNullOrEmpty()) {
-                            val builder = MaterialAlertDialogBuilder(requireContext())
-                                .setView(attachmentBinding.root)
-                                .setTitle("Attachment")
-                                .create()
-                            builder.show()
-                            val attachmentAdapter =
-                                AttachmentAdapter(files, AttachmentClickListener {
-                                    downloadAndOpenFile(it)
-                                })
-                            attachmentBinding.listFiles.apply {
-                                adapter = attachmentAdapter
-                                setHasFixedSize(true)
-                                layoutManager = LinearLayoutManager(requireContext())
-                            }
-                        }
-                    } else {
-                        showSnackbarWithAction(binding.root, getString(R.string.text_no_attachment))
-                    }
-                }
-            }
+            1 -> showAttachments(news)
         }
         return true
+    }
+
+    private fun showAttachments(news: News) {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    requireActivity(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            ) {
+                with(requireContext()) {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(R.string.msg_permission_required))
+                        .setMessage(getString(R.string.msg_need_permission))
+                        .setPositiveButton(getString(R.string.text_ok)) { d, _ ->
+                            requestPermissions(
+                                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                                Constants.RC_PERMISSION
+                            )
+                            d.dismiss()
+                        }
+                        .setNegativeButton(getString(R.string.text_cancel)) { d, _ ->
+                            d.dismiss()
+                        }
+                        .create()
+                        .show()
+                }
+            } else {
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ),
+                    Constants.RC_PERMISSION
+                )
+            }
+        } else {
+            if (!news.attachment.isNullOrBlank()) {
+                val files = news.attachment
+                    ?.removeSuffix("||")
+                    ?.split("||")
+                Timber.d(files.toString())
+
+                val attachmentBinding =
+                    AttachmentDialogLayoutBinding.inflate(LayoutInflater.from(requireContext()))
+                if (!files.isNullOrEmpty()) {
+                    val builder = MaterialAlertDialogBuilder(requireContext())
+                        .setView(attachmentBinding.root)
+                        .setTitle("Attachment")
+                        .create()
+                    builder.show()
+                    val attachmentAdapter =
+                        AttachmentAdapter(files, AttachmentClickListener {
+                            downloadAndOpenFile(it)
+                        })
+                    attachmentBinding.listFiles.apply {
+                        adapter = attachmentAdapter
+                        setHasFixedSize(true)
+                        layoutManager = LinearLayoutManager(requireContext())
+                    }
+                }
+            } else {
+                showSnackbarWithAction(binding.root, getString(R.string.text_no_attachment))
+            }
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -247,6 +253,7 @@ class PageNewsFragment : Fragment() {
                 requireView(),
                 requireContext().getString(R.string.msg_permission_granted)
             )
+            showAttachments(news)
         }
     }
 }

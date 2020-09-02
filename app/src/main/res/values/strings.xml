@@ -85,9 +85,12 @@
     <string name="title_notification_school_reminder_no_subject" translatable="false">Hooray!</string>
     <string name="content_notification_school_reminder_no_subject">You have a day off today!</string>
     <string name="title_notification_school_reminder_no_subject_morning" translatable="false">Yay!</string>
-    <string name="content_notification_school_reminder_no_subject_morning">You have no class this morning!</string>
+    <string name="message_notification_school_reminder_no_subject_morning">You have no class this morning!</string>
     <string name="title_notification_school_reminder_no_subject_afternoon" translatable="false">Tadaaaa!</string>
-    <string name="content_notification_school_reminder_no_subject_afternoon">You have no class this afternoon!</string>
+    <string name="message_notification_school_reminder_no_subject_afternoon">You have no class this afternoon.</string>
+    <string name="message_notification_school_reminder_has_subject_morning">You have %s at %s at %s in this morning.</string>
+    <string name="message_notification_school_reminder_has_subject_afternoon">You have %s at %s at %s in this afternoon.</string>
+    <string name="message_notification_school_reminder_has_subject_tomorrow">You have %s at %s at %s in tomorrow morning.</string>
     <string name="text_show_all">Show all</string>
     <string name="msg_thread_creating">Your thread is being created…</string>
     <string name="msg_permission_granted">Permission granted</string>
@@ -146,4 +149,6 @@
     <string name="makeup_class_name" translatable="false">%s ngày %s</string>
     <string name="text_no_attachment">No Attachment</string>
     <string name="text_come_in_class">Come in class</string>
+    <string name="content_notification_school_reminder_no_subject_tomorrow_morning">You have no class tomorrow morning!</string>
+    <string name="title_school_reminder_how_is_your_day">How is your day?</string>
 </resources>

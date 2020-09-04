@@ -59,16 +59,7 @@ interface VKUService {
      * @return forums List<NetworkCustomForum>
      */
     @GET("api/forum")
-    suspend fun getForums(): List<NetworkCustomForum>
-
-    /**
-     * Get a forum by id
-     * @param forumId String
-     * @method GET
-     * @return forum Forum
-     */
-    @GET("api/forum/{forumId}")
-    suspend fun getForumById(@Path("forumId") forumId: String): Forum
+    suspend fun getForums(): List<NetworkForum>
 
     /**
      * Create new thread in specified forum
@@ -93,7 +84,7 @@ interface VKUService {
      * @return threads List<NetworkForumThreadCustom>
      */
     @GET("api/forum/thread/{forumId}")
-    suspend fun getThreads(@Path("forumId") forumId: String): List<NetworkForumThreadCustom>
+    suspend fun getThreads(@Path("forumId") forumId: String): List<NetworkForumThread>
 
     /**
      * Get a user by id from REST API
@@ -126,7 +117,7 @@ interface VKUService {
      * @return Thread
      */
     @GET("api/thread/{threadId}")
-    suspend fun getThreadById(@Path("threadId") threadId: String): Thread
+    suspend fun getThreadById(@Path("threadId") threadId: String): ForumThread
 
     /**
      * Create a new reply
@@ -155,7 +146,7 @@ interface VKUService {
      * @return UserPopulatedNetworkReply
      */
     @GET("/api/reply/{idReply}")
-    suspend fun getReplyById(@Path("idReply") id: String): UserPopulatedNetworkReply
+    suspend fun getReplyById(@Path("idReply") id: String): Reply
 
     /**
      * Login
@@ -204,8 +195,8 @@ interface VKUService {
     suspend fun editThread(
         @Header("gg-auth-token") idToken: String,
         @Path("threadId") threadId: String,
-        @Body updateThreadBody: UpdateThreadBody
-    ): NetworkForumThread
+        @Body updateThreadBody: UpdateThreadBody,
+    ): ForumThread
 
     @GET("api/notification")
     suspend fun getNotifications(@Header("gg-auth-token") idToken: String): List<Notification>
@@ -243,8 +234,8 @@ interface VKUService {
         @Path("replyId") replyId: String,
         @Part newImage: Array<MultipartBody.Part>?,
         @Part("content") content: RequestBody,
-        @Part("images") images: Array<RequestBody>?
-    ): NetworkReply
+        @Part("images") images: Array<RequestBody>?,
+    ): Reply
 
     @GET
     suspend fun getAbsenceNotice(@Url url: String = SecretConstants.ABSENCE_URL, @Query("time") time: String): List<Absence>

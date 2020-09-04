@@ -15,7 +15,11 @@ import dev.tsnanh.vku.domain.entities.SubjectNotification
  * @author tsnAnh
  */
 @Database(
-    entities = [News::class, Subject::class, SubjectNotification::class],
+    entities = [
+        News::class,
+        Subject::class,
+        SubjectNotification::class,
+    ],
     exportSchema = false,
     version = 1
 )

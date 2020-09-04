@@ -15,12 +15,8 @@ import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,18 +30,22 @@ import dev.tsnanh.vku.utils.getDayOfWeekFromString
 import dev.tsnanh.vku.utils.getHourFromLesson
 import dev.tsnanh.vku.utils.getMinutesFromStringLesson
 import dev.tsnanh.vku.viewmodels.TimetableViewModel
-import timber.log.Timber
-import java.util.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class TimetableFragment : Fragment() {
-
     private lateinit var binding: FragmentTimetableBinding
+
+    @FlowPreview
     private val viewModel: TimetableViewModel by viewModels()
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
-    private val sharedPreferences: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(requireContext())
-    }
+
+    @Inject
+    lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +55,7 @@ class TimetableFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         binding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_timetable, container, false)
@@ -65,6 +65,8 @@ class TimetableFragment : Fragment() {
         return binding.root
     }
 
+    @ExperimentalCoroutinesApi
+    @FlowPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -73,54 +75,27 @@ class TimetableFragment : Fragment() {
         val timetableAdapter = createTimetableAdapter()
 
         binding.listSubjects.apply {
-            setHasFixedSize(true)
+            setHasFixedSize(false)
+            isNestedScrollingEnabled = true
             layoutManager = LinearLayoutManager(requireContext())
             adapter = timetableAdapter
         }
-        val gso = GoogleSignInOptions.Builder()
-            .requestId()
-            .requestIdToken(getString(R.string.server_client_id))
-            .requestProfile()
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
-        viewModel.timetable
-            .observe(viewLifecycleOwner, Observer { result ->
-                binding.progressBar.visibility = View.GONE
-                // FALSE[view current day only], TRUE[view all]
-                val viewAll = sharedPreferences.getBoolean(
-                    requireContext().getString(R.string.show_all_subjects_key),
-                    false
-                )
-                var list = result.sortedBy { subject ->
-                    subject.lesson.length < 2
-                }
-                if (!viewAll) {
-                    val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
-                    list = list.filter { subject ->
-                        when (subject.dayOfWeek) {
-                            Constants.MONDAY -> Calendar.MONDAY == dayOfWeek
-                            Constants.TUESDAY -> Calendar.TUESDAY == dayOfWeek
-                            Constants.WEDNESDAY -> Calendar.WEDNESDAY == dayOfWeek
-                            Constants.THURSDAY -> Calendar.THURSDAY == dayOfWeek
-                            Constants.FRIDAY -> Calendar.FRIDAY == dayOfWeek
-                            Constants.SATURDAY -> Calendar.SATURDAY == dayOfWeek
-                            else -> Calendar.SUNDAY == dayOfWeek
-                        }
-                    }
-                }
-                Timber.i(list.toString())
-                timetableAdapter.submitList(list)
-                // requireArguments().getString("subject", null)?.let {
-                //     var position = 0
-                //     list.filterIndexed { index, subject ->
-                //         position = index
-                //         subject.className == it
-                //     }
-                //     binding.listSubjects.scrollToPosition(position)
-                // }
-            })
 
+        viewModel.timetable.observe(viewLifecycleOwner) { result ->
+            binding.progressBar.visibility = View.GONE
+            timetableAdapter.submitList(result)
+            // TODO: 02/09/2020 Scroll to subject position and highlight it
+        }
+
+        with(binding) {
+            chipGroup.setOnCheckedChangeListener { _, checkedId ->
+                when (checkedId) {
+                    allFilterChip.id -> viewModel.onFilterAll()
+                    todayFilterChip.id -> viewModel.onFilterToday()
+                    tomorrowFilterChip.id -> viewModel.onFilterTomorrow()
+                }
+            }
+        }
     }
 
     private fun createTimetableAdapter(): TimetableAdapter {
@@ -139,7 +114,7 @@ class TimetableFragment : Fragment() {
             )
             putExtra(AlarmClock.EXTRA_HOUR, subject.lesson.getHourFromLesson())
             putExtra(AlarmClock.EXTRA_MINUTES, subject.lesson.getMinutesFromStringLesson())
-            putExtra(AlarmClock.EXTRA_DAYS, subject.dayOfWeek.getDayOfWeekFromString())
+            putExtra(AlarmClock.EXTRA_DAYS, arrayListOf(subject.dayOfWeek.getDayOfWeekFromString()))
             putExtra(AlarmClock.EXTRA_SKIP_UI, true)
         }
         startActivity(intent)

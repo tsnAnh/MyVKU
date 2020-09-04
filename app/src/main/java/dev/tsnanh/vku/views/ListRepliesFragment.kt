@@ -17,7 +17,7 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.RepliesAdapter
 import dev.tsnanh.vku.adapters.ReplyClickListener
 import dev.tsnanh.vku.databinding.FragmentListRepliesBinding
-import dev.tsnanh.vku.domain.entities.NetworkCustomReply
+import dev.tsnanh.vku.domain.entities.NetworkReply
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.viewmodels.ListRepliesViewModel
 import dev.tsnanh.vku.views.ReplyFragment.Companion.DELETE_ITEM_ORDER
@@ -79,7 +79,7 @@ class ListRepliesFragment(
         })
     }
 
-    private val replyClickListener: (NetworkCustomReply) -> Unit = { reply ->
+    private val replyClickListener: (NetworkReply) -> Unit = { reply ->
         parentFragment?.findNavController()?.navigate(
             ReplyFragmentDirections.actionNavigationRepliesToNewReplyFragment(
                 reply.threadId,
@@ -88,13 +88,13 @@ class ListRepliesFragment(
         )
     }
 
-    private val shareClickListener: (NetworkCustomReply) -> Unit = {
+    private val shareClickListener: (NetworkReply) -> Unit = {
 //        findNavController().navigate(L)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val currentReplyId = adapterReplies.currentList[item.itemId].id
-        val userDisplayName = adapterReplies.currentList[item.itemId].uid?.displayName
+//        val userDisplayName = adapterReplies.currentList[item.itemId].uid?.displayName
 
         when (item.order) {
             EDIT_ITEM_ORDER -> {

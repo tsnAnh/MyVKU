@@ -29,7 +29,6 @@ import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.RepliesViewModel
-import timber.log.Timber
 
 @AndroidEntryPoint
 class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
@@ -85,7 +84,6 @@ class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
             pageCount(navArgs.threadId).observe<Resource<ReplyContainer>>(viewLifecycleOwner) { result ->
                 when (result) {
                     is Resource.Success -> {
-                        Timber.d("Refreshed All Pages")
                         val adapter = ListRepliesPagerAdapter(
                             this@ReplyFragment,
                             navArgs.threadId,
@@ -139,7 +137,8 @@ class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
                 true
             }
             else -> {
-                showSnackbarWithAction(requireView(), "Something went wrong!")
+                showSnackbarWithAction(requireView(),
+                    requireContext().getString(R.string.text_something_went_wrong))
                 true
             }
         }

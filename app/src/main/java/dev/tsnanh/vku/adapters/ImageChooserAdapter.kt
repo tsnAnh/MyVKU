@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.viewholders.imageChooser.ImageChooserFooterViewHolder
-import dev.tsnanh.vku.viewholders.imageChooser.ImageChooserViewHolder
+import dev.tsnanh.vku.viewholders.ImageChooserFooterViewHolder
+import dev.tsnanh.vku.viewholders.ImageChooserViewHolder
 import javax.inject.Inject
 
 private const val TYPE_FOOTER = 0

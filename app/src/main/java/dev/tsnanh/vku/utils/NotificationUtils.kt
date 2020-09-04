@@ -86,7 +86,7 @@ fun NotificationManager.sendCloudMessageNotification(
         }
         val fullContent = "${payload["userDisplayName"]} $title"
         setContentText(fullContent)
-        setContentTitle("Notification from ${payload["userDisplayName"]}")
+        setContentTitle(applicationContext.getString(R.string.text_notification_from))
         setStyle(NotificationCompat.BigTextStyle().bigText(fullContent))
         setAutoCancel(true)
         setSmallIcon(R.mipmap.ic_launcher)

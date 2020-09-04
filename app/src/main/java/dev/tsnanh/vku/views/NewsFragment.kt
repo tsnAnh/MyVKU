@@ -58,7 +58,6 @@ class NewsFragment : Fragment() {
 
         binding.pager.apply {
             adapter = NewsPagerAdapter(this@NewsFragment)
-            offscreenPageLimit = 5
             // TODO: 8/28/2020 make material shared axis page transformer
             setPageTransformer { page, position ->
                 page.apply {

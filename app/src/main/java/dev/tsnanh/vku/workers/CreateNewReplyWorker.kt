@@ -13,8 +13,8 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import dev.tsnanh.vku.domain.entities.NetworkReply
 import dev.tsnanh.vku.domain.entities.News
-import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.repositories.ReplyRepoImpl
 import dev.tsnanh.vku.domain.usecases.CreateNewReplyUseCase
@@ -49,7 +49,7 @@ class CreateNewReplyWorker @WorkerInject constructor(
         val quotedReplyId = inputData.getString(Constants.QUOTED_REPLY)
 
         val jsonAdapter =
-            moshi.adapter(Reply::class.java)
+            moshi.adapter(NetworkReply::class.java)
         val type =
             Types.newParameterizedType(List::class.java, String::class.java)
         val uriAdapter = moshi.adapter<List<String>>(type)

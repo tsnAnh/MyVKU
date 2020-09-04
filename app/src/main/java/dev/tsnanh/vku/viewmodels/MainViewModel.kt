@@ -4,55 +4,71 @@
 
 package dev.tsnanh.vku.viewmodels
 
+import android.content.Context
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.core.content.getSystemService
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import androidx.work.*
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.iid.FirebaseInstanceId
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import dev.tsnanh.vku.domain.entities.*
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.tsnanh.vku.domain.entities.ForumThread
+import dev.tsnanh.vku.domain.entities.LoginBody
+import dev.tsnanh.vku.domain.entities.NetworkReply
 import dev.tsnanh.vku.domain.usecases.LoginUseCase
 import dev.tsnanh.vku.domain.usecases.RetrieveNewsUseCase
 import dev.tsnanh.vku.domain.usecases.RetrieveUserTimetableLiveDataUseCase
+import dev.tsnanh.vku.utils.ConnectivityLiveData
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.toListStringUri
 import dev.tsnanh.vku.workers.CreateNewReplyWorker
 import dev.tsnanh.vku.workers.CreateNewThreadWorker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.asDeferred
 import timber.log.Timber
 
+@ExperimentalCoroutinesApi
 class MainViewModel @ViewModelInject constructor(
+    @ApplicationContext context: Context,
     private val retrieveNewsUseCase: RetrieveNewsUseCase,
     private val retrieveUserTimetableLiveDataUseCase: RetrieveUserTimetableLiveDataUseCase,
     private val workManager: WorkManager,
     moshi: Moshi,
     private val mGoogleSignInClient: GoogleSignInClient,
-    private val checkHasUserUseCase: LoginUseCase,
+    private val loginUseCase: LoginUseCase,
     @Assisted savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    private var isLoggedIn = false
 
-    init {
-        mGoogleSignInClient.silentSignIn().addOnSuccessListener {
-            viewModelScope.launch {
-                try {
-                    it.email?.let { it1 -> retrieveUserTimetableLiveDataUseCase.refresh(it1) }
-                    retrieveNewsUseCase.refresh()
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-            }
-        }
-    }
+    @RequiresApi(Build.VERSION_CODES.N)
+    val connectivityLiveData = ConnectivityLiveData(context.getSystemService())
+
+    private var _loginState = MutableLiveData(LoginState.UNAUTHENTICATED)
+    val loginState: LiveData<LoginState>
+        get() = _loginState
+
+    private val _error = MutableLiveData<Throwable>()
+    val error: LiveData<Throwable>
+        get() = _error
 
     // Create JsonAdapter
     private val threadJsonAdapter =
         moshi.adapter(ForumThread::class.java)
     private val replyJsonAdapter =
-        moshi.adapter(Reply::class.java)
+        moshi.adapter(NetworkReply::class.java)
     private val type =
         Types.newParameterizedType(List::class.java, String::class.java)
     private val uriAdapter = moshi.adapter<List<String>>(type)
@@ -62,26 +78,14 @@ class MainViewModel @ViewModelInject constructor(
         .setRequiredNetworkType(NetworkType.CONNECTED)
         .build()
 
-    private val _accountStatus = MutableLiveData<Resource<GoogleSignInAccount>>()
-    val accountStatus: LiveData<Resource<GoogleSignInAccount>>
-        get() = _accountStatus
-
-    fun updateAccount(account: Resource<GoogleSignInAccount>) {
-        _accountStatus.value = account
-    }
-
-    suspend fun login(token: String, loginBody: LoginBody): Resource<LoginResponse> {
-        return checkHasUserUseCase.execute(token, loginBody)
-    }
-
     // TODO: Create Notifications LiveData
 
-    fun createNewThread(list: List<Uri>, thread: ForumThread, reply: Reply) {
+    fun createNewThread(list: List<Uri>, thread: ForumThread, reply: NetworkReply) {
         mGoogleSignInClient.silentSignIn().addOnCompleteListener {
             if (it.isComplete) {
                 try {
                     // Get token and uid from Google Sign In
-                    val token = it.getResult(ApiException::class.java)!!.idToken!!
+                    val token = it.getResult(ApiException::class.java)?.idToken!!
 
                     // Prepare WorkData
                     val threadData = workDataOf(
@@ -91,7 +95,7 @@ class MainViewModel @ViewModelInject constructor(
                     val replyData = workDataOf(
                         Constants.REPLY_KEY to replyJsonAdapter.toJson(reply),
                         Constants.TOKEN_KEY to token,
-                        Constants.IMAGES_KEY to uriAdapter.toJson(list.toListStringUri())
+                        Constants.IMAGES_KEY to uriAdapter.toJson(list.toListStringUri()),
                     )
 
                     // Create WorkRequest
@@ -122,9 +126,9 @@ class MainViewModel @ViewModelInject constructor(
 
     fun createNewReply(
         threadId: String,
-        reply: Reply,
+        reply: NetworkReply,
         images: List<Uri>,
-        quotedReplyId: String?
+        quotedReplyId: String?,
     ) {
         mGoogleSignInClient.silentSignIn().addOnCompleteListener {
             if (it.isComplete) {
@@ -152,6 +156,38 @@ class MainViewModel @ViewModelInject constructor(
                     // TODO: Handle exception
                 }
             }
+        }
+    }
+
+    fun silentSignIn() {
+        if (isLoggedIn) return
+        viewModelScope.launch {
+            val deferredIdToken = mGoogleSignInClient.silentSignIn().asDeferred()
+            val deferredInstanceId = FirebaseInstanceId.getInstance().instanceId.asDeferred()
+
+            val idToken = deferredIdToken.await().idToken
+            val tokenFCM = deferredInstanceId.await().token
+
+            if (idToken != null) {
+                loginUseCase.execute(idToken, LoginBody(tokenFCM = tokenFCM))
+                    .flowOn(Dispatchers.IO)
+                    .onStart { _loginState.postValue(LoginState.AUTHENTICATING) }
+                    .catch { t ->
+                        _error.postValue(t)
+                        _loginState.postValue(LoginState.AUTHENTICATED)
+                    }
+                    .collect {
+                        _loginState.postValue(LoginState.AUTHENTICATED)
+                        isLoggedIn = true
+                    }
+            }
+        }
+    }
+
+    fun refreshData(email: String) {
+        viewModelScope.launch {
+            retrieveNewsUseCase.refresh()
+            retrieveUserTimetableLiveDataUseCase.refresh(email)
         }
     }
 }

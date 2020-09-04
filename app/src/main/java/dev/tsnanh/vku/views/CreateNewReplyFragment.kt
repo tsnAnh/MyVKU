@@ -34,7 +34,7 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ImageChooserAdapter
 import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentNewReplyBinding
-import dev.tsnanh.vku.domain.entities.Reply
+import dev.tsnanh.vku.domain.entities.NetworkReply
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.*
 import dev.tsnanh.vku.utils.Constants.Companion.RC_ADD_PHOTO
@@ -140,7 +140,7 @@ class CreateNewReplyFragment : Fragment() {
         }
 
         with(binding) {
-            content.validate("Minimum content length is 25") {
+            content.validate(requireContext().getString(R.string.text_minimum_content_length)) {
                 it.isReplyContentIsValidLength()
             }
         }
@@ -159,9 +159,9 @@ class CreateNewReplyFragment : Fragment() {
                     )
                 ) {
                     MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Permission required")
-                        .setMessage("We need permission to upload your image!")
-                        .setPositiveButton("OK") { d, _ ->
+                        .setTitle(requireContext().getString(R.string.msg_permission_required))
+                        .setMessage(requireContext().getString(R.string.msg_need_permission))
+                        .setPositiveButton(requireContext().getString(R.string.text_ok)) { d, _ ->
                             pickImage(RC_IMAGE_PICKER)
                             d.dismiss()
                         }
@@ -196,10 +196,12 @@ class CreateNewReplyFragment : Fragment() {
 
         binding.fabCreateReply.setOnClickListener {
             if (binding.content.text.isNullOrBlank()) {
-                binding.content.error = "Empty Reply Content"
+                binding.content.error =
+                    requireContext().getString(R.string.text_empty_reply_content)
             } else {
-                val post = Reply(
-                    content = binding.content.text.toString().trim()
+                val post = NetworkReply(
+                    content = binding.content.text.toString().trim(),
+                    images = emptyList(),
                 )
 
                 activityViewModel.createNewReply(
@@ -238,8 +240,8 @@ class CreateNewReplyFragment : Fragment() {
                         if (data.clipData!!.itemCount > 5) {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.text_maximum_five_images),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }
@@ -254,8 +256,8 @@ class CreateNewReplyFragment : Fragment() {
                         } else {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.text_maximum_five_images),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }
@@ -274,8 +276,8 @@ class CreateNewReplyFragment : Fragment() {
                         if (data.clipData!!.itemCount + pickerAdapter.currentList.size > 5) {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.text_maximum_five_images),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }
@@ -289,8 +291,8 @@ class CreateNewReplyFragment : Fragment() {
                         } else {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.text_maximum_five_images),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }

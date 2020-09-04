@@ -11,7 +11,9 @@ class RestartSchoolReminderNotificationReceiver @Inject constructor() : Broadcas
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             Intent.ACTION_BOOT_COMPLETED -> {
-                context.setSchoolReminderAlarm(GoogleSignIn.getLastSignedInAccount(context)!!.email!!)
+                GoogleSignIn.getLastSignedInAccount(context)?.email?.let {
+                    context.setSchoolReminderAlarm(it)
+                }
             }
         }
     }

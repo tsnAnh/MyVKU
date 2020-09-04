@@ -7,9 +7,10 @@ package dev.tsnanh.vku.viewholders
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.ItemThreadBinding
-import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
+import dev.tsnanh.vku.domain.entities.NetworkForumThread
 import dev.tsnanh.vku.utils.convertToDateString
 import dev.tsnanh.vku.views.ThreadFragment
 
@@ -30,19 +31,22 @@ class ThreadViewHolder(
 
     fun bind(
         uid: String,
-        thread: NetworkForumThreadCustom,
+        thread: NetworkForumThread,
         listener: ThreadClickListener,
-        position: Int
+        position: Int,
     ) {
         binding.apply {
             root.setOnCreateContextMenuListener { menu, _, _ ->
                 menu.apply {
-                    setHeaderTitle("What do you want to do?")
-                    if (uid == thread.uid?.uidGG) {
+                    setHeaderTitle(root.context.getString(R.string.text_what_do_u_want_to_do))
+                    if (uid == thread.uid.uidGG) {
                         add(0, position, ThreadFragment.EDIT_ITEM_ORDER, "Edit")
                         add(0, position, ThreadFragment.DELETE_ITEM_ORDER, "Delete")
                     }
-                    add(0, position, ThreadFragment.REPORT_ITEM_ORDER, "Report")
+                    add(0,
+                        position,
+                        ThreadFragment.REPORT_ITEM_ORDER,
+                        root.context.getString(R.string.text_report))
                 }
             }
             this.thread = thread

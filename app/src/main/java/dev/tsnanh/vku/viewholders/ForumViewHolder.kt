@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.ItemForumBinding
-import dev.tsnanh.vku.domain.entities.NetworkCustomForum
+import dev.tsnanh.vku.domain.entities.NetworkForum
 
 class ForumViewHolder private constructor(
     private val binding: ItemForumBinding
@@ -24,8 +24,8 @@ class ForumViewHolder private constructor(
     }
 
     fun bind(
-        forum: NetworkCustomForum,
-        listener: ForumClickListener
+        forum: NetworkForum,
+        listener: ForumClickListener,
     ) {
         binding.forum = forum
         binding.cardForum.setOnClickListener {

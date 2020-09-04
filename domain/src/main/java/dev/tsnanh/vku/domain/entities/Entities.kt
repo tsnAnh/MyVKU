@@ -32,7 +32,7 @@ data class LoginBody(
 
 @JsonClass(generateAdapter = true)
 data class UpdateThreadBody(
-    val title: String
+    val title: String,
 )
 
 @JsonClass(generateAdapter = true)
@@ -55,151 +55,6 @@ data class News(
     val slug: String?,
     @field:Json(name = "Attachment")
     val attachment: String?
-)
-
-@JsonClass(generateAdapter = true)
-data class Forum(
-    @field:Json(name = "_id")
-    val id: String = "",
-    val title: String,
-    val numberOfThreads: Int,
-    val numberOfReplies: Int,
-    val latestThread: String?,
-    val tag: String
-)
-
-@JsonClass(generateAdapter = true)
-data class NetworkCustomForum(
-    @field:Json(name = "_id")
-    val id: String = "",
-    val title: String,
-    val numberOfThreads: Int,
-    val numberOfReplies: Int,
-    val latestThread: NetworkForumThread?,
-    val tag: String
-)
-
-@JsonClass(generateAdapter = true)
-data class ForumThread(
-    @field:Json(name = "_id")
-    val id: String = "",
-    val uid: String? = null,
-    val title: String,
-    val forumId: String = "",
-    val numberOfReplies: Int = 1,
-    val numberOfViews: Int = 0,
-    val likes: List<String> = emptyList(),
-    val createdAt: Long = 0L,
-    val latestReply: NetworkReply? = null/*,
-    val editHistory: List<String> = emptyList()*/
-)
-
-@JsonClass(generateAdapter = true)
-data class NetworkForumThread(
-    @field:Json(name = "_id")
-    val id: String = "",
-    val uid: String? = null,
-    val title: String,
-    val forumId: String = "",
-    val numberOfReplies: Int = 1,
-    val numberOfViews: Int = 1,
-    val likes: List<String> = emptyList(),
-    val createdAt: Long = 0L,
-    val latestReply: String? = null/*,
-    val editHistory: List<String> = emptyList()*/
-)
-
-@JsonClass(generateAdapter = true)
-data class NetworkForumThreadCustom(
-    @field:Json(name = "_id")
-    val id: String = "",
-    val uid: User? = null,
-    val title: String,
-    val forumId: String = "",
-    val numberOfReplies: Int = 1,
-    val numberOfViews: Int = 1,
-    val likes: List<String> = emptyList(),
-    val createdAt: Long = 0L,
-    val latestReply: Reply? = null
-)
-
-@JsonClass(generateAdapter = true)
-data class User(
-    @field:Json(name = "_id")
-    val id: String = "",
-    val uidGG: String,
-    val displayName: String,
-    val photoURL: String,
-    val email: String,
-    val role: Int = 0
-)
-
-@JsonClass(generateAdapter = true)
-data class Reply(
-    @field:Json(name = "_id")
-    val id: String = "",
-    val uid: String = "",
-    val content: String,
-    var images: List<String> = emptyList(),
-    val threadId: String = "",
-    val forumId: String = "",
-    val editHistory: List<String> = emptyList(),
-    val createdAt: Long = 0L,
-    val quoted: QuotedReply? = null
-)
-
-@JsonClass(generateAdapter = true)
-data class QuotedReply(
-    val replyId: String,
-    val isDeleted: Boolean? = null
-)
-
-@JsonClass(generateAdapter = true)
-data class PopulatedQuotedReply(
-    val replyId: UserPopulatedNetworkReply,
-    val isDeleted: Boolean? = null
-)
-
-@JsonClass(generateAdapter = true)
-data class NetworkReply(
-    @field:Json(name = "_id")
-    val id: String = "",
-    val uid: String = "",
-    val content: String,
-    var images: List<String> = emptyList(),
-    val threadId: String = "",
-    val forumId: String = "",
-    val editHistory: List<String> = emptyList(),
-    val createdAt: Long = 0L,
-    val quoted: String? = null
-)
-
-@JsonClass(generateAdapter = true)
-data class UserPopulatedNetworkReply(
-    @field:Json(name = "_id")
-    val id: String = "",
-    val uid: User? = null,
-    val content: String,
-    var images: List<String> = emptyList(),
-    val threadId: String = "",
-    val forumId: String = "",
-    val editHistory: List<String> = emptyList(),
-    val createdAt: Long = 0L,
-    val quoted: QuotedReply? = null
-)
-
-@JsonClass(generateAdapter = true)
-data class NetworkCustomReply(
-    @field:Json(name = "_id")
-    val id: String = "",
-    val uid: User? = null,
-    val content: String,
-    var images: List<String> = emptyList(),
-    val threadId: String = "",
-    val forumId: String = "",
-    val editHistory: List<String> = emptyList(),
-    val createdAt: Long = 0L,
-    val quoted: PopulatedQuotedReply? = null
 )
 
 @Entity(tableName = "subjects")
@@ -287,6 +142,7 @@ data class Teacher(
 
 sealed class Notice
 
+//@Entity
 @JsonClass(generateAdapter = true)
 data class Absence(
     @field:Json(name = "tenlop")
@@ -301,6 +157,7 @@ data class Absence(
     val dateNotice: String
 ) : Notice()
 
+//@Entity
 @JsonClass(generateAdapter = true)
 data class MakeUpClass(
     @field:Json(name = "tenlop")

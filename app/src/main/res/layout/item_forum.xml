@@ -14,7 +14,7 @@
 
         <variable
             name="forum"
-            type="dev.tsnanh.vku.domain.entities.NetworkCustomForum" />
+            type="dev.tsnanh.vku.domain.entities.NetworkForum" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -27,9 +27,9 @@
         android:layout_marginBottom="8dp"
         android:transitionName="@{ forum.id }"
         app:cardCornerRadius="8dp"
-        app:strokeWidth="1dp"
+        app:cardElevation="0dp"
         app:strokeColor="@color/material_on_surface_stroke"
-        app:cardElevation="0dp">
+        app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -84,10 +84,11 @@
                 android:layout_width="52dp"
                 android:layout_height="52dp"
                 android:layout_marginEnd="16dp"
-                android:tint="@color/primaryColor"
+                android:contentDescription="@{ forum.title }"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/forum_title"
-                app:srcCompat="@drawable/ic_round_forum_24" />
+                app:srcCompat="@drawable/ic_round_forum_24"
+                app:tint="@color/primaryColor" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

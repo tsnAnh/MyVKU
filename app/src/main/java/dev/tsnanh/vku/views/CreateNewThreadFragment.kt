@@ -22,6 +22,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -36,13 +37,14 @@ import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.databinding.FragmentCreateNewThreadBinding
 import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
 import dev.tsnanh.vku.domain.entities.ForumThread
-import dev.tsnanh.vku.domain.entities.Reply
-import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.domain.entities.NetworkReply
 import dev.tsnanh.vku.utils.*
 import dev.tsnanh.vku.viewmodels.CreateNewThreadViewModel
 import dev.tsnanh.vku.viewmodels.MainViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class CreateNewThreadFragment : Fragment() {
     private val viewModel: CreateNewThreadViewModel by viewModels()
@@ -125,10 +127,10 @@ class CreateNewThreadFragment : Fragment() {
             }
         ))
         with(binding) {
-            title.validate("Minimum title length is 10") {
+            title.validate(requireContext().getString(R.string.text_minimum_title_length)) {
                 it.isThreadTitleValidLength()
             }
-            content.validate("Minimum content length is 25") {
+            content.validate(requireContext().getString(R.string.text_minimum_content_length)) {
                 it.isReplyContentIsValidLength()
             }
         }
@@ -178,48 +180,29 @@ class CreateNewThreadFragment : Fragment() {
             }
         }
 
-        viewModel.forums.observe(viewLifecycleOwner) {
-            it?.let {
-                when (it) {
-                    is Resource.Loading -> {
-                        binding.layoutForum.hint =
-                            requireContext().getString(R.string.text_loading_forums)
+        viewModel.forums.asLiveData().observe(viewLifecycleOwner) { forums ->
+            forums?.let {
+                binding.layoutForum.hint = "Forums"
+                if (forums.isNotEmpty()) {
+                    val forumsTitle = forums.map { forum ->
+                        forum.title
                     }
-                    is Resource.Success -> {
-                        binding.layoutForum.hint = "Forums"
-                        if (it.data != null && it.data!!.isNotEmpty()) {
-                            val forumsTitle = it.data!!.map { forum ->
-                                forum.title
-                            }
-                            val arrAdapter =
-                                ArrayAdapter(
-                                    requireContext(),
-                                    R.layout.dropdown_menu_popup_item,
-                                    forumsTitle
-                                )
+                    val arrAdapter =
+                        ArrayAdapter(
+                            requireContext(),
+                            R.layout.dropdown_menu_popup_item,
+                            forumsTitle
+                        )
 
-                            binding.forum.setOnItemClickListener { _, _, i, _ ->
-                                binding.forum.tag = it.data!![i].id
-                            }
+                    binding.forum.setOnItemClickListener { _, _, i, _ ->
+                        binding.forum.tag = forums[i].id
+                    }
 
-                            binding.forum.setAdapter(arrAdapter)
-                        }
-                    }
-                    is Resource.Error -> {
-                        binding.apply {
-                            this.chooseImage.isEnabled = false
-                            this.layoutForum.isEnabled = false
-                            this.fabSubmit.isEnabled = false
-                            this.layoutTitle.isEnabled = false
-                            this.layoutContent.isEnabled = false
-                        }
-                        showSnackbarWithAction(
-                            requireView(),
-                            "${it.message.toString()}. Please try again later.",
-                            "BACK", {
-                                findNavController().navigateUp()
-                            })
-                    }
+                    binding.forum.setAdapter(arrAdapter)
+                } else {
+                    binding.layoutForum.isEnabled = false
+                    binding.layoutForum.hint = requireContext()
+                        .getString(R.string.text_application_has_no_forums)
                 }
             }
         }
@@ -291,8 +274,8 @@ class CreateNewThreadFragment : Fragment() {
                         if (data.clipData!!.itemCount > 5) {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.msg_pick_image_canceled),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }
@@ -307,8 +290,8 @@ class CreateNewThreadFragment : Fragment() {
                         } else {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.msg_pick_image_canceled),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }
@@ -327,8 +310,8 @@ class CreateNewThreadFragment : Fragment() {
                         if (data.clipData!!.itemCount + pickerAdapter.currentList.size > 5) {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.msg_pick_image_canceled),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }
@@ -342,8 +325,8 @@ class CreateNewThreadFragment : Fragment() {
                         } else {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.msg_pick_image_canceled),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }
@@ -388,17 +371,18 @@ class CreateNewThreadFragment : Fragment() {
             }
             else -> {
                 val thread = prepareThread()
-                val post = preparePost()
+                val reply = prepareReply()
 
-                activityViewModel.createNewThread(pickerAdapter.currentList, thread, post)
+                activityViewModel.createNewThread(pickerAdapter.currentList, thread, reply)
             }
         }
     }
 
     private fun prepareThread() = ForumThread(title = binding.title.text.toString().trim(),
-        forumId = (binding.forum.tag as String?).toString())
+        forumId = (binding.forum.tag as String?).toString(), likes = emptyList())
 
-    private fun preparePost() = Reply(content = binding.content.text.toString().trim())
+    private fun prepareReply() =
+        NetworkReply(content = binding.content.text.toString().trim())
 
     // Disabled for two months
     // TODO: Make it better

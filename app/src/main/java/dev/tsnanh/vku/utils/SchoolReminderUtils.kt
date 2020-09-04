@@ -267,18 +267,17 @@ fun String.getMinutesFromStringLesson(): Int {
     }
 }
 
-fun String.getDayOfWeekFromString(): ArrayList<Int> {
-    return arrayListOf(
-        when (this) {
-            Constants.MONDAY -> Calendar.MONDAY
-            Constants.TUESDAY -> Calendar.TUESDAY
-            Constants.WEDNESDAY -> Calendar.WEDNESDAY
-            Constants.THURSDAY -> Calendar.THURSDAY
-            Constants.FRIDAY -> Calendar.FRIDAY
-            Constants.SATURDAY -> Calendar.SATURDAY
-            else -> throw IllegalArgumentException("Wrong day of week string")
-        }
-    )
+@Throws(IllegalArgumentException::class)
+fun String.getDayOfWeekFromString(): Int {
+    return when (this) {
+        Constants.MONDAY -> Calendar.MONDAY
+        Constants.TUESDAY -> Calendar.TUESDAY
+        Constants.WEDNESDAY -> Calendar.WEDNESDAY
+        Constants.THURSDAY -> Calendar.THURSDAY
+        Constants.FRIDAY -> Calendar.FRIDAY
+        Constants.SATURDAY -> Calendar.SATURDAY
+        else -> throw IllegalArgumentException("Wrong day of week string")
+    }
 }
 
 fun dayOfWeekFilter(subject: Subject, dayOfWeek: Int): Boolean {

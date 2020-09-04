@@ -11,15 +11,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,19 +31,21 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ForumAdapter
 import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.FragmentForumBinding
-import dev.tsnanh.vku.domain.entities.NetworkCustomForum
-import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.domain.entities.NetworkForum
 import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.isInternetAvailable
-import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.ForumViewModel
-import timber.log.Timber
+import dev.tsnanh.vku.viewmodels.MainViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ForumFragment : Fragment() {
 
     private lateinit var binding: FragmentForumBinding
     private val viewModel: ForumViewModel by viewModels()
+    private val activityViewModel: MainViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +55,7 @@ class ForumFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         binding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_forum, container, false)
@@ -59,6 +65,8 @@ class ForumFragment : Fragment() {
         return binding.root
     }
 
+    @ExperimentalCoroutinesApi
+    @Suppress("DEPRECATION")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -83,57 +91,42 @@ class ForumFragment : Fragment() {
             itemAnimator = null
         }
 
-        val adapter = ForumAdapter(emptyList(), ForumClickListener { forum, imageView ->
-            viewModel.onItemClick(forum to imageView)
+        val adapter = ForumAdapter(ForumClickListener { forum, cardView ->
+            viewModel.onItemClick(forum to cardView)
         })
 
         binding.listTopics.adapter = adapter
 
-        viewModel.forums.observe<Resource<List<NetworkCustomForum>>>(viewLifecycleOwner) {
-            it.let {
-                binding.include.errorLayout.visibility = View.GONE
-                when (it) {
-                    is Resource.Success -> {
-                        adapter.updateForums(it.data!!)
-                        binding.progressBar.visibility = View.GONE
-                        Timber.i("Forum Refreshed")
-                    }
-                    is Resource.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Resource.Error -> {
-                        binding.include.errorLayout.visibility = View.VISIBLE
-                        if (isInternetAvailable(requireContext())) {
-                            showSnackbarWithAction(
-                                requireView(),
-                                it.message.toString(),
-                                requireContext().getString(R.string.text_hide)
-                            )
-                        } else {
-                            binding.include.textView7.text =
-                                requireContext().getString(R.string.text_no_internet_connection)
-                        }
-                        binding.progressBar.visibility = View.GONE
-                    }
+        lifecycleScope.launch {
+            viewModel.forums
+                .onStart { binding.progressBar.isVisible = true }
+                .catch { _ -> binding.errorLayout.root.isVisible = true }
+                .asLiveData()
+                .observe<List<NetworkForum>>(viewLifecycleOwner) { forums ->
+                    binding.progressBar.isVisible = false
+                    binding.errorLayout.root.isVisible = false
+                    binding.noForumsLayout.isVisible = forums.isEmpty()
+                    adapter.submitList(forums)
                 }
-            }
         }
 
-        viewModel.navigateToListThread.observe(viewLifecycleOwner, Observer {
-            it?.let {
+        viewModel.navigateToListThread.observe<Pair<NetworkForum, MaterialCardView>?>(
+            viewLifecycleOwner
+        ) {
+            it?.let { (first, second) ->
                 val extras = FragmentNavigatorExtras(
-                    it.second to it.first.id
+                    second to first.id
                 )
                 findNavController().navigate(
                     ForumFragmentDirections.actionNavigationForumToNavigationThread(
-                        it.first.id,
-                        it.first.title
+                        first.id,
+                        first.title
                     ),
                     extras
                 )
                 viewModel.onItemClicked()
             }
-        })
+        }
 
         binding.fabNewThread.setOnClickListener {
             val extras = FragmentNavigatorExtras(

@@ -61,10 +61,6 @@ abstract class UseCaseModule {
 
     @Singleton
     @Binds
-    abstract fun bindRetrieveSingleForumUseCase(retrieveSingleForumUseCaseImpl: RetrieveSingleForumUseCaseImpl): RetrieveSingleForumUseCase
-
-    @Singleton
-    @Binds
     abstract fun bindRetrieveTeacherUseCase(retrieveTeachersUseCaseImpl: RetrieveTeachersUseCaseImpl): RetrieveTeachersUseCase
 
     @Singleton

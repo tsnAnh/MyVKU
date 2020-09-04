@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 interface VKUDao {
     /**
      * Get all news cached from database
+     * @author tsnAnh
      * @return List<News>
      */
     @Query("SELECT * FROM news ORDER BY updatedDate DESC")
@@ -28,6 +29,7 @@ interface VKUDao {
 
     /**
      * Insert all news get from REST API
+     * @author tsnAnh
      * @param news News
      */
     @Insert(entity = News::class, onConflict = OnConflictStrategy.REPLACE)
@@ -35,6 +37,7 @@ interface VKUDao {
 
     /**
      * Insert all subjects to database
+     * @author tsnAnh
      * @param subjects Subjects
      */
     @Insert(entity = Subject::class, onConflict = OnConflictStrategy.REPLACE)
@@ -42,6 +45,7 @@ interface VKUDao {
 
     /**
      * Retrieve all subjects cached in database
+     * @author tsnAnh
      * @return LiveData<List<Subject>>
      */
     @Query("SELECT * FROM subjects ORDER BY lesson")
@@ -49,8 +53,18 @@ interface VKUDao {
 
     /**
      * Retrieve all subjects cached in database
+     * @author tsnAnh
      * @return List<Subject>
      */
     @Query("SELECT * FROM subjects ORDER BY lesson")
     fun getAllSubjects(): List<Subject>
+
+    /**
+     * Retrieve all subject with specified day of week
+     * @author tsnAnh
+     * @param dayOfWeek String
+     * @return Flow<List<Subject>>
+     */
+    @Query("SELECT * FROM subjects WHERE dayOfWeek = :dayOfWeek")
+    fun getTimetableWithFilter(dayOfWeek: String): Flow<List<Subject>>
 }

@@ -7,33 +7,34 @@ package dev.tsnanh.vku.activities
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
+import androidx.core.content.getSystemService
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.SignInButton
-import com.google.android.gms.common.api.ApiException
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.iid.FirebaseInstanceId
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityWelcomeBinding
-import dev.tsnanh.vku.domain.entities.LoginBody
-import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
+import dev.tsnanh.vku.utils.isInternetAvailableApi23
+import dev.tsnanh.vku.utils.showSnackbarWithAction
+import dev.tsnanh.vku.viewmodels.LoginState.*
 import dev.tsnanh.vku.viewmodels.WelcomeViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import retrofit2.HttpException
 import timber.log.Timber
+import java.net.ConnectException
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class WelcomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWelcomeBinding
@@ -45,6 +46,8 @@ class WelcomeActivity : AppCompatActivity() {
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
+    private var isNetworkAvailable = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // hide status bar and toolbar
@@ -53,24 +56,79 @@ class WelcomeActivity : AppCompatActivity() {
         binding.appVersion.text = try {
             packageManager.getPackageInfo(packageName, 0).versionName
         } catch (e: PackageManager.NameNotFoundException) {
-            "Unknown Version"
+            getString(R.string.text_unknown_version)
         }
 
         binding.lifecycleOwner = this
         binding.googleSignInButton.setSize(SignInButton.SIZE_WIDE)
 
         binding.googleSignInButton.setOnClickListener {
-            signIn()
+            if (isNetworkAvailable) {
+                signIn()
+            } else {
+                showSnackbarWithAction(binding.root,
+                    getString(R.string.text_no_internet_connection))
+            }
         }
 
-        if (
-            GoogleSignIn.getLastSignedInAccount(this) != null && sharedPreferences.getBoolean(
-                "loginSuccess",
-                false
-            )
-        ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerNetworkInfoCallback()
+        } else {
+            isNetworkAvailable = isInternetAvailableApi23()
+        }
+
+        viewModel.error.observe(this) { error ->
+            binding.progressBar.isVisible = false
+            binding.googleSignInButton.isVisible = true
+
+            mGoogleSignInClient.signOut()
+
+            when (error) {
+                is HttpException -> {
+                    when (error.code()) {
+                        403 -> showSnackbarWithAction(
+                            binding.root, getString(R.string.text_require_vku_email)
+                        )
+                    }
+                }
+                is ConnectException -> showSnackbarWithAction(
+                    binding.root,
+                    getString(R.string.text_no_internet_connection)
+                )
+            }
+        }
+
+        viewModel.loginResponse.observe(this) { response ->
+            startActivity(Intent(this@WelcomeActivity, MainActivity::class.java).apply {
+                putExtra("isNew", response.isNew)
+            }).also { this@WelcomeActivity.finish() }
+        }
+
+        viewModel.loginState.observe(this) { state ->
+            state?.let {
+                when (state) {
+                    AUTHENTICATING -> {
+                        binding.progressBar.isVisible = true
+                        binding.googleSignInButton.isVisible = false
+                    }
+                    UNAUTHENTICATED -> {
+                        binding.progressBar.isVisible = false
+                        binding.googleSignInButton.isVisible = true
+                    }
+                    AUTHENTICATED -> {
+                        // do sth
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (GoogleSignIn.getLastSignedInAccount(this) != null) {
             startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            this@WelcomeActivity.finish()
         }
     }
 
@@ -78,117 +136,30 @@ class WelcomeActivity : AppCompatActivity() {
         startActivityForResult(mGoogleSignInClient.signInIntent, Constants.RC_SIGN_IN)
     }
 
-    // override fun onStart() {
-    //     super.onStart()
-    //     showProgressBar()
-    //     mGoogleSignInClient.silentSignIn().addOnCompleteListener {
-    //         if (it.isSuccessful) {
-    //             try {
-    //                 val account = it.getResult(ApiException::class.java)!!
-    //                 updateUI(account)
-    //                 Timber.d("Token: ${account.idToken}")
-    //             } catch (e: ApiException) {
-    //                 updateUI(null)
-    //             }
-    //         } else {
-    //             hideProgressBar()
-    //         }
-    //     }
-    // }
-
-    private fun updateUI(account: GoogleSignInAccount?) {
-        if (account != null) {
-            Timber.d("User not null")
-            showProgressBar()
-            account.idToken!!.let {
-                FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
-                    if (task.isComplete) {
-                        lifecycleScope.launch {
-                            val response =
-                                withContext(Dispatchers.IO) {
-                                    Timber.d(task.result?.token!!)
-                                    viewModel.login(it, LoginBody(task.result?.token!!))
-                                }
-                            when (response) {
-                                is Resource.Success -> {
-                                    if (response.data!!.user.id.isNotEmpty()) {
-                                        sharedPreferences.edit {
-                                            putBoolean("loginSuccess", true)
-                                        }
-                                        startActivity(
-                                            Intent(
-                                                this@WelcomeActivity,
-                                                MainActivity::class.java
-                                            )
-                                        )
-
-                                        finish()
-                                    }
-                                }
-                                is Resource.Error -> {
-                                    binding.progressBar.visibility = View.INVISIBLE
-                                    if (response.message == "403 Forbidden") {
-                                        binding.googleSignInButton.visibility = View.VISIBLE
-                                        mGoogleSignInClient.signOut()
-                                        Snackbar
-                                            .make(
-                                                binding.root,
-                                                "Bạn phải sử dụng email \"vku.udn.vn\" để có " +
-                                                        "thể đăng nhập vào ứng dụng!",
-                                                Snackbar.LENGTH_LONG
-                                            )
-                                            .show()
-                                    } else {
-                                        mGoogleSignInClient.signOut()
-                                        Snackbar
-                                            .make(
-                                                binding.root,
-                                                response.message!!,
-                                                Snackbar.LENGTH_INDEFINITE
-                                            )
-                                            .setAction(getString(R.string.text_exit)) {
-                                                this@WelcomeActivity.finish()
-                                            }
-                                            .show()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            hideProgressBar()
-            Timber.d("User null")
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.RC_SIGN_IN) {
-            Timber.d("WTF")
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-
-            // handle sign in result
             try {
-                val account = task.getResult(ApiException::class.java)!!
-                Timber.d(account.toString())
-//                firebaseAuthWithGoogle(account.idToken!!)
-                updateUI(account)
-            } catch (e: ApiException) {
+                viewModel.login()
+            } catch (e: Exception) {
+                // TODO: 04/09/2020 handle exceptions
                 Timber.e(e)
-                updateUI(null)
             }
         }
     }
 
-    private fun showProgressBar() {
-        binding.googleSignInButton.visibility = View.INVISIBLE
-        binding.progressBar.visibility = View.VISIBLE
-    }
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun registerNetworkInfoCallback() {
+        val connectivityManager = getSystemService<ConnectivityManager>()
+        connectivityManager?.registerDefaultNetworkCallback(object :
+            ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                isNetworkAvailable = true
+            }
 
-    private fun hideProgressBar() {
-        binding.googleSignInButton.visibility = View.VISIBLE
-        binding.progressBar.visibility = View.INVISIBLE
+            override fun onLost(network: Network) {
+                isNetworkAvailable = false
+            }
+        })
     }
 }

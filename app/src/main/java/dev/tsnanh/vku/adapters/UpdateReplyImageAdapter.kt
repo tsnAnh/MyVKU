@@ -2,7 +2,7 @@ package dev.tsnanh.vku.adapters
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import dev.tsnanh.vku.viewholders.imageChooser.UpdateReplyImageChooserViewHolder
+import dev.tsnanh.vku.viewholders.UpdateReplyImageChooserViewHolder
 import javax.inject.Inject
 
 class UpdateReplyImageAdapter @Inject constructor(

@@ -14,11 +14,6 @@ data class NewsContainer(
 )
 
 @JsonClass(generateAdapter = true)
-data class ForumContainer(
-    val forums: List<Forum>
-)
-
-@JsonClass(generateAdapter = true)
 data class ThreadContainer(
     val threads: List<ForumThread>
 )
@@ -30,9 +25,9 @@ data class UserContainer(
 
 @JsonClass(generateAdapter = true)
 data class ReplyContainer(
-    val replies: List<NetworkCustomReply>,
+    val replies: List<NetworkReply>,
     val totalPages: Int,
-    val currentPage: Int
+    val currentPage: Int,
 )
 
 @JsonClass(generateAdapter = true)

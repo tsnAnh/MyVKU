@@ -9,31 +9,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.material.card.MaterialCardView
-import dev.tsnanh.vku.domain.entities.NetworkCustomForum
-import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.domain.entities.NetworkForum
 import dev.tsnanh.vku.domain.usecases.RetrieveForumsUseCase
+import kotlinx.coroutines.flow.Flow
 
 class ForumViewModel @ViewModelInject constructor(
     private val retrieveForumsUseCase: RetrieveForumsUseCase
 ) : ViewModel() {
     private val _navigateToListThread =
-        MutableLiveData<Pair<NetworkCustomForum, MaterialCardView>>()
-    val navigateToListThread: LiveData<Pair<NetworkCustomForum, MaterialCardView>>
+        MutableLiveData<Pair<NetworkForum, MaterialCardView>?>()
+    val navigateToListThread: LiveData<Pair<NetworkForum, MaterialCardView>?>
         get() = _navigateToListThread
 
-    private var _forums = retrieveForumsUseCase.execute()
-    val forums: LiveData<Resource<List<NetworkCustomForum>>>
-        get() = _forums
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String>
+        get() = _error
 
-    fun onItemClick(forum: Pair<NetworkCustomForum, MaterialCardView>) {
+    val forums: Flow<List<NetworkForum>>
+        get() = retrieveForumsUseCase.execute()
+
+    fun onItemClick(forum: Pair<NetworkForum, MaterialCardView>) {
         _navigateToListThread.value = forum
     }
 
     fun onItemClicked() {
         _navigateToListThread.value = null
-    }
-
-    fun refreshForums() {
-        _forums = retrieveForumsUseCase.execute()
     }
 }

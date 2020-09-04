@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialSharedAxis
@@ -30,8 +31,8 @@ import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.adapters.UpdateReplyImageAdapter
 import dev.tsnanh.vku.databinding.FragmentUpdateReplyBinding
 import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
+import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.Resource
-import dev.tsnanh.vku.domain.entities.UserPopulatedNetworkReply
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.UpdateReplyViewModel
@@ -120,7 +121,7 @@ class UpdateReplyFragment : Fragment() {
             isNestedScrollingEnabled = false
         }
 
-        viewModel.updateReplyWorkLiveData.observe(viewLifecycleOwner) { workInfos ->
+        viewModel.updateReplyWorkLiveData.observe<MutableList<WorkInfo>?>(viewLifecycleOwner) { workInfos ->
             if (workInfos.isNullOrEmpty()) {
                 return@observe
             }
@@ -143,7 +144,7 @@ class UpdateReplyFragment : Fragment() {
             }
         }
 
-        viewModel.reply(navArgs.replyId).observe<Resource<UserPopulatedNetworkReply>>(viewLifecycleOwner) { resource ->
+        viewModel.reply(navArgs.replyId).observe<Resource<Reply>>(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Loading -> {
                 }
@@ -191,8 +192,8 @@ class UpdateReplyFragment : Fragment() {
                     )
                 ) {
                     MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Permission required")
-                        .setMessage("We need permission to upload your image!")
+                        .setTitle(requireContext().getString(R.string.msg_permission_required))
+                        .setMessage(requireContext().getString(R.string.msg_need_permission))
                         .setPositiveButton("OK") { d, _ ->
                             pickImage(Constants.RC_IMAGE_PICKER)
                             d.dismiss()
@@ -233,8 +234,8 @@ class UpdateReplyFragment : Fragment() {
                         if (data.clipData!!.itemCount > 5) {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.msg_pick_image_canceled),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }
@@ -249,8 +250,8 @@ class UpdateReplyFragment : Fragment() {
                         } else {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.msg_pick_image_canceled),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }
@@ -269,8 +270,8 @@ class UpdateReplyFragment : Fragment() {
                         if (data.clipData!!.itemCount + pickerAdapter.currentList.size > 5) {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.msg_pick_image_canceled),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }
@@ -284,8 +285,8 @@ class UpdateReplyFragment : Fragment() {
                         } else {
                             showSnackbarWithAction(
                                 requireView(),
-                                "Maximum 5 images",
-                                "HIDE"
+                                requireContext().getString(R.string.msg_pick_image_canceled),
+                                requireContext().getString(R.string.text_hide)
                             )
                             return@let
                         }

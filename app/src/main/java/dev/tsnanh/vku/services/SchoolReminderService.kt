@@ -49,13 +49,13 @@ class SchoolReminderService : Service() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Notification
                     .Builder(this, getString(R.string.school_reminder_channel_id))
-                    .setTicker("School reminder")
-                    .setContentTitle("My VKU is running...")
+                    .setTicker(getString(R.string.text_school_remider))
+                    .setContentTitle(getString(R.string.text_my_vku_is_running))
                     .build()
             } else {
                 NotificationCompat.Builder(this, getString(R.string.school_reminder_channel_id))
-                    .setTicker("School reminder")
-                    .setContentTitle("My VKU is running...")
+                    .setTicker(getString(R.string.text_school_remider))
+                    .setContentTitle(getString(R.string.text_my_vku_is_running))
                     .build()
             }
         startForeground(1, builder)
@@ -82,7 +82,6 @@ class SchoolReminderService : Service() {
                     }) {
                     is Resource.Error -> Timber.d(result.message)
                     is Resource.Success -> {
-                        Timber.d("successfully load timetable")
                         // Get current day of week
                         val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
 
@@ -114,7 +113,7 @@ class SchoolReminderService : Service() {
                                 2 -> notificationManager?.sendSchoolReminderNotification(
                                     Random.nextInt(),
                                     getString(R.string.title_school_reminder_how_is_your_day),
-                                    "Good evening here!",
+                                    getString(R.string.text_good_evening),
                                     null,
                                     EVENING_GROUP,
                                     context
@@ -124,9 +123,11 @@ class SchoolReminderService : Service() {
                                     is Resource.Success -> subjects.data?.let { allSubjects ->
                                         val tomorrowSubjects = allSubjects.filter {
                                             dayOfWeekFilter(
-                                                it, when (Calendar.DAY_OF_WEEK) {
-                                                    7 -> 1
-                                                    else -> Calendar.DAY_OF_WEEK + 1
+                                                it,
+                                                when (val tomorrow =
+                                                    Calendar.getInstance()[Calendar.DAY_OF_WEEK]) {
+                                                    7 -> Calendar.SUNDAY
+                                                    else -> tomorrow + 1
                                                 }
                                             )
                                         }
@@ -153,8 +154,8 @@ class SchoolReminderService : Service() {
             } catch (e: IllegalArgumentException) {
                 notificationManager?.sendSchoolReminderNotification(
                     Random(100).nextInt(),
-                    "Something went wrong!",
-                    "We are sorry for unconvenient.",
+                    getString(R.string.text_something_went_wrong),
+                    getString(R.string.text_sorry_for_inconvenience),
                     null,
                     ERROR_GROUP,
                     applicationContext
@@ -189,7 +190,7 @@ class SchoolReminderService : Service() {
                         Random.nextInt(),
                         subject.className,
                         getString(
-                            if (!fromNight) R.string.message_notification_school_reminder_has_subject_morning else R.string.message_notification_school_reminder_has_subject_morning,
+                            if (!fromNight) R.string.message_notification_school_reminder_has_subject_morning else R.string.message_notification_school_reminder_has_subject_tomorrow,
                             subject.className,
                             subject.lesson.getExactHourStringFromLesson(),
                             subject.room
@@ -321,15 +322,5 @@ class SchoolReminderService : Service() {
                 )
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.d("Destroyed! ")
-    }
-
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        super.onTaskRemoved(rootIntent)
-        Timber.d("Removed")
     }
 }

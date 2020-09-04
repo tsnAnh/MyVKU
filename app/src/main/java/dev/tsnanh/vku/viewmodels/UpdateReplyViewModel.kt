@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.work.*
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.Resource
-import dev.tsnanh.vku.domain.entities.UserPopulatedNetworkReply
 import dev.tsnanh.vku.domain.usecases.RetrieveReplyByIdUseCase
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.workers.UpdateReplyWorker
@@ -18,7 +18,7 @@ class UpdateReplyViewModel @ViewModelInject constructor(
     private val client: GoogleSignInClient,
     private val workManager: WorkManager,
 ) : ViewModel() {
-    val reply: (String) -> LiveData<Resource<UserPopulatedNetworkReply>> =
+    val reply: (String) -> LiveData<Resource<Reply>> =
         { retrieveReplyUseCase.execute(it) }
     private val _pickerHasImage = MutableLiveData(false)
     val pickerHasImage: LiveData<Boolean>

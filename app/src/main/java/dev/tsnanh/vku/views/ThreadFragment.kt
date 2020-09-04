@@ -7,6 +7,7 @@ package dev.tsnanh.vku.views
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialContainerTransform
@@ -26,10 +28,12 @@ import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.ThreadAdapter
 import dev.tsnanh.vku.adapters.ThreadClickListener
 import dev.tsnanh.vku.databinding.FragmentThreadBinding
+import dev.tsnanh.vku.databinding.LayoutEditThreadTitleDialogBinding
 import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
-import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
+import dev.tsnanh.vku.domain.entities.NetworkForumThread
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
+import dev.tsnanh.vku.utils.showSnackbarWithAction
 import dev.tsnanh.vku.viewmodels.ThreadViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -73,6 +77,8 @@ class ThreadFragment : Fragment() {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.lifecycleOwner = viewLifecycleOwner
 
         val navArgs: ThreadFragmentArgs by navArgs()
         binding.layoutThread.transitionName = navArgs.id
@@ -152,79 +158,51 @@ class ThreadFragment : Fragment() {
             itemAnimator = null
         }
     }
-//
-//    override fun onContextItemSelected(item: MenuItem): Boolean {
-//        val currentItemId = adapter.currentList[item.itemId].id
-//        val titleThread = adapter.currentList[item.itemId].title
-//        when (item.order) {
-//            EDIT_ITEM_ORDER -> {
-//                val binding = LayoutEditThreadTitleDialogBinding
-//                    .inflate(LayoutInflater.from(requireContext())).apply {
-//                        inputEditText.setText(titleThread)
-//                    }
-//                val builder = MaterialAlertDialogBuilder(requireContext())
-//                    .setTitle("Edit thread title")
-//                    .setView(binding.root)
-//                    .setPositiveButton("Confirm") { d, _ ->
-//                        client.silentSignIn().addOnSuccessListener { result ->
-//                            viewModel.updateThreadTitle(
-//                                result.idToken!!,
-//                                currentItemId,
-//                                UpdateThreadBody(binding.inputEditText.text.toString())
-//                            ).observe(viewLifecycleOwner) { resource ->
-//                                when (resource) {
-//                                    is Resource.Loading -> {
-//                                        progressDialog.show()
-//                                    }
-//                                    is Resource.Error -> showSnackbarWithAction(
-//                                        requireView(),
-//                                        "An error has occurred. Please try again later!"
-//                                    ).also {
-//                                        progressDialog.hide()
-//                                    }
-//                                    is Resource.Success -> {
-//                                        viewModel.refreshThreadsLiveData()
-//                                            .observe(viewLifecycleOwner) {
-//                                                refresh(it)
-//                                            }
-//                                        progressDialog.hide()
-//                                    }
-//                                }
-//                            }
-//                            d.dismiss()
-//                        }
-//                    }
-//                    .setNegativeButton("Cancel") { d, _ ->
-//                        d.dismiss()
-//                    }
-//                    .create().show()
-//            }
-//            DELETE_ITEM_ORDER -> {
-//                client.silentSignIn().addOnSuccessListener {
-//                    viewModel.deleteThread(it.idToken!!, currentItemId)
-//                        .observe(viewLifecycleOwner) { result ->
-//                            when (result) {
-//                                "deleted thread" -> {
-//                                    viewModel.refreshThreadsLiveData()
-//                                        .observe<Resource<List<NetworkForumThreadCustom>>>(viewLifecycleOwner) { resource ->
-//                                            refresh(resource)
-//                                        }
-//                                    showSnackbarWithAction(requireView(), "Deleted $titleThread")
-//                                }
-//                                else -> showSnackbarWithAction(
-//                                    requireView(),
-//                                    "An error has occurred! Please try again!"
-//                                )
-//                            }
-//                        }
-//                }
-//            }
-//            REPORT_ITEM_ORDER -> TODO("report thread")
-//        }
-//        return true
-//    }
 
-    private fun refresh(resource: Resource<List<NetworkForumThreadCustom>>) {
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val currentItemId = adapter.currentList[item.itemId].id
+        val titleThread = adapter.currentList[item.itemId].title
+        when (item.order) {
+            EDIT_ITEM_ORDER -> {
+                val binding =
+                    LayoutEditThreadTitleDialogBinding.inflate(LayoutInflater.from(requireContext()))
+                val builder = MaterialAlertDialogBuilder(requireContext()).apply {
+                    setTitle(requireContext().getString(R.string.text_edit_thread_title))
+                    setView(binding.root)
+                    setPositiveButton(requireContext().getString(R.string.text_ok)) { dialog, _ ->
+                        viewModel.updateThreadTitle(
+                            currentItemId,
+                            binding.inputEditText.text.toString()
+                        )
+                        dialog.dismiss()
+                    }
+                    setNegativeButton(requireContext().getString(R.string.text_cancel)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                }.create()
+                builder.show()
+            }
+            DELETE_ITEM_ORDER -> {
+                val builder = MaterialAlertDialogBuilder(requireContext()).apply {
+                    setTitle(requireContext().getString(R.string.text_are_u_sure))
+                    setPositiveButton(requireContext().getString(R.string.text_ok)) { dialog, _ ->
+                        viewModel.deleteThread(threadId = currentItemId, item.itemId)
+                        showSnackbarWithAction(requireView(),
+                            requireContext().getString(R.string.text_deleteing_thread, titleThread))
+                        dialog.dismiss()
+                    }
+                    setNegativeButton(requireContext().getString(R.string.text_cancel)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                }.create()
+                builder.show()
+            }
+            REPORT_ITEM_ORDER -> TODO("report thread")
+        }
+        return true
+    }
+
+    private fun refresh(resource: Resource<List<NetworkForumThread>>) {
         when (resource) {
             is Resource.Success -> {
                 binding.progressBar.visibility = View.GONE

@@ -18,25 +18,18 @@
             android:summary="@string/text_night_mode_summary"
             android:title="@string/text_night_mode" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/text_forum">
+    <PreferenceCategory
+        android:title="@string/text_forum"
+        app:enabled="false">
 
         <ListPreference
             android:defaultValue="10"
             android:dialogIcon="@drawable/ic_round_pages_24"
-            android:icon="@drawable/ic_round_pages_24"
             android:entries="@array/reply_limit_entries"
             android:entryValues="@array/reply_limit_values"
+            android:icon="@drawable/ic_round_pages_24"
             android:key="@string/replies_per_page_key"
             android:summary="@string/text_summary_replies_per_page"
             android:title="@string/text_replies_per_page" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/text_timetable">
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:icon="@drawable/ic_round_subject_24"
-            android:key="@string/show_all_subjects_key"
-            android:summary="@string/text_show_all_subject_summary"
-            android:title="@string/text_show_all_subjects" />
     </PreferenceCategory>
 </PreferenceScreen>

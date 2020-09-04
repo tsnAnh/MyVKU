@@ -5,16 +5,19 @@
 package dev.tsnanh.vku.activities
 
 import android.app.NotificationManager
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.net.ConnectivityManager
+import android.net.Network
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.Window
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.animation.doOnEnd
@@ -22,41 +25,44 @@ import androidx.core.content.edit
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.common.api.ApiException
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
-import com.google.firebase.iid.FirebaseInstanceId
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityMainBinding
-import dev.tsnanh.vku.domain.entities.LoginBody
-import dev.tsnanh.vku.domain.entities.Resource
-import dev.tsnanh.vku.utils.*
+import dev.tsnanh.vku.utils.Constants
+import dev.tsnanh.vku.utils.createNotificationChannel
+import dev.tsnanh.vku.utils.showSnackbarWithAction
+import dev.tsnanh.vku.viewmodels.LoginState
 import dev.tsnanh.vku.viewmodels.MainViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import retrofit2.HttpException
 import timber.log.Timber
+import java.net.ConnectException
 import javax.inject.Inject
 import kotlin.math.hypot
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
     NavController.OnDestinationChangedListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-    @Inject lateinit var sharedPreferences: SharedPreferences
-    @Inject lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
+
+    @Inject
+    lateinit var mGoogleSignInClient: GoogleSignInClient
     private val viewModel: MainViewModel by viewModels()
+
+    private var isNetworkAvailable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -76,11 +82,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         binding.bottomNavView.apply {
             setupWithNavController(navController)
             setOnNavigationItemSelectedListener(this@MainActivity)
-            setOnNavigationItemReselectedListener { /* Prevent fragment recreation */ }
         }
 
-        sharedPreferences.also {
-            it.registerOnSharedPreferenceChangeListener(this)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerNetworkInfoCallback()
         }
 
         // create notification channel
@@ -94,122 +101,89 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         )
         notificationManager?.createNotificationChannel(
             getString(R.string.firebase_forum_notification_channel),
-            "Forum Notification"
+            getString(R.string.text_forum_notification)
         )
 
-        // silent Sign In
-        mGoogleSignInClient.silentSignIn().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                try {
-                    val account = task.getResult(ApiException::class.java)
-                    viewModel.updateAccount(Resource.Success(account))
-                } catch (e: ApiException) {
-                    showSnackbarWithAction(
-                        binding.root,
-                        "Something went wrong with your Google Account. Please log in again!",
-                        "Log out", {
-                            mGoogleSignInClient.signOut().addOnCompleteListener {
-                                startActivity(Intent(this, WelcomeActivity::class.java))
-                                finish()
-                            }
-                        }, binding.bottomNavView
-                    )
-                    viewModel.updateAccount(Resource.Error("googleException"))
-                } catch (ex: Exception) {
-                    viewModel.updateAccount(Resource.Error("exception"))
-                    Timber.e(ex)
-                }
-            }
-        }
+        viewModel.loginState.observe(this) { state ->
+            state?.let {
+                when (state) {
+                    LoginState.AUTHENTICATING -> {
 
-        viewModel.accountStatus.observe<Resource<GoogleSignInAccount>>(this) { result ->
-            when (result) {
-                is Resource.Error -> {
-                    showSnackbarWithAction(
-                        binding.root,
-                        "Error",
-                        null,
-                        null,
-                        binding.bottomNavView
-                    )
-                }
-                is Resource.Success -> {
-                    result.data?.email?.let { setSchoolReminderAlarm(it) }
-                    if (isInternetAvailable(this)) {
-                        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
-                            if (task.isComplete) {
-                                lifecycleScope.launch {
-                                    val response =
-                                        withContext(Dispatchers.IO) {
-                                            Timber.d(task.result?.token!!)
-                                            viewModel.login(
-                                                result.data?.idToken!!,
-                                                LoginBody(task.result!!.token)
-                                            )
-                                        }
-                                    when (response) {
-                                        is Resource.Success -> {
-                                            if (response.data!!.user.id.isNotEmpty()) {
-                                                showSnackbarWithAction(
-                                                    binding.root,
-                                                    "Logged in as ${response.data?.user?.email}",
-                                                    null, null,
-                                                    binding.bottomNavView
-                                                )
-                                            }
-                                        }
-                                        is Resource.Error -> {
-                                            if (response.message == "403 Forbidden") {
-                                                mGoogleSignInClient.signOut()
-                                                Snackbar
-                                                    .make(
-                                                        binding.root,
-                                                        "Bạn phải sử dụng email \"sict.udn.vn\" để có " +
-                                                                "thể đăng nhập vào ứng dụng!",
-                                                        Snackbar.LENGTH_LONG
-                                                    )
-                                                    .show()
-                                            } else if (response.message == "") {
+                    }
+                    LoginState.UNAUTHENTICATED -> {
 
-                                            } else
-                                                Snackbar
-                                                    .make(
-                                                        binding.root,
-                                                        response.message!!,
-                                                        Snackbar.LENGTH_INDEFINITE
-                                                    )
-                                                    .setAction(getString(R.string.text_exit)) {
-                                                        this@MainActivity.finish()
-                                                    }
-                                                    .show()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
+                    }
+                    LoginState.AUTHENTICATED -> {
                         showSnackbarWithAction(
-                            binding.root,
-                            "Offline mode",
+                            binding.layout,
+                            getString(R.string.text_logged_in_as,
+                                GoogleSignIn.getLastSignedInAccount(this)?.email),
                             null,
                             null,
                             binding.bottomNavView
                         )
                     }
                 }
-                is Resource.Loading -> TODO("implement later")
+            }
+        }
+
+        viewModel.error.observe(this) { error ->
+            when (error) {
+                is HttpException -> {
+                    when (error.code()) {
+                        403 -> showSnackbarWithAction(
+                            binding.root, getString(R.string.text_require_vku_email), null, null,
+                            binding.bottomNavView
+                        )
+                    }
+                }
+                is ConnectException -> showSnackbarWithAction(
+                    binding.root,
+                    getString(R.string.text_cannot_connect_to_server),
+                    null, null,
+                    binding.bottomNavView
+                )
+            }
+        }
+
+        viewModel.connectivityLiveData.observe(this) { available ->
+            if (available) {
+                GoogleSignIn.getLastSignedInAccount(this@MainActivity)?.email?.let {
+                    viewModel.refreshData(it)
+                }
+            } else {
+                showSnackbarWithAction(binding.root,
+                    getString(R.string.text_no_internet_and_switch_to_offline))
             }
         }
     }
 
-    // Bottom Navigation View callback
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        return navigateTo(item.itemId)
+    override fun onStart() {
+        super.onStart()
+
+        // Silent Sign In
+        if (isNetworkAvailable) viewModel.silentSignIn()
     }
 
-    private fun navigateTo(itemId: Int): Boolean {
-        return if (navController.currentDestination?.id != itemId) {
-            navController.navigate(itemId)
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun registerNetworkInfoCallback() {
+        val connectivityManager = getSystemService<ConnectivityManager>()
+        connectivityManager?.registerDefaultNetworkCallback(object :
+            ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                isNetworkAvailable = true
+            }
+
+            override fun onLost(network: Network) {
+                isNetworkAvailable = false
+            }
+        })
+    }
+
+    // Bottom Navigation View callback
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        return if (navController.currentDestination?.id != item.itemId) {
+            navController.navigate(item.itemId)
             true
         } else {
             false
@@ -223,14 +197,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onDestinationChanged(
         controller: NavController,
         destination: NavDestination,
-        arguments: Bundle?
+        arguments: Bundle?,
     ) {
         when (destination.id) {
-            R.id.navigation_replies,
-            R.id.navigation_image_viewer,
-            R.id.navigation_new_reply,
-            R.id.navigation_new_thread -> toggleBottomNav(false)
-            else -> toggleBottomNav(true)
+            R.id.navigation_news,
+            R.id.navigation_forum,
+            R.id.navigation_timetable,
+            R.id.navigation_notifications,
+            R.id.navigation_more,
+            -> toggleBottomNav(true)
+            else -> toggleBottomNav(false)
         }
     }
 
@@ -247,7 +223,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     override fun onSharedPreferenceChanged(
         sharedPreferences: SharedPreferences?,
-        key: String?
+        key: String?,
     ) {
         key?.let {
             if (key == getString(R.string.night_mode_key)) {

@@ -68,7 +68,6 @@ class ImageViewerFragment : Fragment() {
         navArgs.urls.map {
             Timber.d(it)
         }
-        Timber.d("Position: ${navArgs.position}")
         val adapter = ImageViewerPagerAdapter(navArgs.urls)
 
         binding.viewPager2.apply {

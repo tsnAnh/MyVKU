@@ -97,7 +97,7 @@
     <string name="text_uploading">Uploading</string>
     <string name="err_msg_request_timeout">Request timeout!</string>
     <string name="err_msg_socket_exception">Cannot fetch news!</string>
-    <string name="err_msg_something_went_wrong">Something went wrong!</string>
+    <string name="text_something_went_wrong">Something went wrong!</string>
     <string name="msg_no_image_selected">No image selected!</string>
     <string name="msg_creating_your_thread">Creating your thread…</string>
     <string name="text_create_new_thread">Create New Thread</string>
@@ -138,7 +138,7 @@
     <string name="notificationMessage" translatable="false"><b>%s</b> %s</string>
     <string name="text_update_reply">Update Reply</string>
     <string name="text_update">Update</string>
-    <string name="text_no_internet_connection">No Internet Connection</string>
+    <string name="text_no_internet_connection">No internet connection.</string>
     <string name="text_write_a_review">Write a review</string>
     <string name="text_rate">Rate</string>
     <string name="text_email_not_provided">Email not provided</string>
@@ -151,4 +151,32 @@
     <string name="text_come_in_class">Come in class</string>
     <string name="content_notification_school_reminder_no_subject_tomorrow_morning">You have no class tomorrow morning!</string>
     <string name="title_school_reminder_how_is_your_day">How is your day?</string>
+    <string name="text_all">All</string>
+    <string name="text_today">Today</string>
+    <string name="text_tomorrow">Tomorrow</string>
+    <string name="text_phone_not_provided">Phone number not provided</string>
+    <string name="text_edit_thread_title">Edit thread title</string>
+    <string name="text_application_has_no_forums">Application has no forums yet.</string>
+    <string name="text_forum_notification">Forum Notification</string>
+    <string name="text_logged_in_as">Logged in with %s</string>
+    <string name="text_cannot_connect_to_server">Cannot connect to server</string>
+    <string name="text_no_internet_and_switch_to_offline">No Internet. Switched to offline mode.</string>
+    <string name="text_unknown_version">Unknown Version</string>
+    <string name="text_school_remider">School reminder</string>
+    <string name="text_my_vku_is_running">My VKU is running…</string>
+    <string name="text_good_evening">Good evening!</string>
+    <string name="text_sorry_for_inconvenience">We are sorry for inconvenience.</string>
+    <string name="text_notification_from">Notification from %s</string>
+    <string name="text_what_do_u_want_to_do">What do you want to do?</string>
+    <string name="text_open_in_browser">Open in Browser</string>
+    <string name="text_view_attachment">View attachment</string>
+    <string name="text_minimum_content_length">Minimum content length is 25</string>
+    <string name="text_empty_reply_content">Empty reply content</string>
+    <string name="text_maximum_five_images">Maximum 5 images</string>
+    <string name="text_minimum_title_length">Minimum title length is 10</string>
+    <string name="text_share_via">Share via</string>
+    <string name="text_attachment">Attachment</string>
+    <string name="text_deleteing_thread">Deleting %s...</string>
+    <string name="text_require_vku_email">You must use email vku.udn.vn in order to login into the application.</string>
+    <string name="text_no_notifications">No Notifications</string>
 </resources>

@@ -7,14 +7,12 @@ package dev.tsnanh.vku.viewholders
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.NewsClickListener
 import dev.tsnanh.vku.databinding.ItemNewsBinding
 import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.utils.unescapeJava
-import timber.log.Timber
 
 class NewsViewHolder private constructor(
     private val binding: ItemNewsBinding
@@ -38,8 +36,8 @@ class NewsViewHolder private constructor(
             root.setOnCreateContextMenuListener { contextMenu, v, _ ->
                 contextMenu.apply {
                     setHeaderTitle(v.context.getString(R.string.text_options))
-                    add(0, position, 0, "Open in Browser")
-                    add(0, position, 1, "View attachment")
+                    add(0, position, 0, root.context.getString(R.string.text_open_in_browser))
+                    add(0, position, 1, root.context.getString(R.string.text_view_attachment))
                 }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

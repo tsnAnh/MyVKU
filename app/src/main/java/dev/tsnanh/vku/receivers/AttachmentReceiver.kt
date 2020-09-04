@@ -6,14 +6,12 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
-import dev.tsnanh.vku.utils.showSnackbarWithAction
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
 class AttachmentReceiver @Inject constructor() : BroadcastReceiver() {
     override fun onReceive(p0: Context?, p1: Intent?) {
-        Timber.d("Attachment downloaded!")
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE == p1?.action) {
             val downloadId = p1.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0)
 
@@ -53,5 +51,6 @@ class AttachmentReceiver @Inject constructor() : BroadcastReceiver() {
                 }
             }
         }
+        p0?.unregisterReceiver(this)
     }
 }

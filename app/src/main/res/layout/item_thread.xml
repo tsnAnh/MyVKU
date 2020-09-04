@@ -7,12 +7,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="thread"
-            type="dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom" />
+            type="dev.tsnanh.vku.domain.entities.NetworkForumThread" />
+
         <variable
             name="listener"
             type="dev.tsnanh.vku.adapters.ThreadClickListener" />
+
         <variable
             name="createdAt"
             type="String" />
@@ -28,9 +31,9 @@
         android:onClick="@{ (view) -> listener.onClick(thread, view) }"
         android:transitionName="@{ thread.id }"
         app:cardCornerRadius="8dp"
-        app:strokeWidth="1dp"
+        app:cardElevation="0dp"
         app:strokeColor="@color/material_on_surface_stroke"
-        app:cardElevation="0dp">
+        app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

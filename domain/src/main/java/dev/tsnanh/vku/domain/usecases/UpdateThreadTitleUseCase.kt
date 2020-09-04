@@ -2,7 +2,7 @@ package dev.tsnanh.vku.domain.usecases
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import dev.tsnanh.vku.domain.entities.NetworkForumThread
+import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.entities.UpdateThreadBody
 import dev.tsnanh.vku.domain.repositories.ThreadRepo
@@ -12,15 +12,16 @@ interface UpdateThreadTitleUseCase {
     fun invoke(
         idToken: String,
         threadId: String,
-        body: UpdateThreadBody
-    ): LiveData<Resource<NetworkForumThread>>
+        body: UpdateThreadBody,
+    ): LiveData<Resource<ForumThread>>
 }
 
-class UpdateThreadTitleUseCaseImpl @Inject constructor() : UpdateThreadTitleUseCase {
-    @Inject lateinit var threadRepo: ThreadRepo
+class UpdateThreadTitleUseCaseImpl @Inject constructor(
+    private val threadRepo: ThreadRepo,
+) : UpdateThreadTitleUseCase {
     override fun invoke(
         idToken: String,
         threadId: String,
-        body: UpdateThreadBody
+        body: UpdateThreadBody,
     ) = threadRepo.updateThreadTitle(idToken, threadId, body).asLiveData()
 }

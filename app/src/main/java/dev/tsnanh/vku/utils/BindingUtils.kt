@@ -23,7 +23,7 @@ import com.google.android.flexbox.FlexboxLayout
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.chip.Chip
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.domain.entities.NetworkCustomReply
+import dev.tsnanh.vku.domain.entities.NetworkReply
 import dev.tsnanh.vku.domain.network.BASE_URL
 import dev.tsnanh.vku.views.ReplyFragmentDirections
 import timber.log.Timber
@@ -87,7 +87,7 @@ fun ImageView.setImage(url: String?) {
 }
 
 @BindingAdapter("postImages")
-fun FlexboxLayout.setImages(reply: NetworkCustomReply?) {
+fun FlexboxLayout.setImages(reply: NetworkReply?) {
     this.removeAllViews()
     reply?.let {
         this.post {

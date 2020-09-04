@@ -86,7 +86,8 @@ class PageNewsFragment : Fragment() {
                     putExtra(Intent.EXTRA_SUBJECT, news.title)
                     putExtra(Intent.EXTRA_TEXT, "${news.content?.take(30)}...")
                 }
-                startActivity(Intent.createChooser(intent, "Share via"))
+                startActivity(Intent.createChooser(intent,
+                    requireContext().getString(R.string.text_share_via)))
             }
         ))
 
@@ -166,7 +167,6 @@ class PageNewsFragment : Fragment() {
             customTabsIntent.intent.setPackage(packageName)
             customTabsIntent.launchUrl(requireActivity(), Uri.parse(url))
         }
-        requireContext().unregisterReceiver(attachmentReceiver)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
@@ -226,7 +226,7 @@ class PageNewsFragment : Fragment() {
                 if (!files.isNullOrEmpty()) {
                     val builder = MaterialAlertDialogBuilder(requireContext())
                         .setView(attachmentBinding.root)
-                        .setTitle("Attachment")
+                        .setTitle(requireContext().getString(R.string.text_attachment))
                         .create()
                     builder.show()
                     val attachmentAdapter =

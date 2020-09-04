@@ -65,7 +65,7 @@ class TeacherEvaluationFragment : Fragment() {
                 is Resource.Error -> {
                     Toast.makeText(
                         requireContext(),
-                        "Không ổn rồi đại vương ạ T_T",
+                        requireContext().getString(R.string.text_something_went_wrong),
                         Toast.LENGTH_SHORT
                     ).show()
                     teacherEvaluationBinding.progressBar.visibility = View.VISIBLE

@@ -9,14 +9,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.google.android.material.card.MaterialCardView
-import dev.tsnanh.vku.domain.entities.NetworkForumThreadCustom
+import dev.tsnanh.vku.domain.entities.NetworkForumThread
 import dev.tsnanh.vku.viewholders.ThreadViewHolder
 import javax.inject.Inject
 
 class ThreadAdapter @Inject constructor(
     private val uid: String,
-    private val listener: ThreadClickListener
-) : ListAdapter<NetworkForumThreadCustom, ThreadViewHolder>(ThreadDiffUtil()) {
+    private val listener: ThreadClickListener,
+) : ListAdapter<NetworkForumThread, ThreadViewHolder>(ThreadDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ThreadViewHolder.from(parent)
 
@@ -26,23 +26,23 @@ class ThreadAdapter @Inject constructor(
 }
 
 class ThreadClickListener(
-    val clickListener: (NetworkForumThreadCustom, MaterialCardView) -> Unit
+    val clickListener: (NetworkForumThread, MaterialCardView) -> Unit,
 ) {
-    fun onClick(thread: NetworkForumThreadCustom, cardView: View) =
+    fun onClick(thread: NetworkForumThread, cardView: View) =
         clickListener(thread, cardView as MaterialCardView)
 }
 
-class ThreadDiffUtil : DiffUtil.ItemCallback<NetworkForumThreadCustom>() {
+class ThreadDiffUtil : DiffUtil.ItemCallback<NetworkForumThread>() {
     override fun areItemsTheSame(
-        oldItem: NetworkForumThreadCustom,
-        newItem: NetworkForumThreadCustom
+        oldItem: NetworkForumThread,
+        newItem: NetworkForumThread,
     ): Boolean {
         return oldItem === newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: NetworkForumThreadCustom,
-        newItem: NetworkForumThreadCustom
+        oldItem: NetworkForumThread,
+        newItem: NetworkForumThread,
     ): Boolean {
         return oldItem.id == newItem.id
     }

@@ -1,6 +1,9 @@
 package dev.tsnanh.vku.domain.repositories
 
-import dev.tsnanh.vku.domain.entities.*
+import dev.tsnanh.vku.domain.entities.Reply
+import dev.tsnanh.vku.domain.entities.ReplyContainer
+import dev.tsnanh.vku.domain.entities.Resource
+import dev.tsnanh.vku.domain.entities.WorkResult
 import dev.tsnanh.vku.domain.handler.ErrorHandler
 import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.delay
@@ -27,7 +30,7 @@ interface ReplyRepo {
         limit: Int
     ): Flow<Resource<ReplyContainer>>
 
-    fun getReplyById(replyId: String): Flow<Resource<UserPopulatedNetworkReply>>
+    fun getReplyById(replyId: String): Flow<Resource<Reply>>
 
     fun getPageCount(threadId: String, limit: Int): Flow<Resource<ReplyContainer>>
 
@@ -39,8 +42,8 @@ interface ReplyRepo {
         replyId: String,
         newImage: Array<MultipartBody.Part>? = null,
         content: RequestBody,
-        images: Array<RequestBody>? = null
-    ): WorkResult<NetworkReply>
+        images: Array<RequestBody>? = null,
+    ): WorkResult<Reply>
 }
 
 class ReplyRepoImpl @Inject constructor() : ReplyRepo {
@@ -92,12 +95,12 @@ class ReplyRepoImpl @Inject constructor() : ReplyRepo {
         }
     }
 
-    override fun getReplyById(replyId: String): Flow<Resource<UserPopulatedNetworkReply>> = flow {
+    override fun getReplyById(replyId: String): Flow<Resource<Reply>> = flow {
         emit(Resource.Loading())
         try {
             emit(Resource.Success(VKUServiceApi.network.getReplyById(replyId)))
         } catch (e: Exception) {
-            emit(ErrorHandler.handleError<UserPopulatedNetworkReply>(e))
+            emit(ErrorHandler.handleError<Reply>(e))
         }
     }
 
@@ -128,8 +131,8 @@ class ReplyRepoImpl @Inject constructor() : ReplyRepo {
         replyId: String,
         newImage: Array<MultipartBody.Part>?,
         content: RequestBody,
-        images: Array<RequestBody>?
-    ): WorkResult<NetworkReply> {
+        images: Array<RequestBody>?,
+    ): WorkResult<Reply> {
         return try {
             WorkResult.Success(
                 VKUServiceApi.network.updateReply(

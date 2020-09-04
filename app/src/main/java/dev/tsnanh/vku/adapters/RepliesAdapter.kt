@@ -7,17 +7,17 @@ package dev.tsnanh.vku.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import dev.tsnanh.vku.domain.entities.NetworkCustomReply
+import dev.tsnanh.vku.domain.entities.NetworkReply
 import dev.tsnanh.vku.viewholders.ReplyViewHolder
 import javax.inject.Inject
 
 class RepliesAdapter @Inject constructor(
     private val uid: String,
-    private val listener: ReplyClickListener
-) : ListAdapter<NetworkCustomReply, ReplyViewHolder>(ReplyDiffUtil()) {
+    private val listener: ReplyClickListener,
+) : ListAdapter<NetworkReply, ReplyViewHolder>(ReplyDiffUtil()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): ReplyViewHolder = ReplyViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: ReplyViewHolder, position: Int) {
@@ -26,17 +26,17 @@ class RepliesAdapter @Inject constructor(
 }
 
 class ReplyClickListener(
-    val reply: (NetworkCustomReply) -> Unit,
-    val share: (NetworkCustomReply) -> Unit
+    val reply: (NetworkReply) -> Unit,
+    val share: (NetworkReply) -> Unit,
 ) {
-    fun onReply(reply: NetworkCustomReply) = reply(reply)
-    fun onShare(reply: NetworkCustomReply) = share(reply)
+    fun onReply(reply: NetworkReply) = reply(reply)
+    fun onShare(reply: NetworkReply) = share(reply)
 }
 
-class ReplyDiffUtil : DiffUtil.ItemCallback<NetworkCustomReply>() {
-    override fun areItemsTheSame(oldItem: NetworkCustomReply, newItem: NetworkCustomReply) =
+class ReplyDiffUtil : DiffUtil.ItemCallback<NetworkReply>() {
+    override fun areItemsTheSame(oldItem: NetworkReply, newItem: NetworkReply) =
         oldItem === newItem
 
-    override fun areContentsTheSame(oldItem: NetworkCustomReply, newItem: NetworkCustomReply) =
+    override fun areContentsTheSame(oldItem: NetworkReply, newItem: NetworkReply) =
         oldItem.id == newItem.id
 }

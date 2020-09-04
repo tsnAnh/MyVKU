@@ -1,6 +1,6 @@
 package dev.tsnanh.vku.domain.usecases
 
-import dev.tsnanh.vku.domain.entities.NetworkReply
+import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.WorkResult
 import dev.tsnanh.vku.domain.repositories.ReplyRepo
 import okhttp3.MultipartBody
@@ -13,8 +13,8 @@ interface UpdateReplyUseCase {
         replyId: String,
         newImage: Array<MultipartBody.Part>? = null,
         content: RequestBody,
-        images: Array<RequestBody>? = null
-    ): WorkResult<NetworkReply>
+        images: Array<RequestBody>? = null,
+    ): WorkResult<Reply>
 }
 
 class UpdateReplyUseCaseImpl @Inject constructor(

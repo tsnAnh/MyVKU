@@ -51,6 +51,7 @@ class CreateNewThreadWorker @WorkerInject constructor(
 
         // Created Thread response
         val responseThreadId = deferredThread.await().data?.id
+        Timber.i(responseThreadId)
 
         Result.success(workDataOf("threadId" to responseThreadId))
     }

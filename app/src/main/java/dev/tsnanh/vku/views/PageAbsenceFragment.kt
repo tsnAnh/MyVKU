@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.adapters.NoticeAdapter
+import dev.tsnanh.vku.adapters.AbsenceAdapter
 import dev.tsnanh.vku.databinding.FragmentPageAbsenceBinding
 import dev.tsnanh.vku.domain.entities.Resource
-import dev.tsnanh.vku.utils.showSnackbarWithAction
+import dev.tsnanh.vku.viewmodels.MainViewModel
 import dev.tsnanh.vku.viewmodels.PageAbsenceViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -25,7 +26,10 @@ class PageAbsenceFragment : Fragment() {
 
     private lateinit var binding: FragmentPageAbsenceBinding
     private val viewModel: PageAbsenceViewModel by viewModels()
-    private lateinit var adapterAbsence: NoticeAdapter
+
+    @ExperimentalCoroutinesApi
+    private val activityViewModel: MainViewModel by activityViewModels()
+    private lateinit var adapterAbsence: AbsenceAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +47,7 @@ class PageAbsenceFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        adapterAbsence = NoticeAdapter(emptyList())
+        adapterAbsence = AbsenceAdapter()
 
         binding.listAbsences.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -51,17 +55,16 @@ class PageAbsenceFragment : Fragment() {
             adapter = adapterAbsence
         }
 
-        viewModel.absences
-            .observe(viewLifecycleOwner) { result ->
-                when (result) {
-                    is Resource.Error -> showSnackbarWithAction(requireView(),
-                        result.message ?: "Error")
-                    is Resource.Loading -> {
-                    }
-                    is Resource.Success -> {
-                        result.data?.let { adapterAbsence.updateList(it) }
-                    }
+        viewModel.absences.observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                }
+                is Resource.Error -> {
+                }
+                is Resource.Success -> {
+                    adapterAbsence.submitList(resource.data)
                 }
             }
+        }
     }
 }

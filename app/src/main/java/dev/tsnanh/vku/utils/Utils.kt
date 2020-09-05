@@ -30,7 +30,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * Convert Javascript timestamp to Java DateTime
+ * Convert Unix timestamp to Java Date
  * @return datetime String
  */
 fun Long.convertToDateString(format: String = Constants.DATE_FORMAT_PATTERN_DASH): String {
@@ -57,7 +57,7 @@ fun ContentResolver.getFilePath(uri: Uri): String {
     return name
 }
 
-fun Subject.checkSubjectHasValidAlarm() = try {
+fun Subject.hasValidAlarm() = try {
     lesson.getHourFromLesson()
     lesson.getMinutesFromStringLesson()
     dayOfWeek.getDayOfWeekFromString()
@@ -66,7 +66,8 @@ fun Subject.checkSubjectHasValidAlarm() = try {
     false
 }
 
-fun String.checkValidWeek(): Boolean = length >= 3
+val String.isValidWeek: Boolean
+    get() = length >= 3
 
 fun showSnackbarWithAction(
     view: View,

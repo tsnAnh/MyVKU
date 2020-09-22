@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -40,7 +41,7 @@ class TeacherEvaluationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         teacherEvaluationBinding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_teacher_evaluation, container, false)
@@ -57,22 +58,25 @@ class TeacherEvaluationFragment : Fragment() {
             layoutManager =
                 LinearLayoutManager(requireContext())
         }
-        viewModel.teachers.observe<Resource<List<Teacher>>>(viewLifecycleOwner) { listResource ->
-            when (listResource) {
-                is Loading -> {
-                    teacherEvaluationBinding.progressBar.visibility = View.VISIBLE
-                }
-                is Resource.Error -> {
-                    Toast.makeText(
-                        requireContext(),
-                        requireContext().getString(R.string.text_something_went_wrong),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    teacherEvaluationBinding.progressBar.visibility = View.VISIBLE
-                }
-                is Resource.Success -> {
-                    teacherEvaluationAdapter.updateTeacher(listResource.data ?: emptyList())
-                    teacherEvaluationBinding.progressBar.isVisible = false
+
+        viewModel.teachers.observe(viewLifecycleOwner) { listResource ->
+            listResource?.let {
+                when (listResource) {
+                    is Loading -> {
+                        teacherEvaluationBinding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Resource.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            requireContext().getString(R.string.text_something_went_wrong),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        teacherEvaluationBinding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Resource.Success -> {
+                        listResource.data?.let { it1 -> teacherEvaluationAdapter.updateTeacher(it1) }
+                        teacherEvaluationBinding.progressBar.isVisible = false
+                    }
                 }
             }
         }

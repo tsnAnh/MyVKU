@@ -3,19 +3,24 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="viewModel"
             type="dev.tsnanh.vku.viewmodels.NewsViewModel" />
+
+        <variable
+            name="activityViewModel"
+            type="dev.tsnanh.vku.viewmodels.MainViewModel" />
     </data>
 
     <com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout
-        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -23,50 +28,27 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/background"
             android:elevation="0dp"
-            android:transitionGroup="false"
+            android:transitionGroup="true"
             app:elevation="0dp"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/actionBarSize"
-                android:elevation="0dp"
-                android:transitionGroup="false"
-                app:buttonGravity="center_vertical"
-                app:contentInsetStart="0dp"
-                app:layout_scrollFlags="scroll|enterAlways">
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    app:srcCompat="@drawable/vku_logo_official" />
-            </com.google.android.material.appbar.MaterialToolbar>
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="snap|enterAlways"
-                app:tabGravity="fill"
-                app:tabIndicatorFullWidth="false" />
+                app:tabContentStart="16dp"
+                app:tabGravity="start"
+                app:tabIndicatorFullWidth="false"
+                app:tabMode="scrollable" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </androidx.core.widget.NestedScrollView>
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
     </com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout>
 </layout>

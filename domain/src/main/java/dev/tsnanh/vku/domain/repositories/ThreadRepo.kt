@@ -4,7 +4,6 @@ import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.NetworkForumThread
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.entities.UpdateThreadBody
-import dev.tsnanh.vku.domain.handler.ErrorHandler
 import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +35,7 @@ class ThreadRepoImpl @Inject constructor() : ThreadRepo {
             try {
                 emit(Resource.Success(VKUServiceApi.network.getThreads(forumId)))
             } catch (e: Exception) {
-                emit(ErrorHandler.handleError<List<NetworkForumThread>>(e))
+                emit(Resource.Error(e))
             }
         }
 
@@ -57,7 +56,7 @@ class ThreadRepoImpl @Inject constructor() : ThreadRepo {
             try {
                 emit(Resource.Success(VKUServiceApi.network.deleteThread(idToken, threadId)))
             } catch (e: Exception) {
-                emit(ErrorHandler.handleError<String>(e))
+                emit(Resource.Error(e))
             }
         }
     }
@@ -72,7 +71,7 @@ class ThreadRepoImpl @Inject constructor() : ThreadRepo {
             try {
                 emit(Resource.Success(VKUServiceApi.network.editThread(idToken, threadId, body)))
             } catch (e: Exception) {
-                emit(ErrorHandler.handleError<ForumThread>(e))
+                emit(Resource.Error(e))
             }
         }
 }

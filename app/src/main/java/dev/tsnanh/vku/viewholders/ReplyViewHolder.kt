@@ -32,10 +32,10 @@ class ReplyViewHolder private constructor(
             root.setOnCreateContextMenuListener { contextMenu, _, _ ->
                 contextMenu.apply {
                     setHeaderTitle(root.context.getString(R.string.text_what_do_u_want_to_do))
-//                    if (uid == reply.uid?.uidGG) {
-//                        add(0, position, ReplyFragment.EDIT_ITEM_ORDER, "Edit")
-//                        add(0, position, ReplyFragment.DELETE_ITEM_ORDER, "Delete")
-//                    }
+                    if (uid == reply.uid?.uidGG) {
+                        add(0, position, ReplyFragment.EDIT_ITEM_ORDER, "Edit")
+                        add(0, position, ReplyFragment.DELETE_ITEM_ORDER, "Delete")
+                    }
                     add(0,
                         position,
                         ReplyFragment.REPORT_ITEM_ORDER,
@@ -44,9 +44,9 @@ class ReplyViewHolder private constructor(
             }
             this.reply = reply
             timeCreated = reply.createdAt.convertToDateString()
-//            quotedReply = reply.quoted
-//            quotedTimeCreated =
-//                reply.quoted?.replyId?.createdAt?.convertToDateString()
+            quotedReply = reply.quoted
+            quotedTimeCreated =
+                reply.quoted?.replyId?.createdAt?.convertToDateString()
             if (reply.quoted != null) {
                 materialCardView.visibility = View.VISIBLE
             } else {

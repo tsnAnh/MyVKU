@@ -2,11 +2,11 @@ package dev.tsnanh.vku.utils
 
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkRequest
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 
-@RequiresApi(Build.VERSION_CODES.N)
 class ConnectivityLiveData(
     private val connectivityManager: ConnectivityManager?,
 ) : LiveData<Boolean>() {
@@ -20,8 +20,14 @@ class ConnectivityLiveData(
         }
     }
 
+    private val networkRequest = NetworkRequest.Builder()
+
     override fun onActive() {
-        connectivityManager?.registerDefaultNetworkCallback(callback)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            connectivityManager?.registerDefaultNetworkCallback(callback)
+        } else {
+            connectivityManager?.registerNetworkCallback(networkRequest.build(), callback)
+        }
     }
 
     override fun onInactive() {

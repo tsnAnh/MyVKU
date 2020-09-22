@@ -63,7 +63,7 @@ dependencies {
     coreLibraryDesugaring(Libraries.desugarJDKLibs)
 
     implementation("androidx.gridlayout:gridlayout:1.0.0")
-    ktlint("com.pinterest:ktlint:0.37.2")
+    ktlint("com.pinterest:ktlint:0.38.1")
     implementation(Libraries.kotlinStdLib)
     implementation(Libraries.appcompat)
     implementation(Libraries.coreKtx)
@@ -103,8 +103,6 @@ dependencies {
     testImplementation(TestLibraries.junit)
     androidTestImplementation(TestLibraries.androidTestJunit)
     androidTestImplementation(TestLibraries.androidTestEspresso)
-    // Firebase Authentication
-    implementation(Libraries.firebaseAuthKtx)
     // Material Design
     implementation(Libraries.material)
     // Androidx Browser

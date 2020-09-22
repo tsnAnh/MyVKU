@@ -2,9 +2,7 @@ package dev.tsnanh.vku.domain.repositories
 
 import androidx.lifecycle.LiveData
 import dev.tsnanh.vku.domain.database.VKUDao
-import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.entities.Subject
-import dev.tsnanh.vku.domain.handler.ErrorHandler
 import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +13,7 @@ import javax.inject.Inject
 interface TimetableRepo {
     fun getTimetableLiveData(): LiveData<List<Subject>>
     suspend fun refreshSubjects(email: String)
-    suspend fun getTimetable(email: String): Resource<List<Subject>>
+    fun getTimetable(email: String): List<Subject>
     fun getTimetableWithFilter(type: Int): Flow<List<Subject>>
 }
 
@@ -34,13 +32,7 @@ class TimetableRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun getTimetable(email: String): Resource<List<Subject>> {
-        return try {
-            Resource.Success(dao.getAllSubjects())
-        } catch (e: Exception) {
-            ErrorHandler.handleError(e)
-        }
-    }
+    override fun getTimetable(email: String) = dao.getAllSubjects()
 
     override fun getTimetableWithFilter(type: Int): Flow<List<Subject>> {
         val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]

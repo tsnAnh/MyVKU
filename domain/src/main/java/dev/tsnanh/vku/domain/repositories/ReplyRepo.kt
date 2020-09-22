@@ -1,10 +1,6 @@
 package dev.tsnanh.vku.domain.repositories
 
-import dev.tsnanh.vku.domain.entities.Reply
-import dev.tsnanh.vku.domain.entities.ReplyContainer
-import dev.tsnanh.vku.domain.entities.Resource
-import dev.tsnanh.vku.domain.entities.WorkResult
-import dev.tsnanh.vku.domain.handler.ErrorHandler
+import dev.tsnanh.vku.domain.entities.*
 import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +26,7 @@ interface ReplyRepo {
         limit: Int
     ): Flow<Resource<ReplyContainer>>
 
-    fun getReplyById(replyId: String): Flow<Resource<Reply>>
+    fun getReplyById(replyId: String): Flow<Resource<NetworkReply>>
 
     fun getPageCount(threadId: String, limit: Int): Flow<Resource<ReplyContainer>>
 
@@ -67,7 +63,7 @@ class ReplyRepoImpl @Inject constructor() : ReplyRepo {
                 )
             )
         } catch (e: Exception) {
-            ErrorHandler.handleError(e)
+            Resource.Error(e)
         }
     }
 
@@ -77,9 +73,7 @@ class ReplyRepoImpl @Inject constructor() : ReplyRepo {
         limit: Int
     ): Flow<Resource<ReplyContainer>> = flow {
         emit(Resource.Loading())
-        delay(200)
         try {
-            Timber.i("start emitting replies...")
             emit(
                 Resource.Success(
                     VKUServiceApi.network.getRepliesInThread(
@@ -91,16 +85,16 @@ class ReplyRepoImpl @Inject constructor() : ReplyRepo {
             )
             delay(10000)
         } catch (e: Exception) {
-            emit(ErrorHandler.handleError<ReplyContainer>(e))
+            emit(Resource.Error<ReplyContainer>(e))
         }
     }
 
-    override fun getReplyById(replyId: String): Flow<Resource<Reply>> = flow {
+    override fun getReplyById(replyId: String): Flow<Resource<NetworkReply>> = flow {
         emit(Resource.Loading())
         try {
             emit(Resource.Success(VKUServiceApi.network.getReplyById(replyId)))
         } catch (e: Exception) {
-            emit(ErrorHandler.handleError<Reply>(e))
+            emit(Resource.Error<NetworkReply>(e))
         }
     }
 
@@ -111,7 +105,7 @@ class ReplyRepoImpl @Inject constructor() : ReplyRepo {
                 Resource.Success(VKUServiceApi.network.getRepliesInThread(threadId, 1, limit))
             )
         } catch (e: Exception) {
-            emit(ErrorHandler.handleError<ReplyContainer>(e))
+            emit(Resource.Error<ReplyContainer>(e))
         }
     }
 

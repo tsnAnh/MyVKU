@@ -2,7 +2,6 @@ package dev.tsnanh.vku.domain.usecases
 
 import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.Resource
-import dev.tsnanh.vku.domain.handler.ErrorHandler
 import dev.tsnanh.vku.domain.repositories.ThreadRepo
 import javax.inject.Inject
 
@@ -21,7 +20,7 @@ class CreateNewThreadUseCaseImpl @Inject constructor(
         try {
             Resource.Success(threadRepo.createThread(idToken, thread, forumId))
         } catch (e: Exception) {
-            ErrorHandler.handleError(e)
+            Resource.Error(e)
         }
 
 }

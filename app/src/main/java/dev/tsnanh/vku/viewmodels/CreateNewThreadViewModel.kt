@@ -4,6 +4,7 @@
 
 package dev.tsnanh.vku.viewmodels
 
+import android.os.Bundle
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
@@ -28,6 +29,8 @@ class CreateNewThreadViewModel @ViewModelInject constructor(
     private val _navigateToReplyFragment = MutableLiveData<String>()
     val navigateToReplyFragment: LiveData<String>
         get() = _navigateToReplyFragment
+
+    val forumSaveState: LiveData<Bundle>? = savedStateHandle["forum"]
 
     fun onPickerHasImage() {
         _pickerHasImage.value = true

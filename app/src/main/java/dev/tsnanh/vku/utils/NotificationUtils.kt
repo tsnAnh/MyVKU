@@ -4,16 +4,20 @@
 
 package dev.tsnanh.vku.utils
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.activities.MainActivity
 import dev.tsnanh.vku.domain.entities.NotificationTitle.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Create a new notification channel
@@ -31,12 +35,15 @@ fun NotificationManager.createNotificationChannel(channelId: String, channelName
             setShowBadge(false)
             enableLights(shouldShowLights())
             enableVibration(shouldVibrate())
+            lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            lightColor = Color.YELLOW
         }
 
         createNotificationChannel(notificationChannel)
     }
 }
 
+@ExperimentalCoroutinesApi
 fun NotificationManager.sendSchoolReminderNotification(
     uid: Int,
     title: String,
@@ -55,6 +62,7 @@ fun NotificationManager.sendSchoolReminderNotification(
         applicationContext,
         applicationContext.getString(R.string.school_reminder_channel_id)
     ).apply {
+        priority = NotificationManagerCompat.IMPORTANCE_MAX
         setContentTitle(title)
         setSmallIcon(R.mipmap.ic_launcher)
         setContentText(message)
@@ -86,7 +94,7 @@ fun NotificationManager.sendCloudMessageNotification(
         }
         val fullContent = "${payload["userDisplayName"]} $title"
         setContentText(fullContent)
-        setContentTitle(applicationContext.getString(R.string.text_notification_from))
+        setContentTitle(applicationContext.getString(R.string.text_notification_from, payload["userDisplayName"]))
         setStyle(NotificationCompat.BigTextStyle().bigText(fullContent))
         setAutoCancel(true)
         setSmallIcon(R.mipmap.ic_launcher)

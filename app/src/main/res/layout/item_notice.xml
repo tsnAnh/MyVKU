@@ -31,7 +31,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/text_absence" />
+                android:text="@string/text_absences" />
 
             <TextView
                 android:id="@+id/className"

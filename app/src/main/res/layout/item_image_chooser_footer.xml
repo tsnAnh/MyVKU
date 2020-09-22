@@ -15,14 +15,14 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         app:cardElevation="0dp"
         app:strokeColor="@color/material_on_surface_stroke"
         app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp">
+            android:layout_height="wrap_content">
 
             <ImageButton
                 android:id="@+id/button"
@@ -34,7 +34,7 @@
                 android:layout_marginBottom="16dp"
                 android:background="@null"
                 android:onClick="@{ () -> listener.onFooterClick() }"
-                android:padding="64dp"
+                android:padding="32dp"
                 android:scaleType="fitCenter"
                 android:tint="@color/primaryColor"
                 app:layout_constraintBottom_toBottomOf="parent"

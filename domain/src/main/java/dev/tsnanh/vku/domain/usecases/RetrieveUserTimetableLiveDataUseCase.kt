@@ -19,7 +19,7 @@ class RetrieveUserTimetableLiveDataUseCaseImpl @Inject constructor(
         return timetableRepo.getTimetableLiveData()
     }
 
-    @Throws(Exception::class)
+    @Throws(Throwable::class)
     override suspend fun refresh(email: String) {
         try {
             timetableRepo.refreshSubjects(email)

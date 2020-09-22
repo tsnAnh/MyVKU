@@ -13,14 +13,52 @@
         android:background="@color/background"
         android:transitionName="teacherEvaluation"
         tools:context=".views.TeacherEvaluationFragment">
+<!--
 
-        <include layout="@layout/app_bar_with_logo" />
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            app:elevation="0dp"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="0dp"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:toolbarId="@id/toolbar">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contentInsetStart="0dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_margin="8dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@android:string/search_go"
+                        app:boxBackgroundMode="outline"
+                        app:startIconDrawable="@drawable/ic_baseline_search_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/search"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.appbar.MaterialToolbar>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_teacher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

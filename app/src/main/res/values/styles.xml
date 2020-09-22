@@ -6,7 +6,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
@@ -18,6 +17,14 @@
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <item name="colorOnPrimary">@color/primaryTextColor</item>
         <item name="android:statusBarColor">@color/primaryDarkColor</item>
+
+        <item name="colorStateNavigationItem">?android:attr/textColorPrimary</item>
+        <item name="colorNavigationItemNormal">@color/athens_gray</item>
+        <item name="colorNavigationItemSelected">@color/primaryColor</item>
+        <item name="colorNavigationItemBackgroundSelected">@color/don_juan</item>
+        <item name="colorNavigationItemBackgroundPressed">@color/mako</item>
+        <item name="drawableNavigationItemBackground">@drawable/menu_item_background_color_state</item>
+        <item name="android:listDivider">@color/shuttle_gray</item>
     </style>
 
     <style name="BottomSheetDialogStyle" parent="Theme.MaterialComponents.BottomSheetDialog">
@@ -30,5 +37,19 @@
     <style name="LoginButtonShapeAppearance" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerRadius">16dp</item>
+    </style>
+    
+    <style name="Widget.Custom.NavigationView" parent="Widget.Design.NavigationView">
+        <item name="itemIconTint">?attr/colorStateNavigationItem</item>
+        <item name="itemTextAppearance">@style/TextAppearance.Custom.Navigation.Item</item>
+        <item name="itemTextColor">?attr/colorStateNavigationItem</item>
+        <item name="itemBackground">?attr/drawableNavigationItemBackground</item>
+    </style>
+    <style name="TextAppearance.Custom.Navigation.Item" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/athens_gray</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="Theme.NavigationView" parent="AppTheme">
+        <item name="colorControlHighlight">@android:color/transparent</item>
     </style>
 </resources>

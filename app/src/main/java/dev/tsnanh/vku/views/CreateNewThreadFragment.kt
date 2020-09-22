@@ -22,7 +22,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -38,6 +37,7 @@ import dev.tsnanh.vku.databinding.FragmentCreateNewThreadBinding
 import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
 import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.NetworkReply
+import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.*
 import dev.tsnanh.vku.viewmodels.CreateNewThreadViewModel
 import dev.tsnanh.vku.viewmodels.MainViewModel
@@ -180,8 +180,44 @@ class CreateNewThreadFragment : Fragment() {
             }
         }
 
-        viewModel.forums.asLiveData().observe(viewLifecycleOwner) { forums ->
-            forums?.let {
+        viewModel.forums.observe(viewLifecycleOwner) { resource ->
+            resource?.let {
+                when (resource) {
+                    is Resource.Loading -> {
+                        binding.layoutForum.hint =
+                            requireContext().getString(R.string.text_loading_forums)
+                    }
+                    is Resource.Error -> {
+                        binding.layoutForum.error = "Load failed!"
+                    }
+                    is Resource.Success -> {
+                        val forums = resource.data ?: emptyList()
+                        if (forums.isNotEmpty()) {
+                            binding.layoutForum.hint = requireContext().getString(R.string.text_forum)
+                            val forumsTitle = forums.map { forum ->
+                                forum.title
+                            }
+                            val arrAdapter =
+                                ArrayAdapter(
+                                    requireContext(),
+                                    R.layout.dropdown_menu_popup_item,
+                                    forumsTitle
+                                )
+
+                            binding.forum.setOnItemClickListener { _, _, i, _ ->
+                                binding.forum.tag = forums[i].id
+                            }
+
+                            binding.forum.setAdapter(arrAdapter)
+                        } else {
+                            binding.layoutForum.isEnabled = false
+                            binding.layoutForum.hint = requireContext()
+                                .getString(R.string.text_application_has_no_forums)
+                        }
+                    }
+                }
+            }
+            /*forums?.let {
                 binding.layoutForum.hint = "Forums"
                 if (forums.isNotEmpty()) {
                     val forumsTitle = forums.map { forum ->
@@ -204,6 +240,13 @@ class CreateNewThreadFragment : Fragment() {
                     binding.layoutForum.hint = requireContext()
                         .getString(R.string.text_application_has_no_forums)
                 }
+            }*/
+        }
+
+        viewModel.forumSaveState?.observe(viewLifecycleOwner) { forumBundle ->
+            with(binding) {
+                forum.tag = forumBundle["forumId"] as? String
+                forum.setText(forumBundle["forumTitle"] as? String)
             }
         }
 
@@ -272,7 +315,7 @@ class CreateNewThreadFragment : Fragment() {
                     if (data.clipData != null) {
                         // check if user has selected more than 5 images
                         if (data.clipData!!.itemCount > 5) {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.msg_pick_image_canceled),
                                 requireContext().getString(R.string.text_hide)
@@ -288,7 +331,7 @@ class CreateNewThreadFragment : Fragment() {
                         if (pickerAdapter.currentList.size < 5) {
                             data.data?.let { it1 -> listImage.add(it1) }
                         } else {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.msg_pick_image_canceled),
                                 requireContext().getString(R.string.text_hide)
@@ -308,7 +351,7 @@ class CreateNewThreadFragment : Fragment() {
                 data?.let {
                     if (data.clipData != null) {
                         if (data.clipData!!.itemCount + pickerAdapter.currentList.size > 5) {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.msg_pick_image_canceled),
                                 requireContext().getString(R.string.text_hide)
@@ -323,7 +366,7 @@ class CreateNewThreadFragment : Fragment() {
                         if (pickerAdapter.currentList.size < 5) {
                             data.data?.let { it1 -> listImage.add(it1) }
                         } else {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.msg_pick_image_canceled),
                                 requireContext().getString(R.string.text_hide)
@@ -336,7 +379,7 @@ class CreateNewThreadFragment : Fragment() {
                     pickerAdapter.submitList(list)
                 }
             } else {
-                showSnackbarWithAction(
+                showSnackbar(
                     requireView(),
                     requireContext().getString(R.string.msg_pick_image_canceled),
                     requireContext().getString(R.string.text_hide)
@@ -395,5 +438,16 @@ class CreateNewThreadFragment : Fragment() {
         pickerAdapter.submitList(savedInstanceState?.getParcelableArrayList(Constants.URIS_KEY))
         super.onViewStateRestored(savedInstanceState)
     }*/
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val bundle = Bundle().apply {
+            putString("forumId", binding.forum.tag?.toString())
+            putString("forumTitle", binding.forum.text.toString())
+        }
+
+        outState.putBundle("forum", bundle)
+    }
 
 }

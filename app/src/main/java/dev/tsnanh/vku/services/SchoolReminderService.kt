@@ -10,7 +10,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
-import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.entities.Subject
 import dev.tsnanh.vku.domain.usecases.RetrieveUserTimetableUseCase
 import dev.tsnanh.vku.receivers.SchoolReminderReceiver
@@ -19,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.random.Random
@@ -62,10 +60,10 @@ class SchoolReminderService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        GlobalScope.launch(Dispatchers.IO) {
+        GlobalScope.launch {
             try {
                 val context = this@SchoolReminderService
-                val email = intent?.getStringExtra("email")
+                val email = withContext(Dispatchers.IO) { intent?.getStringExtra("email") }
 
                 // return part of the day, 0 -> 11 Morning, 12 -> 18 Afternoon, 19 -> 23 Night
                 val partOfTheDay = when (Calendar.getInstance()[Calendar.HOUR_OF_DAY]) {
@@ -76,67 +74,59 @@ class SchoolReminderService : Service() {
                     else -> throw IllegalArgumentException("Wrong hour")
                 }
                 // [END]
-                when (val result =
-                    withContext(Dispatchers.IO) {
-                        email?.let { retrieveTimetableUseCase.invoke(it) }
-                    }) {
-                    is Resource.Error -> Timber.d(result.message)
-                    is Resource.Success -> {
-                        // Get current day of week
-                        val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
+                val result = retrieveTimetableUseCase.invoke(email!!)
+                // Get current day of week
+                val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
 
-                        // Filter current day only
-                        val list = result.data!!.filter { subject ->
-                            dayOfWeekFilter(subject, dayOfWeek)
-                        }
+                // Filter current day only
+                val list = result.filter { subject ->
+                    dayOfWeekFilter(subject, dayOfWeek)
+                }
 
-                        if (list.isEmpty()) {
-                            // day off
-                            if (partOfTheDay == 0) {
-                                notificationManager?.sendSchoolReminderNotification(
-                                    Random.nextInt(),
-                                    context
-                                        .getString(R.string.title_notification_school_reminder_no_subject),
-                                    context
-                                        .getString(R.string.content_notification_school_reminder_no_subject),
-                                    null,
-                                    DAY_OFF_GROUP,
-                                    context
-                                )
-                            }
-                        } else {
-                            when (partOfTheDay) {
-                                // Morning
-                                0 -> notifyMorningSubjects(list, false)
-                                // Afternoon
-                                1 -> notifyAfternoonSubjects(list)
-                                2 -> notificationManager?.sendSchoolReminderNotification(
-                                    Random.nextInt(),
-                                    getString(R.string.title_school_reminder_how_is_your_day),
-                                    getString(R.string.text_good_evening),
-                                    null,
-                                    EVENING_GROUP,
-                                    context
-                                )
-                                3 -> when (val subjects =
-                                    email?.let { retrieveTimetableUseCase.invoke(it) }) {
-                                    is Resource.Success -> subjects.data?.let { allSubjects ->
-                                        val tomorrowSubjects = allSubjects.filter {
-                                            dayOfWeekFilter(
-                                                it,
-                                                when (val tomorrow =
-                                                    Calendar.getInstance()[Calendar.DAY_OF_WEEK]) {
-                                                    7 -> Calendar.SUNDAY
-                                                    else -> tomorrow + 1
-                                                }
-                                            )
-                                        }
-                                        notifyMorningSubjects(
-                                            tomorrowSubjects, true
-                                        )
+                if (list.isEmpty()) {
+                    // day off
+                    if (partOfTheDay == 0) {
+                        notificationManager?.sendSchoolReminderNotification(
+                            Random.nextInt(),
+                            context
+                                .getString(R.string.title_notification_school_reminder_no_subject),
+                            context
+                                .getString(R.string.content_notification_school_reminder_no_subject),
+                            null,
+                            DAY_OFF_GROUP,
+                            context
+                        )
+                    }
+                } else {
+                    when (partOfTheDay) {
+                        // Morning
+                        0 -> notifyMorningSubjects(list, false)
+                        // Afternoon
+                        1 -> notifyAfternoonSubjects(list)
+                        // Evening
+                        2 -> notificationManager?.sendSchoolReminderNotification(
+                            Random.nextInt(),
+                            getString(R.string.title_school_reminder_how_is_your_day),
+                            getString(R.string.text_good_evening),
+                            null,
+                            EVENING_GROUP,
+                            context
+                        )
+                        // Night
+                        3 -> {
+                            val tomorrowSubjects = result.filter {
+                                dayOfWeekFilter(
+                                    it,
+                                    when (val tomorrow =
+                                        Calendar.getInstance()[Calendar.DAY_OF_WEEK]) {
+                                        7 -> Calendar.SUNDAY
+                                        else -> tomorrow + 1
                                     }
-                                }
+                                )
                             }
+                            notifyMorningSubjects(
+                                tomorrowSubjects, true
+                            )
                         }
                     }
                 }
@@ -244,7 +234,7 @@ class SchoolReminderService : Service() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setAlarmApi23AndAbove(
         context: Context,
-        intent: Intent
+        intent: Intent,
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -300,26 +290,7 @@ class SchoolReminderService : Service() {
                 )
             }
             else -> {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendarMorning.timeInMillis + AlarmManager.INTERVAL_DAY,
-                    morningIntent
-                )
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendarAfternoon.timeInMillis + AlarmManager.INTERVAL_DAY,
-                    afternoonIntent
-                )
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendarEvening.timeInMillis + AlarmManager.INTERVAL_DAY,
-                    eveningIntent
-                )
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendarNight.timeInMillis + AlarmManager.INTERVAL_DAY,
-                    nightIntent
-                )
+                // Ignore
             }
         }
     }

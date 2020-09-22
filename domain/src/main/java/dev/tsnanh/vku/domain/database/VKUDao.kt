@@ -11,6 +11,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.domain.entities.Subject
+import dev.tsnanh.vku.domain.entities.Teacher
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -67,4 +68,7 @@ interface VKUDao {
      */
     @Query("SELECT * FROM subjects WHERE dayOfWeek = :dayOfWeek")
     fun getTimetableWithFilter(dayOfWeek: String): Flow<List<Subject>>
+//
+//    @Insert(entity = Teacher::class, onConflict = OnConflictStrategy.REPLACE)
+//    fun insertAllTeachers(vararg teacher: Teacher)
 }

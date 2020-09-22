@@ -16,25 +16,26 @@ interface NoticeRepo {
 class NoticeRepoImpl @Inject constructor() : NoticeRepo {
     override fun getAbsenceNotice(time: String): Flow<Resource<List<Absence>>> {
         return flow {
+            emit(Resource.Loading())
             try {
                 emit(
                     Resource.Success(VKUServiceApi.network.getAbsenceNotice(time = time))
                 )
             } catch (e: Exception) {
-                emit(dev.tsnanh.vku.domain.handler.ErrorHandler.handleError<List<Absence>>(e))
+                emit(Resource.Error(e))
             }
         }
     }
 
     override fun getMakeUpClass(time: String): Flow<Resource<List<MakeUpClass>>> {
         return flow {
+            emit(Resource.Loading())
             try {
                 emit(
                     Resource.Success(VKUServiceApi.network.getMakeUpClassNotice(time = time))
                 )
             } catch (e: Exception) {
-                emit(dev.tsnanh.vku.domain.handler.ErrorHandler.Companion.handleError<List<MakeUpClass>>(
-                    e))
+                emit(Resource.Error(e))
             }
         }
     }

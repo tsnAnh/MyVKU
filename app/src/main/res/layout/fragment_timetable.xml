@@ -14,14 +14,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/app_bar_with_logo" />
-
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -72,11 +70,17 @@
                     </com.google.android.material.chip.ChipGroup>
                 </HorizontalScrollView>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list_subjects"
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/swipe_to_refresh"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:listitem="@layout/item_subject" />
+                    android:layout_height="wrap_content">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/list_subjects"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/item_subject" />
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -88,6 +92,10 @@
             android:layout_gravity="center"
             app:layout_anchor="@id/nested_scroll_view"
             app:layout_anchorGravity="center" />
+
+        <include
+            android:id="@+id/layout_no_item"
+            layout="@layout/layout_no_item" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

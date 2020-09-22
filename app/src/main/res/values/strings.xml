@@ -144,8 +144,8 @@
     <string name="text_email_not_provided">Email not provided</string>
     <string name="text_notice_board">Notice Board</string>
     <string name="absence_class_name" translatable="false">Nghỉ %s ngày %s</string>
-    <string name="text_absence">Absence</string>
-    <string name="text_makeup_class">Make up class</string>
+    <string name="text_absences">Absences</string>
+    <string name="text_makeup_classes">Makeup classes</string>
     <string name="makeup_class_name" translatable="false">%s ngày %s</string>
     <string name="text_no_attachment">No Attachment</string>
     <string name="text_come_in_class">Come in class</string>
@@ -176,7 +176,14 @@
     <string name="text_minimum_title_length">Minimum title length is 10</string>
     <string name="text_share_via">Share via</string>
     <string name="text_attachment">Attachment</string>
-    <string name="text_deleteing_thread">Deleting %s...</string>
+    <string name="text_deleteing_thread">Deleting %s…</string>
     <string name="text_require_vku_email">You must use email vku.udn.vn in order to login into the application.</string>
     <string name="text_no_notifications">No Notifications</string>
+    <string name="text_no_news_here">There is no news here</string>
+    <string name="text_no_absences_here">There is no absences here</string>
+    <string name="text_no_makeup_class_here">There is no makeup classes here</string>
+    <string name="text_no_subjects_here">There is no subject here</string>
+    <string name="text_account">Account</string>
+    <string name="text_no_subject_today">There is no subjects today!</string>
+    <string name="text_no_subjects_tomorow">There is no subjects tomorrow!</string>
 </resources>

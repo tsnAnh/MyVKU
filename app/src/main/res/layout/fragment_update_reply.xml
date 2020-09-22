@@ -11,7 +11,7 @@
 
         <variable
             name="userPopulatedReply"
-            type="dev.tsnanh.vku.domain.entities.Reply" />
+            type="dev.tsnanh.vku.domain.entities.NetworkReply" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

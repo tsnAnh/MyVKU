@@ -6,25 +6,23 @@
 
 package dev.tsnanh.vku.utils
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
-import android.graphics.Bitmap
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.renderscript.Allocation
-import android.renderscript.Element
-import android.renderscript.RenderScript
-import android.renderscript.ScriptIntrinsicBlur
 import android.view.View
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.domain.entities.Subject
+import dev.tsnanh.vku.receivers.NotifyNewsReceiver
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -69,7 +67,7 @@ fun Subject.hasValidAlarm() = try {
 val String.isValidWeek: Boolean
     get() = length >= 3
 
-fun showSnackbarWithAction(
+fun showSnackbar(
     view: View,
     msg: String,
     actionButton: String? = null,
@@ -102,48 +100,10 @@ fun List<Uri>.toListStringUri(): List<String> {
     }
 }
 
-fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
-    observe(lifecycleOwner, object : Observer<T> {
-        override fun onChanged(t: T?) {
-            observer.onChanged(t)
-            removeObserver(this)
-        }
-    })
-}
-
-
 fun Context.isInternetAvailableApi23(): Boolean {
     val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
     return activeNetwork?.isConnectedOrConnecting == true
-}
-
-@WorkerThread
-fun blurBitmap(bitmap: Bitmap, applicationContext: Context): Bitmap {
-    lateinit var rsContext: RenderScript
-    try {
-
-        // Create the output bitmap
-        val output = Bitmap.createBitmap(
-            bitmap.width, bitmap.height, bitmap.config
-        )
-
-        // Blur the image
-        rsContext = RenderScript.create(applicationContext, RenderScript.ContextType.DEBUG)
-        val inAlloc = Allocation.createFromBitmap(rsContext, bitmap)
-        val outAlloc = Allocation.createTyped(rsContext, inAlloc.type)
-        val theIntrinsic = ScriptIntrinsicBlur.create(rsContext, Element.U8_4(rsContext))
-        theIntrinsic.apply {
-            setRadius(10f)
-            theIntrinsic.setInput(inAlloc)
-            theIntrinsic.forEach(outAlloc)
-        }
-        outAlloc.copyTo(output)
-
-        return output
-    } finally {
-        rsContext.finish()
-    }
 }
 
 fun String.unescapeJava(): String {
@@ -169,5 +129,31 @@ fun String.getTypeDrawable(): Int {
         "png", "jpg", "jpeg", "webp" -> R.drawable.image
         "pdf" -> R.drawable.pdf
         else -> R.drawable.file
+    }
+}
+
+fun AlarmManager.startNotifyNewsServicePeriodic(context: Context) {
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        9797,
+        Intent(context, NotifyNewsReceiver::class.java),
+        PendingIntent.FLAG_NO_CREATE
+    )
+
+    if (pendingIntent == null) {
+        val anotherPendingIntent = PendingIntent.getBroadcast(
+            context,
+            9797,
+            Intent(context, NotifyNewsReceiver::class.java),
+            PendingIntent.FLAG_NO_CREATE
+        )
+
+        val triggerAt = Calendar.getInstance().timeInMillis
+        setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            triggerAt,
+            triggerAt + 5000,
+            anotherPendingIntent
+        )
     }
 }

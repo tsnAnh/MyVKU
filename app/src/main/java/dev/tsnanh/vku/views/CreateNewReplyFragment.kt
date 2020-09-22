@@ -124,6 +124,7 @@ class CreateNewReplyFragment : Fragment() {
         viewModel.quotedReply(navArgs.quotedReplyId)?.observe(viewLifecycleOwner) {
             it?.let { replyResource ->
                 when (replyResource) {
+                    is Resource.Error -> Timber.e(replyResource.throwable)
                     is Resource.Success -> {
                         Timber.i("${replyResource.data}")
                         with(binding) {
@@ -238,7 +239,7 @@ class CreateNewReplyFragment : Fragment() {
                     if (data.clipData != null) {
                         // check if user has selected more than 5 images
                         if (data.clipData!!.itemCount > 5) {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.text_maximum_five_images),
                                 requireContext().getString(R.string.text_hide)
@@ -254,7 +255,7 @@ class CreateNewReplyFragment : Fragment() {
                         if (pickerAdapter.currentList.size < 5) {
                             data.data?.let { it1 -> listImage.add(it1) }
                         } else {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.text_maximum_five_images),
                                 requireContext().getString(R.string.text_hide)
@@ -274,7 +275,7 @@ class CreateNewReplyFragment : Fragment() {
                 data?.let {
                     if (data.clipData != null) {
                         if (data.clipData!!.itemCount + pickerAdapter.currentList.size > 5) {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.text_maximum_five_images),
                                 requireContext().getString(R.string.text_hide)
@@ -289,7 +290,7 @@ class CreateNewReplyFragment : Fragment() {
                         if (pickerAdapter.currentList.size < 5) {
                             data.data?.let { it1 -> listImage.add(it1) }
                         } else {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.text_maximum_five_images),
                                 requireContext().getString(R.string.text_hide)
@@ -302,7 +303,7 @@ class CreateNewReplyFragment : Fragment() {
                     pickerAdapter.submitList(list)
                 }
             } else {
-                showSnackbarWithAction(
+                showSnackbar(
                     requireView(),
                     requireContext().getString(R.string.msg_pick_image_canceled),
                     requireContext().getString(R.string.text_hide)

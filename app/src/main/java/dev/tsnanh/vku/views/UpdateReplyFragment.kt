@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -31,16 +32,17 @@ import dev.tsnanh.vku.adapters.ImageChooserClickListener
 import dev.tsnanh.vku.adapters.UpdateReplyImageAdapter
 import dev.tsnanh.vku.databinding.FragmentUpdateReplyBinding
 import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
+import dev.tsnanh.vku.domain.entities.NetworkReply
 import dev.tsnanh.vku.domain.entities.Reply
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.showSnackbarWithAction
+import dev.tsnanh.vku.utils.showSnackbar
 import dev.tsnanh.vku.viewmodels.UpdateReplyViewModel
 import timber.log.Timber
 
 @AndroidEntryPoint
 class UpdateReplyFragment : Fragment() {
-    private lateinit var viewModel: UpdateReplyViewModel
+    private val viewModel: UpdateReplyViewModel by viewModels()
     private lateinit var binding: FragmentUpdateReplyBinding
     private lateinit var pickerAdapter: ImageChooserAdapter
     private lateinit var imagesAdapter: UpdateReplyImageAdapter
@@ -144,7 +146,7 @@ class UpdateReplyFragment : Fragment() {
             }
         }
 
-        viewModel.reply(navArgs.replyId).observe<Resource<Reply>>(viewLifecycleOwner) { resource ->
+        viewModel.reply(navArgs.replyId).observe<Resource<NetworkReply>>(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Loading -> {
                 }
@@ -162,10 +164,13 @@ class UpdateReplyFragment : Fragment() {
                             )
                         }
 
-                        resource.data?.images?.let {
-                            Timber.d(it.toString())
-                            imagesAdapter.updateList(it)
+                        val list = resource.data?.images
+                        if (list != null) {
+                            Timber.d(list.toString())
+                            imagesAdapter.updateList(list)
                             viewModel.onPickerHasImage()
+                        } else {
+                            viewModel.onPickerHasNoImage()
                         }
                     }
                 }
@@ -232,7 +237,7 @@ class UpdateReplyFragment : Fragment() {
                     if (data.clipData != null) {
                         // check if user has selected more than 5 images
                         if (data.clipData!!.itemCount > 5) {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.msg_pick_image_canceled),
                                 requireContext().getString(R.string.text_hide)
@@ -248,7 +253,7 @@ class UpdateReplyFragment : Fragment() {
                         if (pickerAdapter.currentList.size < 5) {
                             data.data?.let { it1 -> listImage.add(it1) }
                         } else {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.msg_pick_image_canceled),
                                 requireContext().getString(R.string.text_hide)
@@ -268,7 +273,7 @@ class UpdateReplyFragment : Fragment() {
                 data?.let {
                     if (data.clipData != null) {
                         if (data.clipData!!.itemCount + pickerAdapter.currentList.size > 5) {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.msg_pick_image_canceled),
                                 requireContext().getString(R.string.text_hide)
@@ -283,7 +288,7 @@ class UpdateReplyFragment : Fragment() {
                         if (pickerAdapter.currentList.size < 5) {
                             data.data?.let { it1 -> listImage.add(it1) }
                         } else {
-                            showSnackbarWithAction(
+                            showSnackbar(
                                 requireView(),
                                 requireContext().getString(R.string.msg_pick_image_canceled),
                                 requireContext().getString(R.string.text_hide)
@@ -296,7 +301,7 @@ class UpdateReplyFragment : Fragment() {
                     pickerAdapter.submitList(list)
                 }
             } else {
-                showSnackbarWithAction(
+                showSnackbar(
                     requireView(),
                     requireContext().getString(R.string.msg_pick_image_canceled),
                     requireContext().getString(R.string.text_hide)

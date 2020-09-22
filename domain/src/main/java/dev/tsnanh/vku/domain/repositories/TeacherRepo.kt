@@ -2,7 +2,6 @@ package dev.tsnanh.vku.domain.repositories
 
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.domain.entities.Teacher
-import dev.tsnanh.vku.domain.handler.ErrorHandler
 import dev.tsnanh.vku.domain.network.VKUServiceApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,7 +17,7 @@ class TeacherRepoImpl @Inject constructor() : TeacherRepo {
         try {
             emit(Resource.Success(VKUServiceApi.network.getAllTeachers()))
         } catch (e: Exception) {
-            emit(ErrorHandler.handleError<List<Teacher>>(e))
+            emit(Resource.Error<List<Teacher>>(e))
         }
     }
 }

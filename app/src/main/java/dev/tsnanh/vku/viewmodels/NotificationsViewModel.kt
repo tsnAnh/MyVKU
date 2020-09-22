@@ -20,10 +20,15 @@ class NotificationsViewModel @ViewModelInject constructor(
     private val retrieveNotificationsUseCase: RetrieveNotificationsUseCase,
     private val client: GoogleSignInClient,
 ) : ViewModel() {
-    suspend fun getNotifications(): LiveData<Resource<List<Notification>>> {
-        val deferred = client.silentSignIn().asDeferred()
+    suspend fun getNotifications(): LiveData<Resource<List<Notification>>>? {
+        return try {
+            val deferred = client.silentSignIn().asDeferred()
 
-        val idToken = deferred.await().idToken!!
-        return retrieveNotificationsUseCase.getNotifications(idToken)
+            val idToken = deferred.await().idToken
+            idToken?.let { retrieveNotificationsUseCase.getNotifications(it) }
+        } catch (e: Exception) {
+            // Ignore
+            null
+        }
     }
 }

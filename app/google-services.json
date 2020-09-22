@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "880553460800-1n35ftrb19dof219jhcctupg82qlskjk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.tsnanh.vku",
+            "certificate_hash": "7856cfee8f3f5f785ccfc6328f4419f75be2cd76"
+          }
+        },
+        {
+          "client_id": "880553460800-ehf8htfrsujr1lf64bag586mrgm65bka.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.tsnanh.vku",
+            "certificate_hash": "9ab46e81b31da9824b63a88596a37b3b468322ac"
+          }
+        },
+        {
           "client_id": "880553460800-vn4gqhn1p6qqbg04e84fpqj2k7elp01l.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -19,8 +19,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
@@ -39,11 +41,12 @@ import dev.tsnanh.vku.domain.entities.News
 import dev.tsnanh.vku.receivers.AttachmentReceiver
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.CustomTabHelper
-import dev.tsnanh.vku.utils.showSnackbarWithAction
+import dev.tsnanh.vku.utils.showSnackbar
+import dev.tsnanh.vku.viewmodels.MainViewModel
 import dev.tsnanh.vku.viewmodels.PageNewsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
-import java.net.URLConnection
+import java.net.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -54,11 +57,14 @@ class PageNewsFragment : Fragment() {
     }
 
     private val viewModel: PageNewsViewModel by viewModels()
+    @ExperimentalCoroutinesApi
+    private val activityViewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentPageNewsBinding
     private val customTabHelper = CustomTabHelper()
     private lateinit var adapterNews: NewsAdapter
     private val attachmentReceiver = AttachmentReceiver()
     private lateinit var news: News
+    private var isNetworkAvailable = false
 
     @Inject
     lateinit var preferences: SharedPreferences
@@ -78,8 +84,13 @@ class PageNewsFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
+        with(binding.layoutNoItem) {
+            message.text = requireContext().getString(R.string.text_no_news_here)
+            image.setImageResource(R.drawable.ic_round_news_24)
+        }
+
         adapterNews = NewsAdapter(NewsClickListener(
-            viewClickListener = this::launchNews,
+            viewClickListener = ::launchNews,
             shareClickListener = { news ->
                 val intent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
@@ -91,15 +102,71 @@ class PageNewsFragment : Fragment() {
             }
         ))
 
-        binding.listNews.apply {
+        binding.list.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = adapterNews
         }
+
         viewModel.news
             .observe<List<News>>(viewLifecycleOwner) { result ->
-                adapterNews.submitList(result)
+                with(binding) {
+                    swipeToRefresh.isRefreshing = false
+                    progressBar.isVisible = false
+                }
+
+                if (result.isNotEmpty()) {
+                    adapterNews.submitList(result)
+                } else {
+                    binding.layoutNoItem.root.isVisible = false
+                }
             }
+
+        activityViewModel.connectivityLiveData.observe<Boolean>(viewLifecycleOwner) { available ->
+            if (available) {
+                isNetworkAvailable = true
+//                binding.progressBar.isVisible = true
+                viewModel.refresh()
+            } else {
+                isNetworkAvailable = false
+                view.post {
+                    showSnackbar(view,
+                        requireContext().getString(R.string.text_no_internet_connection))
+                }
+            }
+        }
+
+        binding.swipeToRefresh.setOnRefreshListener {
+            if (isNetworkAvailable) {
+                viewModel.refresh()
+            } else {
+                binding.swipeToRefresh.isRefreshing = false
+                showSnackbar(view,
+                    requireContext().getString(R.string.text_no_internet_connection))
+            }
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { t ->
+            when (t) {
+                is ConnectException -> view.post {
+                    showSnackbar(view,
+                        requireContext().getString(R.string.text_no_internet_connection))
+                }
+                is SocketException -> {
+                    showSnackbar(requireView(), "Da ngat ket noi")
+                }
+                is SocketTimeoutException -> {
+                    showSnackbar(requireView(),
+                        requireContext().getString(R.string.err_msg_request_timeout))
+                }
+                is UnknownHostException -> {
+                    binding.progressBar.isVisible = false
+                    showSnackbar(view, "Unknown host")
+                }
+                else -> Timber.e(t)
+            }
+            viewModel.clearError()
+        }
     }
 
     private fun downloadAndOpenFile(it: String) {
@@ -240,16 +307,15 @@ class PageNewsFragment : Fragment() {
                     }
                 }
             } else {
-                showSnackbarWithAction(binding.root, getString(R.string.text_no_attachment))
+                showSnackbar(binding.root, getString(R.string.text_no_attachment))
             }
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.RC_PERMISSION && resultCode == Activity.RESULT_OK) {
-            showSnackbarWithAction(
+            showSnackbar(
                 requireView(),
                 requireContext().getString(R.string.msg_permission_granted)
             )

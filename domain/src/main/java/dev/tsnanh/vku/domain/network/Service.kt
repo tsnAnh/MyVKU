@@ -146,7 +146,7 @@ interface VKUService {
      * @return UserPopulatedNetworkReply
      */
     @GET("/api/reply/{idReply}")
-    suspend fun getReplyById(@Path("idReply") id: String): Reply
+    suspend fun getReplyById(@Path("idReply") id: String): NetworkReply
 
     /**
      * Login

@@ -24,7 +24,7 @@ class NoticeViewHolder private constructor(
         with(binding) {
             when (notice) {
                 is Absence -> {
-                    noticeType.text = root.context.getString(R.string.text_absence)
+                    noticeType.text = root.context.getString(R.string.text_absences)
                     className.text = root.context.getString(
                         R.string.absence_class_name,
                         notice.className,
@@ -37,7 +37,7 @@ class NoticeViewHolder private constructor(
                     )
                 }
                 is MakeUpClass -> {
-                    noticeType.text = root.context.getString(R.string.text_makeup_class)
+                    noticeType.text = root.context.getString(R.string.text_makeup_classes)
                     className.text = root.context.getString(
                         R.string.makeup_class_name,
                         notice.className,

@@ -10,13 +10,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.adapters.NewsPagerAdapter
 import dev.tsnanh.vku.databinding.FragmentNewsBinding
+import dev.tsnanh.vku.viewmodels.MainViewModel
 import dev.tsnanh.vku.viewmodels.NewsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.math.abs
@@ -25,9 +29,11 @@ import kotlin.math.max
 private const val MIN_SCALE = 0.85f
 private const val MIN_ALPHA = 0.5f
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class NewsFragment : Fragment() {
     private val viewModel: NewsViewModel by viewModels()
+    private val activityViewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentNewsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +60,7 @@ class NewsFragment : Fragment() {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = viewModel
+            activityViewModel = activityViewModel
         }
 
         binding.pager.apply {
@@ -99,8 +106,8 @@ class NewsFragment : Fragment() {
         TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
             tab.text = when (position) {
                 0 -> requireContext().getString(R.string.text_news)
-                1 -> requireContext().getString(R.string.text_absence)
-                2 -> requireContext().getString(R.string.text_makeup_class)
+                1 -> requireContext().getString(R.string.text_absences)
+                2 -> requireContext().getString(R.string.text_makeup_classes)
                 else -> requireContext().getString(R.string.text_confession)
             }
         }.attach()

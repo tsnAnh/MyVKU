@@ -33,7 +33,7 @@ import dev.tsnanh.vku.databinding.ProgressDialogLayoutBinding
 import dev.tsnanh.vku.domain.entities.NetworkForumThread
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.showSnackbarWithAction
+import dev.tsnanh.vku.utils.showSnackbar
 import dev.tsnanh.vku.viewmodels.ThreadViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -104,7 +104,7 @@ class ThreadFragment : Fragment() {
                     is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
                     is Resource.Error -> {
                         Snackbar
-                            .make(requireView(), "${it.message}", Snackbar.LENGTH_LONG)
+                            .make(requireView(), "${it.throwable?.message}", Snackbar.LENGTH_LONG)
                             .show()
                         binding.progressBar.visibility = View.GONE
                     }
@@ -187,7 +187,7 @@ class ThreadFragment : Fragment() {
                     setTitle(requireContext().getString(R.string.text_are_u_sure))
                     setPositiveButton(requireContext().getString(R.string.text_ok)) { dialog, _ ->
                         viewModel.deleteThread(threadId = currentItemId, item.itemId)
-                        showSnackbarWithAction(requireView(),
+                        showSnackbar(requireView(),
                             requireContext().getString(R.string.text_deleteing_thread, titleThread))
                         dialog.dismiss()
                     }
@@ -213,7 +213,7 @@ class ThreadFragment : Fragment() {
             is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
             is Resource.Error -> {
                 Snackbar
-                    .make(requireView(), "${resource.message}", Snackbar.LENGTH_LONG)
+                    .make(requireView(), "${resource.throwable?.message}", Snackbar.LENGTH_LONG)
                     .show()
                 binding.progressBar.visibility = View.GONE
             }

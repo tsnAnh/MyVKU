@@ -12,19 +12,22 @@
         android:background="@color/background"
         tools:context=".views.ForumFragment">
 
-        <include layout="@layout/app_bar_with_logo" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_topics"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_to_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:transitionGroup="true"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/item_forum" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_topics"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_forum" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_new_thread"
@@ -44,16 +47,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
-            app:layout_anchor="@id/list_topics"
+            app:layout_anchor="@id/swipe_to_refresh"
             app:layout_anchorGravity="center" />
 
         <include
-            android:id="@+id/error_layout"
-            layout="@layout/layout_error" />
-
-        <include
-            android:id="@+id/no_forums_layout"
-            layout="@layout/layout_no_forums" />
+            android:id="@+id/layout_no_item"
+            layout="@layout/layout_no_item" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

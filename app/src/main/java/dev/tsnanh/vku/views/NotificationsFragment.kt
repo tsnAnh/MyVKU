@@ -62,7 +62,7 @@ class NotificationsFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.getNotifications()
-                .observe<Resource<List<Notification>>>(viewLifecycleOwner) { resource ->
+                ?.observe<Resource<List<Notification>>>(viewLifecycleOwner) { resource ->
                     fun toggleUI(progressBarVisibility: Boolean, errorLayoutVisibility: Boolean) {
                         binding.progressBar.isVisible = progressBarVisibility
                         binding.include.errorLayout.isVisible = errorLayoutVisibility

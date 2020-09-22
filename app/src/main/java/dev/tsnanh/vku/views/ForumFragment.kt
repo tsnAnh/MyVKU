@@ -16,8 +16,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -32,14 +30,20 @@ import dev.tsnanh.vku.adapters.ForumAdapter
 import dev.tsnanh.vku.adapters.ForumClickListener
 import dev.tsnanh.vku.databinding.FragmentForumBinding
 import dev.tsnanh.vku.domain.entities.NetworkForum
+import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
+import dev.tsnanh.vku.utils.showSnackbar
 import dev.tsnanh.vku.viewmodels.ForumViewModel
 import dev.tsnanh.vku.viewmodels.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.net.ConnectException
+import java.net.SocketException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
+@ExperimentalCoroutinesApi
+@Deprecated(message = "unused feature")
 @AndroidEntryPoint
 class ForumFragment : Fragment() {
 
@@ -97,17 +101,34 @@ class ForumFragment : Fragment() {
 
         binding.listTopics.adapter = adapter
 
-        lifecycleScope.launch {
-            viewModel.forums
-                .onStart { binding.progressBar.isVisible = true }
-                .catch { _ -> binding.errorLayout.root.isVisible = true }
-                .asLiveData()
-                .observe<List<NetworkForum>>(viewLifecycleOwner) { forums ->
-                    binding.progressBar.isVisible = false
-                    binding.errorLayout.root.isVisible = false
-                    binding.noForumsLayout.isVisible = forums.isEmpty()
-                    adapter.submitList(forums)
+        viewModel.forums.observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    with(binding) {
+                        progressBar.isVisible = true
+                        layoutNoItem.root.isVisible = false
+                        listTopics.isVisible = false
+                    }
                 }
+                is Resource.Error -> {
+                    viewModel.onError(resource.throwable)
+                }
+                is Resource.Success -> {
+                    with(binding) {
+                        listTopics.isVisible = true
+                        progressBar.isVisible = false
+                        layoutNoItem.root.isVisible = false
+                        swipeToRefresh.isRefreshing = false
+                        val forums = resource.data
+                        if (forums != null && forums.isNotEmpty()) {
+                            adapter.submitList(resource.data)
+                        } else {
+                            showLayout(requireContext().getString(R.string.text_application_has_no_forums),
+                                R.drawable.ic_round_forum_24)
+                        }
+                    }
+                }
+            }
         }
 
         viewModel.navigateToListThread.observe<Pair<NetworkForum, MaterialCardView>?>(
@@ -149,6 +170,65 @@ class ForumFragment : Fragment() {
                     binding.fabNewThread.hide()
                 }
             }
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { t ->
+            t?.let {
+                when (t) {
+                    is ConnectException -> {
+                        binding.progressBar.isVisible = false
+                        showLayout(requireContext().getString(R.string.text_no_internet_connection),
+                            R.drawable.ic_baseline_wifi_off_24)
+                        showSnackbar(requireView(), requireContext().getString(R.string.text_no_internet_connection))
+                    }
+                    is SocketTimeoutException -> {
+                        showSnackbar(requireView(), requireContext().getString(R.string.err_msg_request_timeout))
+                        showLayout(requireContext().getString(R.string.err_msg_request_timeout), R.drawable.sad)
+                    }
+                    is UnknownHostException -> {
+                        binding.progressBar.isVisible = false
+                        showLayout("Unknown host",
+                            R.drawable.sad)
+                        showSnackbar(view, "Unknown host")
+                    }
+                    is SocketException -> {
+                        showSnackbar(view, "Disconnected")
+                    }
+                    else -> {
+                        Timber.e(t)
+                        binding.swipeToRefresh.isRefreshing = false
+                        showLayout(requireContext().getString(R.string.text_something_went_wrong), R.drawable.sad)
+                    }
+                }
+                with(binding) {
+                    progressBar.isVisible = false
+                    swipeToRefresh.isVisible = false
+                }
+
+                binding.swipeToRefresh.isVisible = false
+                viewModel.clearError()
+            }
+        }
+
+        activityViewModel.connectivityLiveData.observe(viewLifecycleOwner) { available ->
+            if (available) {
+                viewModel.refresh()
+            }/* else {
+//                showLayout(requireContext().getString(R.string.text_no_internet_connection),
+//                    R.drawable.ic_baseline_wifi_off_24)
+            } */
+        }
+
+        binding.swipeToRefresh.setOnRefreshListener {
+            viewModel.refresh()
+        }
+    }
+
+    private fun showLayout(messageString: String, drawable: Int) {
+        with(binding.layoutNoItem) {
+            message.text = messageString
+            image.setImageResource(drawable)
+            root.isVisible = true
         }
     }
 }

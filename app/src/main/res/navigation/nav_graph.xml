@@ -180,4 +180,8 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/navigation_replies" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_attendance"
+        android:name="dev.tsnanh.vku.views.AttendanceFragment"
+        android:label="@string/text_attendance" />
 </navigation>

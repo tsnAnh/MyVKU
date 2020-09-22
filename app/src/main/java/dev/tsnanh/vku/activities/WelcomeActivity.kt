@@ -7,12 +7,8 @@ package dev.tsnanh.vku.activities
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
-import android.net.Network
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
@@ -23,9 +19,9 @@ import com.google.android.gms.common.SignInButton
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.vku.R
 import dev.tsnanh.vku.databinding.ActivityWelcomeBinding
+import dev.tsnanh.vku.utils.ConnectivityLiveData
 import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.isInternetAvailableApi23
-import dev.tsnanh.vku.utils.showSnackbarWithAction
+import dev.tsnanh.vku.utils.showSnackbar
 import dev.tsnanh.vku.viewmodels.LoginState.*
 import dev.tsnanh.vku.viewmodels.WelcomeViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -66,15 +62,13 @@ class WelcomeActivity : AppCompatActivity() {
             if (isNetworkAvailable) {
                 signIn()
             } else {
-                showSnackbarWithAction(binding.root,
+                showSnackbar(binding.root,
                     getString(R.string.text_no_internet_connection))
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerNetworkInfoCallback()
-        } else {
-            isNetworkAvailable = isInternetAvailableApi23()
+        ConnectivityLiveData(getSystemService()).observe(this) { available ->
+            isNetworkAvailable = available
         }
 
         viewModel.error.observe(this) { error ->
@@ -86,12 +80,12 @@ class WelcomeActivity : AppCompatActivity() {
             when (error) {
                 is HttpException -> {
                     when (error.code()) {
-                        403 -> showSnackbarWithAction(
+                        403 -> showSnackbar(
                             binding.root, getString(R.string.text_require_vku_email)
                         )
                     }
                 }
-                is ConnectException -> showSnackbarWithAction(
+                is ConnectException -> showSnackbar(
                     binding.root,
                     getString(R.string.text_no_internet_connection)
                 )
@@ -146,20 +140,5 @@ class WelcomeActivity : AppCompatActivity() {
                 Timber.e(e)
             }
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun registerNetworkInfoCallback() {
-        val connectivityManager = getSystemService<ConnectivityManager>()
-        connectivityManager?.registerDefaultNetworkCallback(object :
-            ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                isNetworkAvailable = true
-            }
-
-            override fun onLost(network: Network) {
-                isNetworkAvailable = false
-            }
-        })
     }
 }

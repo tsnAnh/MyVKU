@@ -76,7 +76,7 @@
     <string name="msg_no_image_selected">Không có ảnh nào được chọn!</string>
     <string name="text_something_went_wrong">Đã xảy ra lỗi. Vui lòng thử lại sau.</string>
     <string name="err_msg_socket_exception">Không thể tải được tin tức</string>
-    <string name="err_msg_request_timeout">Yêu cầu đã hết thời gian chờ!</string>
+    <string name="err_msg_request_timeout">Hết thời gian chờ!</string>
     <string name="text_uploading">Đang tải lên</string>
     <string name="msg_permission_granted">Đã được cho phép</string>
     <string name="msg_thread_creating">Chủ đề của bạn đang được khởi tạo…</string>
@@ -100,8 +100,8 @@
     <string name="text_message_to_all_subscribers">đã phản hồi trong một chủ đề mà bạn đang theo dõi!</string>
     <string name="text_update_reply">Cập nhật câu trả lời</string>
     <string name="text_update">Cập nhật</string>
-    <string name="text_absence">Báo nghỉ</string>
-    <string name="text_makeup_class">Học bù</string>
+    <string name="text_absences">Báo nghỉ</string>
+    <string name="text_makeup_classes">Học bù</string>
     <string name="text_notice_board">Bảng thông báo</string>
     <string name="text_email_not_provided">Email không được cung cấp</string>
     <string name="text_rate">Đánh giá</string>
@@ -141,5 +141,12 @@
     <string name="text_empty_reply_content">Nội dung trống</string>
     <string name="text_maximum_five_images">Tối đa 5 ảnh</string>
     <string name="text_minimum_title_length">Tiêu đề phải chứa ít nhất 10 kí tự</string>
-    <string name="text_no_notifications">Không có thông báo</string>
+    <string name="text_no_notifications">Chưa có thông báo</string>
+    <string name="text_no_news_here">Chưa có tin tức nào ở đây cả</string>
+    <string name="text_no_absences_here">Chưa có thông báo nghỉ nào ở đây cả</string>
+    <string name="text_no_makeup_class_here">Chưa có lớp học bù nào ở đây cả</string>
+    <string name="text_no_subjects_here">Không có tiết học nào ở đây cả</string>
+    <string name="text_account">Tài khoản</string>
+    <string name="text_no_subject_today">Không có tiết học nào trong hôm nay!</string>
+    <string name="text_no_subjects_tomorow">Không có tiết học nào vào ngày mai cả!</string>
 </resources>

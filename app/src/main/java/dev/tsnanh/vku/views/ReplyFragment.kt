@@ -27,7 +27,7 @@ import dev.tsnanh.vku.databinding.FragmentReplyBinding
 import dev.tsnanh.vku.domain.entities.ReplyContainer
 import dev.tsnanh.vku.domain.entities.Resource
 import dev.tsnanh.vku.utils.Constants
-import dev.tsnanh.vku.utils.showSnackbarWithAction
+import dev.tsnanh.vku.utils.showSnackbar
 import dev.tsnanh.vku.viewmodels.RepliesViewModel
 
 @AndroidEntryPoint
@@ -84,19 +84,26 @@ class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
             pageCount(navArgs.threadId).observe<Resource<ReplyContainer>>(viewLifecycleOwner) { result ->
                 when (result) {
                     is Resource.Success -> {
-                        val adapter = ListRepliesPagerAdapter(
-                            this@ReplyFragment,
-                            navArgs.threadId,
-                            result.data!!.totalPages
-                        )
-                        binding.viewPager.adapter = adapter
+                        val list = result.data
+                        if (list != null) {
+                            val adapter = ListRepliesPagerAdapter(
+                                this@ReplyFragment,
+                                navArgs.threadId,
+                                list.totalPages
+                            )
+                            binding.viewPager.adapter = adapter
 
-                        binding.viewPager.currentItem = if (navArgs.hasCreatedReply) {
-                            adapter.itemCount
-                        } else {
-                            0
+                            binding.viewPager.currentItem = if (navArgs.hasCreatedReply) {
+                                adapter.itemCount
+                            } else {
+                                0
+                            }
                         }
                     }
+                    is Resource.Error -> {
+
+                    }
+                    is Resource.Loading -> {}
                 }
             }
         }
@@ -137,7 +144,7 @@ class ReplyFragment : Fragment(), Toolbar.OnMenuItemClickListener {
                 true
             }
             else -> {
-                showSnackbarWithAction(requireView(),
+                showSnackbar(requireView(),
                     requireContext().getString(R.string.text_something_went_wrong))
                 true
             }

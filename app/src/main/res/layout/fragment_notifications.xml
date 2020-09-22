@@ -21,8 +21,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
-        <include layout="@layout/app_bar_with_logo" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_notifications"
             android:layout_width="match_parent"

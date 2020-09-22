@@ -97,7 +97,7 @@ class CreateNewReplyWorker @WorkerInject constructor(
                         )
                     } catch (e: Exception) {
                         // TODO: 18/07/2020 delete threads when create reply fail
-                        Resource.Error<News>("failToCreateReply").also {
+                        Resource.Error<News>(e).also {
                             Result.failure()
                         }
                     }

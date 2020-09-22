@@ -40,7 +40,7 @@ object Libraries {
         const val glideVersion = "4.11.0"
         const val retrofitVersion = "2.9.0"
         const val workManagerVersion = "2.4.0"
-        const val materialVersion = "1.2.0"
+        const val materialVersion = "1.2.1"
         const val hiltDagger = "2.28-alpha"
         const val hiltJetpack = "1.0.0-alpha01"
         const val paging3Version = "3.0.0-alpha05"
@@ -82,12 +82,11 @@ object Libraries {
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
     const val retrofitConverterMoshi =
         "com.squareup.retrofit2:converter-moshi:${Versions.retrofitVersion}"
-    const val moshiKotlin = "com.squareup.moshi:moshi-kotlin:1.9.3"
-    const val moshiKotlinCodeGen = "com.squareup.moshi:moshi-kotlin-codegen:1.9.3"
+    const val moshiKotlin = "com.squareup.moshi:moshi-kotlin:1.10.0"
+    const val moshiKotlinCodeGen = "com.squareup.moshi:moshi-kotlin-codegen:1.10.0"
     const val workManager = "androidx.work:work-runtime-ktx:${Versions.workManagerVersion}"
     const val androidTestWorkManager = "androidx.work:work-testing:${Versions.workManagerVersion}"
     const val material = "com.google.android.material:material:${Versions.materialVersion}"
-    const val firebaseAuthKtx = "com.google.firebase:firebase-auth-ktx:19.3.2"
     const val androidxBrowser = "androidx.browser:browser:1.2.0"
     const val flexbox = "com.google.android:flexbox:2.0.1"
     const val timber = "com.jakewharton.timber:timber:4.7.1"
@@ -126,6 +125,6 @@ object TestLibraries {
 }
 
 object Version {
-    const val name = "0.2.0-dev02"
+    const val name = "0.2.1-dev01"
     const val code = 1
 }

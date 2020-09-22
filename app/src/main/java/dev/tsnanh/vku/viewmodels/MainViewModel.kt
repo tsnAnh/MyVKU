@@ -6,8 +6,6 @@ package dev.tsnanh.vku.viewmodels
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.content.getSystemService
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
@@ -23,8 +21,6 @@ import dev.tsnanh.vku.domain.entities.ForumThread
 import dev.tsnanh.vku.domain.entities.LoginBody
 import dev.tsnanh.vku.domain.entities.NetworkReply
 import dev.tsnanh.vku.domain.usecases.LoginUseCase
-import dev.tsnanh.vku.domain.usecases.RetrieveNewsUseCase
-import dev.tsnanh.vku.domain.usecases.RetrieveUserTimetableLiveDataUseCase
 import dev.tsnanh.vku.utils.ConnectivityLiveData
 import dev.tsnanh.vku.utils.Constants
 import dev.tsnanh.vku.utils.toListStringUri
@@ -32,10 +28,8 @@ import dev.tsnanh.vku.workers.CreateNewReplyWorker
 import dev.tsnanh.vku.workers.CreateNewThreadWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.asDeferred
 import timber.log.Timber
@@ -43,8 +37,6 @@ import timber.log.Timber
 @ExperimentalCoroutinesApi
 class MainViewModel @ViewModelInject constructor(
     @ApplicationContext context: Context,
-    private val retrieveNewsUseCase: RetrieveNewsUseCase,
-    private val retrieveUserTimetableLiveDataUseCase: RetrieveUserTimetableLiveDataUseCase,
     private val workManager: WorkManager,
     moshi: Moshi,
     private val mGoogleSignInClient: GoogleSignInClient,
@@ -53,8 +45,10 @@ class MainViewModel @ViewModelInject constructor(
 ) : ViewModel() {
     private var isLoggedIn = false
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    val connectivityLiveData = ConnectivityLiveData(context.getSystemService())
+    val connectivityLiveData: ConnectivityLiveData = ConnectivityLiveData(context.getSystemService())
+
+    val confirmNavigate: LiveData<Int>? = savedStateHandle["confirmNavigate"]
+    val clickedItemId: LiveData<Int>? = savedStateHandle["clickedItemId"]
 
     private var _loginState = MutableLiveData(LoginState.UNAUTHENTICATED)
     val loginState: LiveData<LoginState>
@@ -79,7 +73,6 @@ class MainViewModel @ViewModelInject constructor(
         .build()
 
     // TODO: Create Notifications LiveData
-
     fun createNewThread(list: List<Uri>, thread: ForumThread, reply: NetworkReply) {
         mGoogleSignInClient.silentSignIn().addOnCompleteListener {
             if (it.isComplete) {
@@ -162,32 +155,48 @@ class MainViewModel @ViewModelInject constructor(
     fun silentSignIn() {
         if (isLoggedIn) return
         viewModelScope.launch {
-            val deferredIdToken = mGoogleSignInClient.silentSignIn().asDeferred()
-            val deferredInstanceId = FirebaseInstanceId.getInstance().instanceId.asDeferred()
+            try {
+                val deferredIdToken = mGoogleSignInClient.silentSignIn().asDeferred()
+                val deferredInstanceId = FirebaseInstanceId.getInstance().instanceId.asDeferred()
 
-            val idToken = deferredIdToken.await().idToken
-            val tokenFCM = deferredInstanceId.await().token
+                val idToken = deferredIdToken.await().idToken
+                val tokenFCM = deferredInstanceId.await().token
 
-            if (idToken != null) {
-                loginUseCase.execute(idToken, LoginBody(tokenFCM = tokenFCM))
-                    .flowOn(Dispatchers.IO)
-                    .onStart { _loginState.postValue(LoginState.AUTHENTICATING) }
-                    .catch { t ->
-                        _error.postValue(t)
-                        _loginState.postValue(LoginState.AUTHENTICATED)
-                    }
-                    .collect {
-                        _loginState.postValue(LoginState.AUTHENTICATED)
-                        isLoggedIn = true
-                    }
+                if (idToken != null) {
+                    loginUseCase.execute(idToken, LoginBody(tokenFCM = tokenFCM))
+                        .flowOn(Dispatchers.IO)
+                        .onStart { _loginState.postValue(LoginState.AUTHENTICATING) }
+                        .catch { t ->
+                            _error.postValue(t)
+                            _loginState.postValue(LoginState.UNAUTHENTICATED)
+                        }
+                        .collect {
+                            _loginState.postValue(LoginState.AUTHENTICATED)
+                            isLoggedIn = true
+                        }
+                }
+            } catch (e: ApiException) {
+                Timber.e(e)
+                println("SOmEtHinG wENt wROnG")
+                delay(5000)
+                if (e.statusCode == 4) {
+                    onSignInAgain()
+                }
+            } catch (ex: Exception) {
+                Timber.e(ex)
             }
         }
     }
 
-    fun refreshData(email: String) {
-        viewModelScope.launch {
-            retrieveNewsUseCase.refresh()
-            retrieveUserTimetableLiveDataUseCase.refresh(email)
-        }
+    private fun onSignInAgain() {
+        _signInAgain.value = true
     }
+
+    fun onSignInAgainComplete() {
+        _signInAgain.value = null
+    }
+
+    private val _signInAgain = MutableLiveData<Boolean?>()
+    val signInAgain: LiveData<Boolean?>
+        get() = _signInAgain
 }

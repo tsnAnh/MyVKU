@@ -83,7 +83,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity" />
+            android:name=".activities.MainActivity"
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>

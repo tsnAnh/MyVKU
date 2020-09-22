@@ -5,28 +5,34 @@
 package dev.tsnanh.vku.viewmodels
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.google.android.material.card.MaterialCardView
 import dev.tsnanh.vku.domain.entities.NetworkForum
 import dev.tsnanh.vku.domain.usecases.RetrieveForumsUseCase
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.*
 
 class ForumViewModel @ViewModelInject constructor(
-    private val retrieveForumsUseCase: RetrieveForumsUseCase
+    private val retrieveForumsUseCase: RetrieveForumsUseCase,
 ) : ViewModel() {
+    private val loadTrigger = MutableLiveData(Unit)
+
+    fun refresh() {
+        loadTrigger.value = Unit
+    }
+
     private val _navigateToListThread =
         MutableLiveData<Pair<NetworkForum, MaterialCardView>?>()
     val navigateToListThread: LiveData<Pair<NetworkForum, MaterialCardView>?>
         get() = _navigateToListThread
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
+    private val _error = MutableLiveData<Throwable?>()
+    val error: LiveData<Throwable?>
         get() = _error
 
-    val forums: Flow<List<NetworkForum>>
-        get() = retrieveForumsUseCase.execute()
+    val forums = loadTrigger.switchMap {
+        retrieveForumsUseCase.execute()
+    }
 
     fun onItemClick(forum: Pair<NetworkForum, MaterialCardView>) {
         _navigateToListThread.value = forum
@@ -34,5 +40,13 @@ class ForumViewModel @ViewModelInject constructor(
 
     fun onItemClicked() {
         _navigateToListThread.value = null
+    }
+
+    fun onError(t: Throwable?) {
+        _error.value = t
+    }
+
+    fun clearError() {
+        _error.value = null
     }
 }

@@ -18,7 +18,7 @@
 
         <variable
             name="reply"
-            type="dev.tsnanh.vku.domain.entities.Reply" />
+            type="dev.tsnanh.vku.domain.entities.NetworkReply" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -147,6 +147,7 @@
                                 android:layout_height="56dp"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginTop="16dp"
+                                app:setImage="@{ reply.uid.photoURL }"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:srcCompat="@tools:sample/avatars[1]" />
@@ -159,6 +160,7 @@
                                 android:layout_marginEnd="16dp"
                                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                                 android:textStyle="italic"
+                                android:text="@{ reply.uid.displayName }"
                                 app:layout_constraintBottom_toTopOf="@+id/datetime"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/user_avatar"

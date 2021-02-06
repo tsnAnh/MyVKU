@@ -7,11 +7,11 @@
 
         <variable
             name="subject"
-            type="dev.tsnanh.vku.domain.entities.Subject" />
+            type="dev.tsnanh.myvku.domain.entities.Subject" />
 
         <variable
             name="listener"
-            type="dev.tsnanh.vku.adapters.TimetableClickListener" />
+            type="dev.tsnanh.myvku.views.timetable.adapter.TimetableClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

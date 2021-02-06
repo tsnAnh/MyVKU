@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="dev.tsnanh.vku">
+    package="dev.tsnanh.myvku"
+    android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
@@ -14,19 +15,19 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name=".VKUApplication"
+        android:name=".MyVKUApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Theme.MyVKU"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="dev.tsnanh.vku.fileprovider"
+            android:authorities="dev.tsnanh.myvku.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -52,10 +53,10 @@
         <receiver
             android:name=".receivers.SchoolReminderReceiver"
             android:enabled="true"
-            android:exported="true"
+            android:exported="false"
             android:process=":remote">
             <intent-filter>
-                <action android:name="dev.tsnanh.vku.ACTION_SCHOOL_REMINDER" />
+                <action android:name="dev.tsnanh.myvku.ACTION_SCHOOL_REMINDER" />
             </intent-filter>
         </receiver>
         <receiver
@@ -67,24 +68,37 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".receivers.AttachmentReceiver" />
-        <receiver android:name=".receivers.SubjectReminderReceiver" />
 
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".views.settings.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".activities.NewsActivity" />
+        <activity android:name=".views.news.NewsActivity" />
         <activity
-            android:name=".activities.WelcomeActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:name=".views.main.MainActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter
+                android:autoVerify="true"
+                tools:targetApi="m">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="myvku.io"
+                    android:scheme="http" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.MainActivity"
-            android:windowSoftInputMode="adjustPan" />
+
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/actions" />
     </application>
 
 </manifest>

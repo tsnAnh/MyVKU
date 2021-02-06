@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_news"
+        android:icon="@drawable/ic_round_news_24"
+        android:title="@string/text_news" />
+    <item
+        android:id="@+id/navigation_timetable"
+        android:icon="@drawable/timetable_menu_item_icon_state"
+        android:title="@string/text_timetable" />
+    <item
+        android:id="@+id/navigation_notifications"
+        android:icon="@drawable/notification_menu_item_icon_state"
+        android:title="@string/text_notifications" />
+</menu>

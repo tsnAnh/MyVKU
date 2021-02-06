@@ -6,7 +6,7 @@
     <string name="app_name" translatable="false">My VKU</string>
     <string name="server_client_id" translatable="false">880553460800-avf5t7quhmfggpitm8adc83oqd2gojlo.apps.googleusercontent.com</string>
     <string name="elearning_mode" translatable="false">elearning</string>
-    <string name="firebase_forum_notification_channel" translatable="false">dev.tsnanh.vku.firebase_forum_notification_channel</string>
+    <string name="firebase_forum_notification_channel" translatable="false">dev.tsnanh.myvku.firebase_forum_notification_channel</string>
     <!-- Shared Preferences Key -->
     <string name="night_mode_key" translatable="false">night_mode_preferences</string>
     <string name="replies_per_page_key" translatable="false">replies_per_page_key</string>
@@ -19,7 +19,7 @@
     <string name="text_view">See</string>
     <string name="text_share">Share</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="preferences_key" translatable="false">dev.tsnanh.VKU</string>
+    <string name="preferences_key" translatable="false">dev.tsnanh.myvku</string>
     <string name="text_news">News</string>
     <string name="text_thong_bao_chung">General</string>
     <string name="text_thong_bao_ctsv">Student Work</string>
@@ -42,7 +42,7 @@
     <string name="text_more">More</string>
     <string name="toolbar_image_transition_key" translatable="false">toolbar_image</string>
     <string name="new_thread_channel_name" translatable="false">New Thread</string>
-    <string name="new_thread_channel_id" translatable="false">dev.tsnanh.vku.newthread.notification</string>
+    <string name="new_thread_channel_id" translatable="false">dev.tsnanh.myvku.newthread.notification</string>
     <string name="text_reply">Reply</string>
     <string name="text_new_reply">New Reply</string>
     <string name="text_cancel">Cancel</string>
@@ -80,7 +80,7 @@
     <string name="room">Room: </string>
     <string name="lesson">Lesson: </string>
     <string name="text_not_available">Not available</string>
-    <string name="school_reminder_channel_id" translatable="false">dev.tsnanh.vku.school_reminder</string>
+    <string name="school_reminder_channel_id" translatable="false">dev.tsnanh.myvku.school_reminder</string>
     <string name="school_reminder_channel_name" translatable="false">School Reminder</string>
     <string name="title_notification_school_reminder_no_subject" translatable="false">Hooray!</string>
     <string name="content_notification_school_reminder_no_subject">You have a day off today!</string>
@@ -115,7 +115,7 @@
     <string name="msg_alarm_set">Alarm set!</string>
     <string name="text_show_all_subjects">Show all subjects</string>
     <string name="text_show_all_subject_summary">Display all subjects in your timetable</string>
-    <string name="show_all_subjects_key" translatable="false">dev.tsnanh.vku.showallsubjects</string>
+    <string name="show_all_subjects_key" translatable="false">dev.tsnanh.myvku.showallsubjects</string>
 
     <string name="text_teacher_email" translatable="false">Email: %s</string>
     <string name="text_teacher_phone" translatable="false">Phone: %s</string>
@@ -186,4 +186,17 @@
     <string name="text_account">Account</string>
     <string name="text_no_subject_today">There is no subjects today!</string>
     <string name="text_no_subjects_tomorow">There is no subjects tomorrow!</string>
+    <string name="text_loading">Loading…</string>
+    <string name="text_use_system_settings">Use System Settings</string>
+    <string name="text_dark">Dark</string>
+    <string name="text_light">Light</string>
+    <string name="text_before_five_minutes">Before 5 minutes</string>
+    <string name="text_before_ten_minutes">Before 10 minutes</string>
+    <string name="text_before_twenty_minutes">Before 20 minutes</string>
+    <string name="text_before_thirty_minutes">Before 30 minutes</string>
+    <string name="text_before_sixty_minutes">Before 60 minutes</string>
+    <string name="school_reminder_time_key" translatable="false">dev.tsnanh.myvku.school.reminder.time</string>
+    <string name="school_reminder_time_title">School reminder time</string>
+    <string name="school_reminder_time_summary">Change when the app reminds you to go to school</string>
+    <string name="sign_in">Sign In</string>
 </resources>

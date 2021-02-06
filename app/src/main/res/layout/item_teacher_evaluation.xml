@@ -7,7 +7,7 @@
 
         <variable
             name="teacher"
-            type="dev.tsnanh.vku.domain.entities.Teacher" />
+            type="dev.tsnanh.myvku.domain.entities.Teacher" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

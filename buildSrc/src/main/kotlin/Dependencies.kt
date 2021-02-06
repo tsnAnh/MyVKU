@@ -1,8 +1,8 @@
-const val kotlinVersion = "1.4.0"
+const val kotlinVersion = "1.4.21-2"
 
 object BuildPlugins {
     object Versions {
-        const val buildToolsVersion = "4.0.1"
+        const val buildToolsVersion = "4.1.2"
         const val hiltDagger = "2.28-alpha"
     }
 
@@ -16,7 +16,7 @@ object BuildPlugins {
 
     const val androidApplication = "com.android.application"
     const val kotlinAndroid = "kotlin-android"
-    const val kotlinAndroidExtensions = "kotlin-android-extensions"
+    const val kotlinParcelize = "kotlin-parcelize"
     const val kotlinKapt = "kotlin-kapt"
     const val ktlint = "org.jlleitschuh.gradle.ktlint-idea"
     const val navigationSafeArgsKotlin = "androidx.navigation.safeargs.kotlin"
@@ -31,12 +31,12 @@ object AndroidSdk {
 
 object Libraries {
     private object Versions {
-        const val constraintLayout = "2.0.1"
-        const val fragmentVersion = "1.2.5"
+        const val constraintLayout = "2.0.4"
+        const val fragmentVersion = "1.3.0-rc01"
         const val lifecycleVersion = "2.2.0"
         const val savedStateVersion = "2.2.0"
-        const val navigation = "2.3.0"
-        const val roomVersion = "2.2.5"
+        const val navigation = "2.3.2"
+        const val roomVersion = "2.2.6"
         const val glideVersion = "4.11.0"
         const val retrofitVersion = "2.9.0"
         const val workManagerVersion = "2.4.0"
@@ -44,11 +44,12 @@ object Libraries {
         const val hiltDagger = "2.28-alpha"
         const val hiltJetpack = "1.0.0-alpha01"
         const val paging3Version = "3.0.0-alpha05"
-        const val desugarJDKLibsVersion = "1.0.10"
-        const val coroutineVersion = "1.3.9"
+        const val desugarJDKLibsVersion = "1.1.1"
+        const val coroutineVersion = "1.4.2"
+        const val activityVersion = "1.2.0-rc01"
     }
 
-    const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     const val fragment = "androidx.fragment:fragment-ktx:${Versions.fragmentVersion}"
     const val lifecycleExtensions =
         "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycleVersion}"
@@ -62,8 +63,9 @@ object Libraries {
         "androidx.lifecycle:lifecycle-viewmodel-savedstate:${Versions.savedStateVersion}"
     const val lifecycleCommonJava8 =
         "androidx.lifecycle:lifecycle-common-java8:${Versions.lifecycleVersion}"
+    const val lifecycleService = "androidx.lifecycle:lifecycle-service:${Versions.lifecycleVersion}"
     const val appcompat = "androidx.appcompat:appcompat:1.2.0"
-    const val coreKtx = "androidx.core:core-ktx:1.3.1"
+    const val coreKtx = "androidx.core:core-ktx:1.3.2"
     const val constraintLayout =
         "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
     const val legacySupport = "androidx.legacy:legacy-support-v4:1.0.0"
@@ -82,38 +84,43 @@ object Libraries {
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
     const val retrofitConverterMoshi =
         "com.squareup.retrofit2:converter-moshi:${Versions.retrofitVersion}"
-    const val moshiKotlin = "com.squareup.moshi:moshi-kotlin:1.10.0"
-    const val moshiKotlinCodeGen = "com.squareup.moshi:moshi-kotlin-codegen:1.10.0"
+    const val moshiKotlin = "com.squareup.moshi:moshi-kotlin:1.11.0"
+    const val moshiKotlinCodeGen = "com.squareup.moshi:moshi-kotlin-codegen:1.11.0"
     const val workManager = "androidx.work:work-runtime-ktx:${Versions.workManagerVersion}"
     const val androidTestWorkManager = "androidx.work:work-testing:${Versions.workManagerVersion}"
     const val material = "com.google.android.material:material:${Versions.materialVersion}"
-    const val androidxBrowser = "androidx.browser:browser:1.2.0"
+    const val androidxBrowser = "androidx.browser:browser:1.3.0"
     const val flexbox = "com.google.android:flexbox:2.0.1"
     const val timber = "com.jakewharton.timber:timber:4.7.1"
     const val viewPager2 = "androidx.viewpager2:viewpager2:1.0.0"
-    const val playServicesAuth = "com.google.android.gms:play-services-auth:18.1.0"
-    const val cloudMessaging = "com.google.firebase:firebase-messaging:20.2.4"
+    const val playServicesAuth = "com.google.android.gms:play-services-auth:19.0.0"
+    const val cloudMessaging = "com.google.firebase:firebase-messaging:21.0.1"
     const val collectionKtx = "androidx.collection:collection-ktx:1.1.0"
-    const val activityKtx = "androidx.activity:activity-ktx:1.1.0"
+    const val activityKtx = "androidx.activity:activity-ktx:${Versions.activityVersion}"
     const val recyclerView = "androidx.recyclerview:recyclerview:1.2.0-alpha04"
-    const val firebaseCrashlytics = "com.google.firebase:firebase-crashlytics:17.2.1"
-    const val firebaseAnalytics = "com.google.firebase:firebase-analytics-ktx:17.5.0"
+    const val firebaseCrashlytics = "com.google.firebase:firebase-crashlytics:17.3.0"
+    const val firebaseAnalytics = "com.google.firebase:firebase-analytics-ktx:18.0.1"
     const val hiltDagger = "com.google.dagger:hilt-android:${Versions.hiltDagger}"
-    const val hiltDaggerCompilerKapt = "com.google.dagger:hilt-android-compiler:${Versions.hiltDagger}"
-    const val hiltLifecycleViewModel = "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hiltJetpack}"
+    const val hiltDaggerCompilerKapt =
+        "com.google.dagger:hilt-android-compiler:${Versions.hiltDagger}"
+    const val hiltLifecycleViewModel =
+        "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hiltJetpack}"
     const val hiltCompilerAndroidx = "androidx.hilt:hilt-compiler:${Versions.hiltJetpack}"
     const val paging3Common = "androidx.paging:paging-runtime:${Versions.paging3Version}"
     const val paging3Test = "androidx.paging:paging-common:${Versions.paging3Version}"
-    const val desugarJDKLibs = "com.android.tools:desugar_jdk_libs:${Versions.desugarJDKLibsVersion}"
+    const val desugarJDKLibs =
+        "com.android.tools:desugar_jdk_libs:${Versions.desugarJDKLibsVersion}"
     const val hiltWorkManager = "androidx.hilt:hilt-work:${Versions.hiltJetpack}"
-    const val kotlinCoroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutineVersion}"
-    const val kotlinCoroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutineVersion}"
+    const val kotlinCoroutinesAndroid =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutineVersion}"
+    const val kotlinCoroutinesCore =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutineVersion}"
     const val kotlinCoroutinesGooglePlayServices = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.coroutineVersion}"
 }
 
 object TestLibraries {
     private object Versions {
-        const val junitVersion = "4.13"
+        const val junitVersion = "4.13.1"
         const val androidJunit = "1.1.2"
         const val espressoVersion = "3.3.0"
     }

@@ -8,26 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:880553460800:android:99d5ba1844c97fb5f80ba5",
+        "mobilesdk_app_id": "1:880553460800:android:b0e703270ae13d28f80ba5",
         "android_client_info": {
-          "package_name": "dev.tsnanh.vku"
+          "package_name": "dev.tsnanh.myvku"
         }
       },
       "oauth_client": [
         {
-          "client_id": "880553460800-1n35ftrb19dof219jhcctupg82qlskjk.apps.googleusercontent.com",
+          "client_id": "880553460800-20do0frvqmaikgbg8m5qi9vnciku4kbp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "dev.tsnanh.vku",
+            "package_name": "dev.tsnanh.myvku",
             "certificate_hash": "7856cfee8f3f5f785ccfc6328f4419f75be2cd76"
-          }
-        },
-        {
-          "client_id": "880553460800-ehf8htfrsujr1lf64bag586mrgm65bka.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "dev.tsnanh.vku",
-            "certificate_hash": "9ab46e81b31da9824b63a88596a37b3b468322ac"
           }
         },
         {
@@ -44,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "880553460800-avf5t7quhmfggpitm8adc83oqd2gojlo.apps.googleusercontent.com",
+              "client_id": "880553460800-t2oumd035pjhgr4ehsddjt04s0m60lcn.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

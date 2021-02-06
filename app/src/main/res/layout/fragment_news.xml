@@ -10,17 +10,16 @@
 
         <variable
             name="viewModel"
-            type="dev.tsnanh.vku.viewmodels.NewsViewModel" />
+            type="dev.tsnanh.myvku.views.news.NewsViewModel" />
 
-        <variable
-            name="activityViewModel"
-            type="dev.tsnanh.vku.viewmodels.MainViewModel" />
     </data>
 
     <com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:backgroundTint="@color/background"
+        android:fitsSystemWindows="true"
+        android:transitionGroup="false">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -28,9 +27,46 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/background"
             android:elevation="0dp"
-            android:transitionGroup="true"
+            android:transitionGroup="false"
             app:elevation="0dp"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:transitionGroup="false"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:titleEnabled="false"
+                app:toolbarId="@id/toolbar">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/actionBarSize"
+                    android:elevation="0dp"
+                    android:gravity="center"
+                    android:transitionGroup="false"
+                    app:buttonGravity="center_vertical"
+                    app:contentInsetStart="0dp">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="4dp"
+                        app:srcCompat="@drawable/vku_logo_official" />
+
+                    <ImageView
+                        android:id="@+id/avatar"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="end"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                </com.google.android.material.appbar.MaterialToolbar>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
@@ -41,8 +77,8 @@
                 app:tabGravity="start"
                 app:tabIndicatorFullWidth="false"
                 app:tabMode="scrollable" />
-
         </com.google.android.material.appbar.AppBarLayout>
+
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/pager"

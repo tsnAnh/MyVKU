@@ -10,11 +10,11 @@
 
         <variable
             name="news"
-            type="dev.tsnanh.vku.domain.entities.News" />
+            type="dev.tsnanh.myvku.domain.entities.News" />
 
         <variable
             name="clickListener"
-            type="dev.tsnanh.vku.adapters.NewsClickListener" />
+            type="dev.tsnanh.myvku.adapters.NewsClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

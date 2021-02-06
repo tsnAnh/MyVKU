@@ -18,18 +18,15 @@
             android:summary="@string/text_night_mode_summary"
             android:title="@string/text_night_mode" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/text_forum"
-        app:enabled="false">
-
+    <PreferenceCategory android:title="@string/text_school_remider">
         <ListPreference
-            android:defaultValue="10"
-            android:dialogIcon="@drawable/ic_round_pages_24"
-            android:entries="@array/reply_limit_entries"
-            android:entryValues="@array/reply_limit_values"
-            android:icon="@drawable/ic_round_pages_24"
-            android:key="@string/replies_per_page_key"
-            android:summary="@string/text_summary_replies_per_page"
-            android:title="@string/text_replies_per_page" />
+            android:defaultValue="30"
+            android:entries="@array/school_reminder_time_entries"
+            android:entryValues="@array/school_reminder_time_values"
+            android:icon="@drawable/ic_round_school_black_24"
+            android:key="@string/school_reminder_time_key"
+            android:summary="@string/school_reminder_time_summary"
+            android:title="@string/school_reminder_time_title"
+            app:dialogIcon="@drawable/ic_round_school_black_24" />
     </PreferenceCategory>
 </PreferenceScreen>

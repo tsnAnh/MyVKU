@@ -9,46 +9,17 @@
     app:startDestination="@id/navigation_news">
 
     <fragment
-        android:id="@+id/navigation_forum"
-        android:name="dev.tsnanh.vku.views.ForumFragment"
-        android:label="@string/text_forum"
-        tools:layout="@layout/fragment_forum">
-        <action
-            android:id="@+id/action_navigation_forum_to_navigation_thread"
-            app:destination="@id/navigation_thread" />
-        <action
-            android:id="@+id/action_navigation_forum_to_navigation_new_thread"
-            app:destination="@id/navigation_new_thread" />
-    </fragment>
-    <fragment
         android:id="@+id/navigation_news"
-        android:name="dev.tsnanh.vku.views.NewsFragment"
+        android:name="dev.tsnanh.myvku.views.news.NewsFragment"
         android:label="@string/text_news"
         tools:layout="@layout/fragment_news">
         <action
             android:id="@+id/action_navigation_news_to_activity_news"
             app:destination="@id/activity_news" />
     </fragment>
-    <fragment
-        android:id="@+id/navigation_more"
-        android:name="dev.tsnanh.vku.views.MoreFragment"
-        android:label="@string/text_more">
-        <action
-            android:id="@+id/activity_settings"
-            app:destination="@id/activity_settings" />
-        <action
-            android:id="@+id/action_navigation_more_to_navigation_welcome"
-            app:destination="@id/navigation_welcome"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/navigation_welcome"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_navigation_more_to_navigation_teacher_evaluation"
-            app:destination="@id/navigation_teacher_evaluation" />
-    </fragment>
     <activity
         android:id="@+id/activity_news"
-        android:name="dev.tsnanh.vku.activities.NewsActivity"
+        android:name="dev.tsnanh.myvku.views.news.NewsActivity"
         tools:layout="@layout/activity_news">
         <argument
             android:name="url"
@@ -58,130 +29,22 @@
             app:argType="string" />
     </activity>
     <fragment
-        android:id="@+id/navigation_new_thread"
-        android:name="dev.tsnanh.vku.views.CreateNewThreadFragment"
-        android:label="@string/text_new_thread">
-        <argument
-            android:name="forumId"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="forumTitle"
-            app:argType="string"
-            app:nullable="true" />
-        <action
-            android:id="@+id/action_navigation_new_thread_to_navigation_replies"
-            app:destination="@id/navigation_replies" />
-    </fragment>
-    <fragment
-        android:id="@+id/navigation_thread"
-        android:name="dev.tsnanh.vku.views.ThreadFragment"
-        android:label="ThreadFragment">
-        <argument
-            android:name="id"
-            app:argType="string" />
-        <argument
-            android:name="title"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_navigation_thread_to_navigation_replies"
-            app:destination="@id/navigation_replies" />
-        <action
-            android:id="@+id/action_navigation_thread_to_navigation_new_thread"
-            app:destination="@id/navigation_new_thread" />
-    </fragment>
-    <fragment
         android:id="@+id/navigation_timetable"
-        android:name="dev.tsnanh.vku.views.TimetableFragment"
+        android:name="dev.tsnanh.myvku.views.timetable.TimetableFragment"
         android:label="Timetable" />
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="dev.tsnanh.vku.views.NotificationsFragment"
+        android:name="dev.tsnanh.myvku.views.notification.NotificationsFragment"
         android:label="@string/text_notification" />
-    <fragment
-        android:id="@+id/navigation_replies"
-        android:name="dev.tsnanh.vku.views.ReplyFragment"
-        android:label="Replies">
-        <argument
-            android:name="threadId"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_navigation_replies_to_navigation_image_viewer"
-            app:destination="@id/navigation_image_viewer" />
-        <action
-            android:id="@+id/action_navigation_replies_to_newReplyFragment"
-            app:destination="@id/navigation_new_reply" />
-        <argument
-            android:name="hasCreatedReply"
-            android:defaultValue="false"
-            app:argType="boolean" />
-        <action
-            android:id="@+id/action_navigation_replies_to_navigation_update_reply"
-            app:destination="@id/navigation_update_reply" />
-    </fragment>
-    <fragment
-        android:id="@+id/navigation_image_viewer"
-        android:name="dev.tsnanh.vku.views.ImageViewerFragment"
-        android:label="ImageViewerFragment">
-        <argument
-            android:name="urls"
-            app:argType="string[]" />
-        <argument
-            android:name="position"
-            app:argType="integer" />
-    </fragment>
     <activity
         android:id="@+id/activity_settings"
-        android:name="dev.tsnanh.vku.activities.SettingsActivity"
+        android:name="dev.tsnanh.myvku.views.settings.SettingsActivity"
         android:label="@string/title_activity_settings" />
-    <activity
-        android:id="@+id/navigation_welcome"
-        android:name="dev.tsnanh.vku.activities.WelcomeActivity"
-        android:label="WelcomeActivity" />
     <fragment
         android:id="@+id/navigation_teacher_evaluation"
-        android:name="dev.tsnanh.vku.views.TeacherEvaluationFragment" />
-    <fragment
-        android:id="@+id/navigation_new_reply"
-        android:name="dev.tsnanh.vku.views.CreateNewReplyFragment"
-        android:label="NewReplyFragment">
-        <argument
-            android:name="threadId"
-            app:argType="string" />
-        <argument
-            android:name="quotedReplyId"
-            app:argType="string"
-            app:nullable="true" />
-        <action
-            android:id="@+id/action_newReplyFragment_to_navigation_replies"
-            app:destination="@id/navigation_replies"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/navigation_replies" />
-    </fragment>
-    <fragment
-        android:id="@+id/navigation_list_replies"
-        android:name="dev.tsnanh.vku.views.ListRepliesFragment"
-        android:label="ListRepliesFragment">
-        <action
-            android:id="@+id/action_navigation_list_replies_to_navigation_new_reply"
-            app:destination="@id/navigation_new_reply" />
-    </fragment>
-    <fragment
-        android:id="@+id/navigation_update_reply"
-        android:name="dev.tsnanh.vku.views.UpdateReplyFragment"
-        android:label="fragment_update_reply"
-        tools:layout="@layout/fragment_update_reply">
-        <argument
-            android:name="replyId"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_navigation_update_reply_to_navigation_replies"
-            app:destination="@id/navigation_replies"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/navigation_replies" />
-    </fragment>
+        android:name="dev.tsnanh.myvku.views.teacherevaluation.TeacherEvaluationFragment" />
     <fragment
         android:id="@+id/navigation_attendance"
-        android:name="dev.tsnanh.vku.views.AttendanceFragment"
+        android:name="dev.tsnanh.myvku.views.attendance.AttendanceFragment"
         android:label="@string/text_attendance" />
 </navigation>

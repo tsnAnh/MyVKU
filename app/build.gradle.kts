@@ -6,7 +6,7 @@ val ktlint by configurations.creating
 plugins {
     id(BuildPlugins.androidApplication)
     id(BuildPlugins.kotlinAndroid)
-    id(BuildPlugins.kotlinAndroidExtensions)
+    id(BuildPlugins.kotlinParcelize)
     id(BuildPlugins.kotlinKapt)
     id(BuildPlugins.ktlint)
     id(BuildPlugins.navigationSafeArgsKotlin)
@@ -18,10 +18,10 @@ apply(plugin = "name.remal.check-dependency-updates")
 
 android {
     compileSdkVersion(AndroidSdk.compile)
-    buildToolsVersion = "30.0.2"
+    buildToolsVersion = "30.0.3"
 
     defaultConfig {
-        applicationId = "dev.tsnanh.vku"
+        applicationId = "dev.tsnanh.myvku"
         minSdkVersion(AndroidSdk.min)
         targetSdkVersion(AndroidSdk.target)
         versionCode = Version.code
@@ -43,13 +43,14 @@ android {
         dataBinding = true
     }
     compileOptions {
-        coreLibraryDesugaringEnabled = true
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
 }
 
@@ -57,13 +58,13 @@ dependencies {
     implementation(fileTree("dir" to "libs", "include" to arrayOf("*.jar")))
     implementation(project(":domain"))
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-extensions:2.1.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0")
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
 
     coreLibraryDesugaring(Libraries.desugarJDKLibs)
 
     implementation("androidx.gridlayout:gridlayout:1.0.0")
-    ktlint("com.pinterest:ktlint:0.38.1")
+    ktlint("com.pinterest:ktlint:0.40.0")
     implementation(Libraries.kotlinStdLib)
     implementation(Libraries.appcompat)
     implementation(Libraries.coreKtx)
@@ -75,6 +76,7 @@ dependencies {
     implementation(Libraries.lifecycleExtensions)
     implementation(Libraries.lifecycleViewModelKtx)
     implementation(Libraries.lifecycleRuntime)
+    implementation(Libraries.lifecycleService)
     implementation(Libraries.preferences)
     implementation(Libraries.lifecycleLiveData)
     implementation(Libraries.lifecycleViewModelSaveState)
@@ -136,6 +138,8 @@ dependencies {
     implementation(Libraries.kotlinCoroutinesCore)
     implementation(Libraries.kotlinCoroutinesAndroid)
     implementation(Libraries.kotlinCoroutinesGooglePlayServices)
+
+    implementation("org.apache.commons:commons-text:1.9")
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"
@@ -159,4 +163,8 @@ val ktlintFormat by tasks.creating(JavaExec::class) {
     classpath = ktlint
     main = "com.pinterest.ktlint.Main"
     args = listOf("-F", "src/**/*.kt")
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class) {
+    kotlinOptions.freeCompilerArgs.toMutableList().add("-Xuse-experimental=kotlin.Experimental")
 }

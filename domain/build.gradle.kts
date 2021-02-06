@@ -1,9 +1,10 @@
 plugins {
     id("com.android.library")
     id(BuildPlugins.kotlinAndroid)
-    id(BuildPlugins.kotlinAndroidExtensions)
+    id(BuildPlugins.kotlinParcelize)
     id(BuildPlugins.kotlinKapt)
 }
+
 android {
     compileSdkVersion(AndroidSdk.compile)
     buildToolsVersion = "30.0.2"

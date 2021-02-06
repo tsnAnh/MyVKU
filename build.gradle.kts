@@ -19,7 +19,7 @@ buildscript {
         classpath(BuildPlugins.googleServicesPlugin)
         classpath(BuildPlugins.ktlintPlugin)
         classpath("name.remal:gradle-plugins:1.0.199")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.2.0")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:2.4.1")
         classpath(BuildPlugins.daggerHiltPlugin)
 
         // NOTE: Do not place your application dependencies here; they belong

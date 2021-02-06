@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<actions>
+    <action intentName="actions.intent.SHOW_TODAY_SUBJECTS">
+        <fulfillment urlTemplate="http://myvku.io/today" />
+    </action>
+    <action intentName="actions.intent.SHOW_TOMORROW_SUBJECTS">
+        <fulfillment urlTemplate="http://myvku.io/tomorrow" />
+    </action>
+</actions>

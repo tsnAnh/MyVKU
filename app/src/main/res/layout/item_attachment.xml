@@ -9,7 +9,7 @@
             type="String" />
         <variable
             name="listener"
-            type="dev.tsnanh.vku.adapters.AttachmentClickListener" />
+            type="dev.tsnanh.myvku.views.news.attachment.adapter.AttachmentClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

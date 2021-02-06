@@ -7,7 +7,7 @@
 
         <variable
             name="notification"
-            type="dev.tsnanh.vku.domain.entities.Notification" />
+            type="dev.tsnanh.myvku.domain.entities.Notification" />
 
         <variable
             name="notiMessage"

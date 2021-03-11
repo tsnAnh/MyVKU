@@ -3,9 +3,9 @@ package dev.tsnanh.myvku.domain.entities
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 // A generic class that contains data and status about loading this data.
 sealed class State<T>(
@@ -23,68 +23,60 @@ sealed class State<T>(
     }
 }
 
-sealed class WorkResult<out T>(
-    val data: T? = null,
-    val message: String? = null
-) {
-    class Success<T>(data: T?) : WorkResult<T>(data)
-    class Error<T>(message: String, data: T? = null) : WorkResult<T>(data, message)
-}
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class LoginBody(
     val tokenFCM: String
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class UpdateThreadBody(
     val title: String,
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 @Entity(tableName = "news")
 data class News(
     @PrimaryKey
-    @field:Json(name = "CmsID")
+    @SerialName("CmsID")
     val cmsId: String,
-    @field:Json(name = "CategoryName")
+    @SerialName("CategoryName")
     val categoryName: String?,
-    @field:Json(name = "Title")
+    @SerialName("Title")
     val title: String?,
-    @field:Json(name = "Content")
+    @SerialName("Content")
     val content: String?,
-    @field:Json(name = "CreatedDate")
+    @SerialName("CreatedDate")
     val createdDate: String?,
-    @field:Json(name = "UpdatedDate")
+    @SerialName("UpdatedDate")
     val updatedDate: String?,
-    @field:Json(name = "Slug")
+    @SerialName("Slug")
     val slug: String?,
-    @field:Json(name = "Attachment")
+    @SerialName("Attachment")
     val attachment: String?
 )
 
 @Entity(tableName = "subjects")
-@JsonClass(generateAdapter = true)
+@Serializable
 @Parcelize
 data class Subject(
-    @field:Json(name = "masv")
+    @SerialName("masv")
     val studentCode: String,
-    @field:Json(name = "ten")
+    @SerialName("ten")
     val studentFullName: String,
-    @field:Json(name = "tenlop")
+    @SerialName("tenlop")
     @PrimaryKey
     val className: String,
-    @field:Json(name = "chucdanh")
+    @SerialName("chucdanh")
     val title: String,
-    @field:Json(name = "hoten")
+    @SerialName("hoten")
     val fullName: String,
-    @field: Json(name = "tuan")
+    @SerialName("tuan")
     val week: String,
-    @field:Json(name = "thu")
+    @SerialName("thu")
     val dayOfWeek: String,
-    @field:Json(name = "tiet")
+    @SerialName("tiet")
     val lesson: String,
-    @field:Json(name = "phong")
+    @SerialName("phong")
     val room: String
 ) : Parcelable
 
@@ -102,9 +94,9 @@ data class SubjectNotification(
     val timeNotify: Long
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Notification(
-    @field:Json(name = "_id")
+    @SerialName("_id")
     val id: String,
     val uid: String,
     val createdAt: Long,
@@ -112,12 +104,12 @@ data class Notification(
     val hasSeen: Boolean
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class NotificationMessageContainer(
     val data: NotificationMessage
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class NotificationMessage(
     val uid: String,
     val userDisplayName: String,
@@ -134,48 +126,48 @@ enum class NotificationTitle(val value: String) {
     MESSAGE_TO_ALL_SUBSCRIBERS("messageToAllSubscribers")
 }
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Teacher(
-    @field:Json(name = "hoten")
+    @SerialName("hoten")
     val fullName: String,
     val phone: String,
-    @field:Json(name = "chucdanh")
+    @SerialName("chucdanh")
     val title: String,
     val email: String,
-    @field:Json(name = "tendonvi")
+    @SerialName("tendonvi")
     val unit: String
 )
 
 sealed class Notice
 
 //@Entity
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Absence(
-    @field:Json(name = "tenlop")
+    @SerialName("tenlop")
     val className: String,
-    @field:Json(name = "chucdanh")
+    @SerialName("chucdanh")
     val title: String,
-    @field:Json(name = "ten")
+    @SerialName("ten")
     val firstName: String,
-    @field:Json(name = "hodem")
+    @SerialName("hodem")
     val lastName: String,
-    @field:Json(name = "ngaybaonghi")
+    @SerialName("ngaybaonghi")
     val dateNotice: String
 ) : Notice()
 
 //@Entity
-@JsonClass(generateAdapter = true)
+@Serializable
 data class MakeUpClass(
-    @field:Json(name = "tenlop")
+    @SerialName("tenlop")
     val className: String,
-    @field:Json(name = "chucdanh")
+    @SerialName("chucdanh")
     val title: String,
-    @field:Json(name = "hodem")
+    @SerialName("hodem")
     val lastName: String,
-    @field:Json(name = "ten")
+    @SerialName("ten")
     val firstName: String,
-    @field:Json(name = "ngaybaobu")
+    @SerialName("ngaybaobu")
     val dateMakeUp: String,
-    @field:Json(name = "tenphong")
+    @SerialName("tenphong")
     val room: String
 ) : Notice()

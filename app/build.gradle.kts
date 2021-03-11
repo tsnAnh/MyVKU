@@ -56,6 +56,9 @@ android {
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
         allWarningsAsErrors = true
     }
+    lint {
+        isAbortOnError = false
+    }
 }
 
 dependencies {

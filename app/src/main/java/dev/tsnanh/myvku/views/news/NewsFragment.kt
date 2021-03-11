@@ -58,9 +58,9 @@ class NewsFragment : BaseFragment<NewsViewModel, FragmentNewsBinding>() {
 
                             // Fade the page relative to its size.
                             alpha = (
-                                    MIN_ALPHA +
-                                            (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA))
-                                    )
+                                MIN_ALPHA +
+                                    (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA))
+                                )
                         }
                         else -> { // (1,+Infinity]
                             // This page is way off-screen to the right.

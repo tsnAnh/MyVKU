@@ -16,9 +16,11 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : AppCompa
         super.onCreate(savedInstanceState)
         binding = initDataBinding()
         binding.initViews()
-        jobs.add(lifecycleScope.launchWhenStarted {
-            viewModel.observeData()
-        })
+        jobs.add(
+            lifecycleScope.launchWhenStarted {
+                viewModel.observeData()
+            }
+        )
     }
 
     protected abstract fun initDataBinding(): DB

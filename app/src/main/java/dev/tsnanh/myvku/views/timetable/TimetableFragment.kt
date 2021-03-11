@@ -44,7 +44,8 @@ import javax.inject.Inject
 private const val GOOGLE_SIGN_IN_REQUEST_CODE = 0
 
 @AndroidEntryPoint
-class TimetableFragment : BaseFragment<TimetableViewModel, FragmentTimetableBinding>(),
+class TimetableFragment :
+    BaseFragment<TimetableViewModel, FragmentTimetableBinding>(),
     OnListStateChangeListener {
     private lateinit var timetableAdapter: TimetableAdapter
     override val viewModel: TimetableViewModel by viewModels()
@@ -138,16 +139,16 @@ class TimetableFragment : BaseFragment<TimetableViewModel, FragmentTimetableBind
         timetable
             .catch { println(it) }
             .collect { state ->
-            when (state) {
-                is State.Error -> println(state.throwable)
-                is State.Loading -> showProgress(true)
-                is State.Success -> {
-                    showProgress(false)
-                    timetableAdapter.submitList(state.data?.toMutableList())
-                    println("Data: ${state.data}")
+                when (state) {
+                    is State.Error -> println(state.throwable)
+                    is State.Loading -> showProgress(true)
+                    is State.Success -> {
+                        showProgress(false)
+                        timetableAdapter.submitList(state.data?.toMutableList())
+                        println("Data: ${state.data}")
+                    }
                 }
             }
-        }
         refresh()
     }
 

@@ -34,7 +34,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         // DataBinding initialization
         intent?.handleIntent()
 
-
         // create notification channel
         val notificationManager = getSystemService<NotificationManager>()
         notificationManager?.apply {

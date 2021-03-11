@@ -49,7 +49,7 @@ import dev.tsnanh.myvku.views.news.attachment.adapter.AttachmentClickListener
 import kotlinx.coroutines.flow.collect
 import org.apache.commons.text.StringEscapeUtils
 import timber.log.Timber
-import java.net.*
+import java.net.URLConnection
 import javax.inject.Inject
 
 @AndroidEntryPoint

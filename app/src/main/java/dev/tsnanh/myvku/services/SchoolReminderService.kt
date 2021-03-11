@@ -1,6 +1,11 @@
 package dev.tsnanh.myvku.services
 
-import android.app.*
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -12,16 +17,24 @@ import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.myvku.R
 import dev.tsnanh.myvku.domain.entities.Subject
-import dev.tsnanh.myvku.domain.usecases.RetrieveUserTimetableUseCase
 import dev.tsnanh.myvku.receivers.SchoolReminderReceiver
-import dev.tsnanh.myvku.utils.*
+import dev.tsnanh.myvku.utils.RC_SCHOOL_REMINDER_AFTERNOON
+import dev.tsnanh.myvku.utils.RC_SCHOOL_REMINDER_EVENING
+import dev.tsnanh.myvku.utils.RC_SCHOOL_REMINDER_MORNING
+import dev.tsnanh.myvku.utils.RC_SCHOOL_REMINDER_NIGHT
+import dev.tsnanh.myvku.utils.calendarAfternoon
+import dev.tsnanh.myvku.utils.calendarEvening
+import dev.tsnanh.myvku.utils.calendarMorning
+import dev.tsnanh.myvku.utils.calendarNight
+import dev.tsnanh.myvku.utils.dayOfWeekFilter
+import dev.tsnanh.myvku.utils.getExactHourStringFromLesson
+import dev.tsnanh.myvku.utils.sendSchoolReminderNotification
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.*
-import javax.inject.Inject
+import java.util.Calendar
 import kotlin.random.Random
 
 private const val MORNING_GROUP = "dev.tsnanh.myvku.schoolReminder.morning"
@@ -37,8 +50,6 @@ class SchoolReminderService : Service() {
         getSystemService<NotificationManager>()
     }
 
-    @Inject
-    lateinit var retrieveTimetableUseCase: RetrieveUserTimetableUseCase
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
@@ -237,6 +248,7 @@ class SchoolReminderService : Service() {
         }
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setAlarmApi23AndAbove(
         context: Context,

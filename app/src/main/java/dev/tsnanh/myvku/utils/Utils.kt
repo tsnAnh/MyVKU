@@ -22,7 +22,9 @@ import dev.tsnanh.myvku.domain.entities.Subject
 import dev.tsnanh.myvku.receivers.NotifyNewsReceiver
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 /**
  * Convert Unix timestamp to Java Date

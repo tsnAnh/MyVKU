@@ -36,6 +36,5 @@ class NotificationsFragment : BaseFragment<NotificationsViewModel, FragmentNotif
     }
 
     override suspend fun NotificationsViewModel.observeData() {
-
     }
 }

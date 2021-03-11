@@ -10,7 +10,7 @@ import dev.tsnanh.myvku.R
 import dev.tsnanh.myvku.domain.entities.Subject
 import dev.tsnanh.myvku.receivers.SchoolReminderReceiver
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 
 const val RC_SCHOOL_REMINDER_MORNING = 1000
 const val RC_SCHOOL_REMINDER_AFTERNOON = 2000

@@ -15,7 +15,11 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
 import dev.tsnanh.myvku.R
-import dev.tsnanh.myvku.domain.entities.NotificationTitle.*
+import dev.tsnanh.myvku.domain.entities.NotificationTitle.MESSAGE_LIKE
+import dev.tsnanh.myvku.domain.entities.NotificationTitle.MESSAGE_TO_ALL_SUBSCRIBERS
+import dev.tsnanh.myvku.domain.entities.NotificationTitle.MESSAGE_TO_OWNER
+import dev.tsnanh.myvku.domain.entities.NotificationTitle.MESSAGE_TO_OWNER_CUSTOM
+import dev.tsnanh.myvku.domain.entities.NotificationTitle.MESSAGE_TO_QUOTED_USER
 import dev.tsnanh.myvku.views.main.MainActivity
 
 /**
@@ -91,7 +95,12 @@ fun NotificationManager.sendCloudMessageNotification(
         }
         val fullContent = "${payload["userDisplayName"]} $title"
         setContentText(fullContent)
-        setContentTitle(applicationContext.getString(R.string.text_notification_from, payload["userDisplayName"]))
+        setContentTitle(
+            applicationContext.getString(
+                R.string.text_notification_from,
+                payload["userDisplayName"]
+            )
+        )
         setStyle(NotificationCompat.BigTextStyle().bigText(fullContent))
         setAutoCancel(true)
         setSmallIcon(R.mipmap.ic_launcher)

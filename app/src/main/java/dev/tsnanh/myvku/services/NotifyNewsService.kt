@@ -20,7 +20,6 @@ class NotifyNewsService @Inject constructor(
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         GlobalScope.launch {
-
         }
         Timber.i("Refreshed News!")
         return START_STICKY

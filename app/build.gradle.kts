@@ -5,7 +5,7 @@ val ktlint by configurations.creating
 
 plugins {
     id(BuildPlugins.androidApplication)
-    id(BuildPlugins.kotlinAndroid)
+    kotlin("android")
     id(BuildPlugins.kotlinParcelize)
     id(BuildPlugins.kotlinKapt)
     id(BuildPlugins.ktlint)
@@ -13,8 +13,11 @@ plugins {
     id(BuildPlugins.googleServices)
     id("com.google.firebase.crashlytics")
     id("dagger.hilt.android.plugin")
+    kotlin(BuildPlugins.kotlinSerialization) version kotlinVersion
 }
-apply(plugin = "name.remal.check-dependency-updates")
+apply {
+    plugin("kotlin-android")
+}
 
 android {
     compileSdkVersion(AndroidSdk.compile)
@@ -51,6 +54,7 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        allWarningsAsErrors = true
     }
 }
 
@@ -59,7 +63,7 @@ dependencies {
     implementation(project(":domain"))
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0")
 
     coreLibraryDesugaring(Libraries.desugarJDKLibs)
 
@@ -73,7 +77,6 @@ dependencies {
     implementation(Libraries.fragment)
     implementation(Libraries.constraintLayout)
     implementation(Libraries.legacySupport)
-    implementation(Libraries.lifecycleExtensions)
     implementation(Libraries.lifecycleViewModelKtx)
     implementation(Libraries.lifecycleRuntime)
     implementation(Libraries.lifecycleService)
@@ -81,22 +84,11 @@ dependencies {
     implementation(Libraries.lifecycleLiveData)
     implementation(Libraries.lifecycleViewModelSaveState)
     implementation(Libraries.lifecycleCommonJava8)
-    api(Libraries.apiNavigationFragment)
-    api(Libraries.apiNavigationUI)
-    api(Libraries.apiNavigationDynamicFeatures)
+    implementation(Libraries.apiNavigationFragment)
+    implementation(Libraries.apiNavigationUI)
     implementation(Libraries.roomRuntime)
-    kapt(Libraries.kaptRoomCompiler)
-    implementation(Libraries.roomKtx)
-    testImplementation(Libraries.testRoom)
     implementation(Libraries.glide)
     kapt(Libraries.kaptGlide)
-
-    // Retrofit
-    implementation(Libraries.retrofit)
-    implementation(Libraries.retrofitConverterMoshi)
-    // Moshi
-    implementation(Libraries.moshiKotlin)
-    kapt(Libraries.moshiKotlinCodeGen)
 
     // Work Manager
     implementation(Libraries.workManager)
@@ -109,8 +101,6 @@ dependencies {
     implementation(Libraries.material)
     // Androidx Browser
     implementation(Libraries.androidxBrowser)
-    // Flexbox Layout
-    implementation(Libraries.flexbox)
     // Timber Log
     implementation(Libraries.timber)
     // ViewPager2
@@ -122,7 +112,6 @@ dependencies {
     implementation(Libraries.recyclerView)
     implementation(Libraries.firebaseCrashlytics)
     implementation(Libraries.firebaseAnalytics)
-    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 
     // Dagger Hilt
     implementation(Libraries.hiltDagger)
@@ -140,6 +129,7 @@ dependencies {
     implementation(Libraries.kotlinCoroutinesGooglePlayServices)
 
     implementation("org.apache.commons:commons-text:1.9")
+    implementation(Libraries.kotlinSerialization)
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"
@@ -167,4 +157,7 @@ val ktlintFormat by tasks.creating(JavaExec::class) {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class) {
     kotlinOptions.freeCompilerArgs.toMutableList().add("-Xuse-experimental=kotlin.Experimental")
+}
+repositories {
+    mavenCentral()
 }

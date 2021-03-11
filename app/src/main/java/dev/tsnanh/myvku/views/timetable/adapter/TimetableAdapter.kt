@@ -2,20 +2,21 @@ package dev.tsnanh.myvku.views.timetable.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
+import dev.tsnanh.myvku.base.BaseRecyclerViewAdapter
+import dev.tsnanh.myvku.base.OnListStateChangeListener
 import dev.tsnanh.myvku.domain.entities.Subject
 import javax.inject.Inject
 
 class TimetableAdapter @Inject constructor(
-    private val listener: TimetableClickListener
-) : ListAdapter<Subject, SubjectViewHolder>(SubjectDiffUtil()) {
+    private val listener: TimetableClickListener,
+    onListStateChangeListener: OnListStateChangeListener
+) : BaseRecyclerViewAdapter<Subject, SubjectViewHolder>(SubjectDiffUtil(), onListStateChangeListener) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         SubjectViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: SubjectViewHolder, position: Int) {
         holder.bind(getItem(position), listener)
     }
-
 }
 
 class SubjectDiffUtil : DiffUtil.ItemCallback<Subject>() {

@@ -36,6 +36,9 @@ class NotificationViewHolder private constructor(
             NotificationTitle.MESSAGE_TO_ALL_SUBSCRIBERS.value -> binding.root.context.getString(R.string.text_message_to_all_subscribers)
             else -> throw IllegalArgumentException("WTF is this message???")
         }
+        binding.card.setOnClickListener {
+            listener.onClick(notification)
+        }
         Glide.with(binding.imageView5).load(notification.message.data.photoURL).centerCrop()
             .into(binding.imageView5)
         binding.executePendingBindings()

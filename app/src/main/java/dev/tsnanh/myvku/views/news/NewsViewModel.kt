@@ -4,8 +4,9 @@
 
 package dev.tsnanh.myvku.views.news
 
-import androidx.hilt.lifecycle.ViewModelInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.tsnanh.myvku.base.BaseViewModel
+import javax.inject.Inject
 
-class NewsViewModel @ViewModelInject constructor(
-) : BaseViewModel()
+@HiltViewModel
+class NewsViewModel @Inject constructor() : BaseViewModel()

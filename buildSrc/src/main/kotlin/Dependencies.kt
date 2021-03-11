@@ -1,9 +1,9 @@
-const val kotlinVersion = "1.4.21-2"
+const val kotlinVersion = "1.4.31"
 
 object BuildPlugins {
     object Versions {
-        const val buildToolsVersion = "4.1.2"
-        const val hiltDagger = "2.28-alpha"
+        const val buildToolsVersion = "7.0.0-alpha09"
+        const val hiltDagger = "2.33-beta"
     }
 
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.buildToolsVersion}"
@@ -12,28 +12,30 @@ object BuildPlugins {
         "androidx.navigation:navigation-safe-args-gradle-plugin:2.2.2"
     const val googleServicesPlugin = "com.google.gms:google-services:4.3.3"
     const val ktlintPlugin = "org.jlleitschuh.gradle:ktlint-gradle:9.2.1"
-    const val daggerHiltPlugin = "com.google.dagger:hilt-android-gradle-plugin:${Versions.hiltDagger}"
+    const val daggerHiltPlugin =
+        "com.google.dagger:hilt-android-gradle-plugin:${Versions.hiltDagger}"
 
     const val androidApplication = "com.android.application"
-    const val kotlinAndroid = "kotlin-android"
     const val kotlinParcelize = "kotlin-parcelize"
     const val kotlinKapt = "kotlin-kapt"
     const val ktlint = "org.jlleitschuh.gradle.ktlint-idea"
     const val navigationSafeArgsKotlin = "androidx.navigation.safeargs.kotlin"
     const val googleServices = "com.google.gms.google-services"
+    const val kotlinSerialization = "plugin.serialization"
 }
 
 object AndroidSdk {
     const val min = 21
     const val compile = 30
-    const val target = compile
+    const val target = 30
 }
 
 object Libraries {
     private object Versions {
+        const val kotlinSerialization = "1.1.0"
         const val constraintLayout = "2.0.4"
-        const val fragmentVersion = "1.3.0-rc01"
-        const val lifecycleVersion = "2.2.0"
+        const val fragmentVersion = "1.3.0"
+        const val lifecycleVersion = "2.3.0"
         const val savedStateVersion = "2.2.0"
         const val navigation = "2.3.2"
         const val roomVersion = "2.2.6"
@@ -41,18 +43,17 @@ object Libraries {
         const val retrofitVersion = "2.9.0"
         const val workManagerVersion = "2.4.0"
         const val materialVersion = "1.2.1"
-        const val hiltDagger = "2.28-alpha"
-        const val hiltJetpack = "1.0.0-alpha01"
+        const val hiltDagger = "2.33-beta"
+        const val hiltJetpack = "1.0.0-alpha03"
         const val paging3Version = "3.0.0-alpha05"
         const val desugarJDKLibsVersion = "1.1.1"
         const val coroutineVersion = "1.4.2"
-        const val activityVersion = "1.2.0-rc01"
+        const val activityVersion = "1.2.0"
+        const val kotlinSerializationConverter = "0.8.0"
     }
 
     const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     const val fragment = "androidx.fragment:fragment-ktx:${Versions.fragmentVersion}"
-    const val lifecycleExtensions =
-        "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycleVersion}"
     const val lifecycleViewModelKtx =
         "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycleVersion}"
     const val lifecycleRuntime =
@@ -73,8 +74,6 @@ object Libraries {
     const val apiNavigationFragment =
         "androidx.navigation:navigation-fragment-ktx:${Versions.navigation}"
     const val apiNavigationUI = "androidx.navigation:navigation-ui-ktx:${Versions.navigation}"
-    const val apiNavigationDynamicFeatures =
-        "androidx.navigation:navigation-dynamic-features-fragment:${Versions.navigation}"
     const val roomRuntime = "androidx.room:room-runtime:${Versions.roomVersion}"
     const val kaptRoomCompiler = "androidx.room:room-compiler:${Versions.roomVersion}"
     const val roomKtx = "androidx.room:room-ktx:${Versions.roomVersion}"
@@ -82,15 +81,10 @@ object Libraries {
     const val glide = "com.github.bumptech.glide:glide:${Versions.glideVersion}"
     const val kaptGlide = "com.github.bumptech.glide:compiler:${Versions.glideVersion}"
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
-    const val retrofitConverterMoshi =
-        "com.squareup.retrofit2:converter-moshi:${Versions.retrofitVersion}"
-    const val moshiKotlin = "com.squareup.moshi:moshi-kotlin:1.11.0"
-    const val moshiKotlinCodeGen = "com.squareup.moshi:moshi-kotlin-codegen:1.11.0"
     const val workManager = "androidx.work:work-runtime-ktx:${Versions.workManagerVersion}"
     const val androidTestWorkManager = "androidx.work:work-testing:${Versions.workManagerVersion}"
     const val material = "com.google.android.material:material:${Versions.materialVersion}"
     const val androidxBrowser = "androidx.browser:browser:1.3.0"
-    const val flexbox = "com.google.android:flexbox:2.0.1"
     const val timber = "com.jakewharton.timber:timber:4.7.1"
     const val viewPager2 = "androidx.viewpager2:viewpager2:1.0.0"
     const val playServicesAuth = "com.google.android.gms:play-services-auth:19.0.0"
@@ -115,7 +109,12 @@ object Libraries {
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutineVersion}"
     const val kotlinCoroutinesCore =
         "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutineVersion}"
-    const val kotlinCoroutinesGooglePlayServices = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.coroutineVersion}"
+    const val kotlinCoroutinesGooglePlayServices =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.coroutineVersion}"
+    const val kotlinSerialization =
+        "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinSerialization}"
+    const val kotlinSerializationConverter =
+        "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.kotlinSerializationConverter}"
 }
 
 object TestLibraries {

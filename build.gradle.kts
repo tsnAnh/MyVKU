@@ -5,12 +5,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    var kotlin_version: String by extra
+    kotlin_version = "1.4.31"
     repositories {
         google()
-        jcenter()
         maven {
             url = uri("https://plugins.gradle.org/m2/")
         }
+        mavenCentral()
     }
     dependencies {
         classpath(BuildPlugins.androidGradlePlugin)
@@ -18,20 +20,14 @@ buildscript {
         classpath(BuildPlugins.navigationSafeArgsPlugin)
         classpath(BuildPlugins.googleServicesPlugin)
         classpath(BuildPlugins.ktlintPlugin)
-        classpath("name.remal:gradle-plugins:1.0.199")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.4.1")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:2.5.1")
         classpath(BuildPlugins.daggerHiltPlugin)
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
-
     }
 }
 

@@ -3,15 +3,19 @@
  */
 package dev.tsnanh.myvku.domain.network
 
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dev.tsnanh.myvku.domain.constants.SecretConstants
-import dev.tsnanh.myvku.domain.entities.*
+import dev.tsnanh.myvku.domain.entities.Absence
+import dev.tsnanh.myvku.domain.entities.MakeUpClass
+import dev.tsnanh.myvku.domain.entities.Notification
+import dev.tsnanh.myvku.domain.entities.Subject
+import dev.tsnanh.myvku.domain.entities.Teacher
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
@@ -33,22 +37,14 @@ private val client = OkHttpClient.Builder()
     .build()
 
 /**
- * Moshi JSON converter
- */
-private val moshi = Moshi.Builder()
-    .add(KotlinJsonAdapterFactory())
-    .build()
-
-/**
  * Retrofit client
  */
+@OptIn(ExperimentalSerializationApi::class)
 private val retrofit = Retrofit.Builder()
     .client(client)
     .addConverterFactory(
-        MoshiConverterFactory.create(moshi)
-            .asLenient()
+        Json.asConverterFactory(MediaType.parse("application/json")!!)
     )
-    .addConverterFactory(ScalarsConverterFactory.create())
     .baseUrl(BASE_URL)
     .build()
 
@@ -64,6 +60,7 @@ interface VKUService {
         @Url url: String = SecretConstants.TKB_URL,
         @Query("email") email: String
     ): List<Subject>
+
     @GET("api/notification")
     suspend fun getNotifications(@Header("gg-auth-token") idToken: String): List<Notification>
 

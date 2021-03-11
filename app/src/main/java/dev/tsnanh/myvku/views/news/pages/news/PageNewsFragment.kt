@@ -1,7 +1,6 @@
 package dev.tsnanh.myvku.views.news.pages.news
 
 import android.Manifest
-import android.app.Activity
 import android.app.DownloadManager
 import android.content.Intent
 import android.content.IntentFilter
@@ -14,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -66,13 +66,49 @@ class PageNewsFragment : Fragment() {
     private val attachmentReceiver = AttachmentReceiver()
     private lateinit var news: News
 
+    private val permission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                showSnackbar(
+                    requireView(),
+                    requireContext().getString(R.string.msg_permission_granted)
+                )
+                showAttachments(news)
+            } else {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        requireActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                ) {
+                    with(requireContext()) {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(getString(R.string.msg_permission_required))
+                            .setMessage(getString(R.string.msg_need_permission))
+                            .setPositiveButton(getString(R.string.text_ok)) { d, _ ->
+                                requestPermission()
+                                d.dismiss()
+                            }
+                            .setNegativeButton(getString(R.string.text_cancel)) { d, _ ->
+                                d.dismiss()
+                            }
+                            .create()
+                            .show()
+                    }
+                }
+            }
+        }
+
+    private fun requestPermission(): Unit =
+        permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
     @Inject
     lateinit var preferences: SharedPreferences
 
     private val dialog by lazy { MaterialAlertDialogBuilder(requireContext()).create() }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page_news, container, false)
@@ -90,53 +126,65 @@ class PageNewsFragment : Fragment() {
             image.setImageResource(R.drawable.ic_round_news_24)
         }
 
-        adapterNews = NewsAdapter(NewsClickListener(
-            viewClickListener = ::launchNews,
-            shareClickListener = { news ->
-                val intent = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_SUBJECT, news.title)
-                    putExtra(Intent.EXTRA_TEXT, "${news.content?.take(30)}...")
-                }
-                startActivity(Intent.createChooser(intent,
-                    requireContext().getString(R.string.text_share_via)))
-            },
-            onPressListener = { news ->
-                val binding =
-                    LayoutDialogPreviewNewsBinding.inflate(LayoutInflater.from(requireContext()))
-                with(binding) {
-                    titleText =
-                        news.title?.removeSurrounding("\"")?.unescapeJava()?.replace("\\", "")
-                    content.text =
-                        HtmlCompat.fromHtml(StringEscapeUtils.unescapeJava(StringEscapeUtils.unescapeHtml4(
-                            news.content)) ?: "", HtmlCompat.FROM_HTML_MODE_LEGACY)
-                }
-                with(dialog) {
-                    setView(binding.root)
-                    show()
-                }
-                this@PageNewsFragment.binding.list.layoutManager =
-                    object : LinearLayoutManager(requireContext()) {
-                        override fun canScrollVertically(): Boolean {
-                            return false
-                        }
+        adapterNews = NewsAdapter(
+            NewsClickListener(
+                viewClickListener = ::launchNews,
+                shareClickListener = { news ->
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_SUBJECT, news.title)
+                        putExtra(Intent.EXTRA_TEXT, "${news.content?.take(30)}...")
                     }
-                true
-            },
-            onReleaseListener = {
-                with(dialog) {
-                    setView(null)
-                    dismiss()
-                }
-                this@PageNewsFragment.binding.list.layoutManager =
-                    object : LinearLayoutManager(requireContext()) {
-                        override fun canScrollVertically(): Boolean {
-                            return true
-                        }
+                    startActivity(
+                        Intent.createChooser(
+                            intent,
+                            requireContext().getString(R.string.text_share_via)
+                        )
+                    )
+                },
+                onPressListener = { news ->
+                    val binding =
+                        LayoutDialogPreviewNewsBinding.inflate(LayoutInflater.from(requireContext()))
+                    with(binding) {
+                        titleText =
+                            news.title?.removeSurrounding("\"")?.unescapeJava()?.replace("\\", "")
+                        content.text =
+                            HtmlCompat.fromHtml(
+                                StringEscapeUtils.unescapeJava(
+                                    StringEscapeUtils.unescapeHtml4(
+                                        news.content
+                                    )
+                                ) ?: "",
+                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                            )
                     }
-                true
-            }
-        ))
+                    with(dialog) {
+                        setView(binding.root)
+                        show()
+                    }
+                    this@PageNewsFragment.binding.list.layoutManager =
+                        object : LinearLayoutManager(requireContext()) {
+                            override fun canScrollVertically(): Boolean {
+                                return false
+                            }
+                        }
+                    true
+                },
+                onReleaseListener = {
+                    with(dialog) {
+                        setView(null)
+                        dismiss()
+                    }
+                    this@PageNewsFragment.binding.list.layoutManager =
+                        object : LinearLayoutManager(requireContext()) {
+                            override fun canScrollVertically(): Boolean {
+                                return true
+                            }
+                        }
+                    true
+                }
+            )
+        )
 
         binding.list.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -173,7 +221,7 @@ class PageNewsFragment : Fragment() {
             .setTitle(it)
             .setAllowedNetworkTypes(
                 DownloadManager.Request.NETWORK_MOBILE or
-                        DownloadManager.Request.NETWORK_WIFI
+                    DownloadManager.Request.NETWORK_WIFI
             )
             .setDestinationInExternalPublicDir(
                 Environment.DIRECTORY_DOWNLOADS,
@@ -204,10 +252,12 @@ class PageNewsFragment : Fragment() {
             android.R.anim.fade_out
         )
         builder.setColorScheme(
-            when (preferences.getString(
-                getString(R.string.night_mode_key),
-                Constants.MODE_SYSTEM
-            )) {
+            when (
+                preferences.getString(
+                    getString(R.string.night_mode_key),
+                    Constants.MODE_SYSTEM
+                )
+            ) {
                 Constants.MODE_DARK -> CustomTabsIntent.COLOR_SCHEME_DARK
                 Constants.MODE_LIGHT -> CustomTabsIntent.COLOR_SCHEME_LIGHT
                 else -> CustomTabsIntent.COLOR_SCHEME_SYSTEM
@@ -231,10 +281,9 @@ class PageNewsFragment : Fragment() {
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        news = adapterNews.currentList[item.itemId]
         when (item.order) {
-            0 -> launchNews(news)
-            1 -> showAttachments(news)
+            0 -> launchNews(adapterNews.currentList[item.itemId])
+            1 -> showAttachments(adapterNews.currentList[item.itemId])
         }
         return true
     }
@@ -245,36 +294,7 @@ class PageNewsFragment : Fragment() {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    requireActivity(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            ) {
-                with(requireContext()) {
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.msg_permission_required))
-                        .setMessage(getString(R.string.msg_need_permission))
-                        .setPositiveButton(getString(R.string.text_ok)) { d, _ ->
-                            requestPermissions(
-                                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                                Constants.RC_PERMISSION
-                            )
-                            d.dismiss()
-                        }
-                        .setNegativeButton(getString(R.string.text_cancel)) { d, _ ->
-                            d.dismiss()
-                        }
-                        .create()
-                        .show()
-                }
-            } else {
-                requestPermissions(
-                    arrayOf(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ),
-                    Constants.RC_PERMISSION
-                )
-            }
+            requestPermission()
         } else {
             if (!news.attachment.isNullOrBlank()) {
                 val files = news.attachment
@@ -291,9 +311,12 @@ class PageNewsFragment : Fragment() {
                         .create()
                     builder.show()
                     val attachmentAdapter =
-                        AttachmentAdapter(files, AttachmentClickListener {
-                            downloadAndOpenFile(it)
-                        })
+                        AttachmentAdapter(
+                            files,
+                            AttachmentClickListener {
+                                downloadAndOpenFile(it)
+                            }
+                        )
                     attachmentBinding.listFiles.apply {
                         adapter = attachmentAdapter
                         setHasFixedSize(true)
@@ -303,17 +326,6 @@ class PageNewsFragment : Fragment() {
             } else {
                 showSnackbar(binding.root, getString(R.string.text_no_attachment))
             }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == Constants.RC_PERMISSION && resultCode == Activity.RESULT_OK) {
-            showSnackbar(
-                requireView(),
-                requireContext().getString(R.string.msg_permission_granted)
-            )
-            showAttachments(news)
         }
     }
 }

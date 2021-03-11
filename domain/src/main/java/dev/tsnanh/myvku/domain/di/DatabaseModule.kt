@@ -5,17 +5,17 @@ import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import dev.tsnanh.myvku.domain.database.VKUDao
 import dev.tsnanh.myvku.domain.database.VKUDatabase
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object DatabaseModule {
-    @Singleton
     @Provides
+    @Singleton
     fun provideVKUDatabase(
         @ApplicationContext context: Context
     ): VKUDatabase = synchronized(context) {
@@ -28,8 +28,8 @@ object DatabaseModule {
             .build()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideVKUDao(
         database: VKUDatabase
     ): VKUDao = database.dao

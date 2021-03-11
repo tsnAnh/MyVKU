@@ -5,12 +5,16 @@ import dev.tsnanh.myvku.domain.entities.State
 import dev.tsnanh.myvku.domain.entities.Subject
 import dev.tsnanh.myvku.domain.network.VKUServiceApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 
 interface TimetableRepo {
@@ -22,8 +26,10 @@ class TimetableRepoImpl @Inject constructor(
 ) : TimetableRepo {
     override fun getTimetable(email: String) = flow {
         emit(State.loading())
-        emit(State.success(VKUServiceApi.network.getTimetable(email = email)))
+        val subjects = VKUServiceApi.network.getTimetable(email = email)
+        emit(State.success(subjects))
     }.catch { t ->
+        println(t.localizedMessage)
         when (t) {
             is ConnectException, is SocketTimeoutException, is SocketException, is UnknownHostException -> emit(
                 State.error(t, dao.getAllSubjects().first()))

@@ -69,8 +69,10 @@ class PageMakeupClassFragment : Fragment() {
                             if (makeupClasses != null && makeupClasses.isNotEmpty()) {
                                 adapterMakeupClass.submitList(state.data)
                             } else {
-                                showLayout(requireContext().getString(R.string.text_no_absences_here),
-                                    R.drawable.empty)
+                                showLayout(
+                                    requireContext().getString(R.string.text_no_absences_here),
+                                    R.drawable.empty
+                                )
                             }
                         }
                     }

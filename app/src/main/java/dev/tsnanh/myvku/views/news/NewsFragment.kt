@@ -4,11 +4,8 @@
 
 package dev.tsnanh.myvku.views.news
 
-import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,22 +21,14 @@ private const val MIN_ALPHA = 0.5f
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class NewsFragment : BaseFragment() {
+class NewsFragment : BaseFragment<NewsViewModel, FragmentNewsBinding>() {
     override val viewModel: NewsViewModel by viewModels()
-    private lateinit var binding: FragmentNewsBinding
+    override fun initDataBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+    ) = FragmentNewsBinding.inflate(inflater, container, false)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = DataBindingUtil
-            .inflate(inflater, R.layout.fragment_news, container, false)
-
-        setHasOptionsMenu(true)
-        return binding.root
-    }
-
-    override fun setupView() {
+    override fun FragmentNewsBinding.initViews() {
         binding.pager.apply {
             adapter = NewsPagerAdapter(this@NewsFragment)
             // TODO: 8/28/2020 make material shared axis page transformer
@@ -68,8 +57,10 @@ class NewsFragment : BaseFragment() {
                             scaleY = scaleFactor
 
                             // Fade the page relative to its size.
-                            alpha = (MIN_ALPHA +
-                                    (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
+                            alpha = (
+                                    MIN_ALPHA +
+                                            (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA))
+                                    )
                         }
                         else -> { // (1,+Infinity]
                             // This page is way off-screen to the right.
@@ -90,10 +81,7 @@ class NewsFragment : BaseFragment() {
         }.attach()
     }
 
-    override fun bindView() {
-        binding.apply {
-            lifecycleOwner = viewLifecycleOwner
-            viewModel = viewModel
-        }
+    override suspend fun NewsViewModel.observeData() {
+        binding.viewModel = this
     }
 }

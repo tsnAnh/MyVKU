@@ -1,13 +1,17 @@
 plugins {
     id("com.android.library")
-    id(BuildPlugins.kotlinAndroid)
+    kotlin("android")
     id(BuildPlugins.kotlinParcelize)
     id(BuildPlugins.kotlinKapt)
+    kotlin(BuildPlugins.kotlinSerialization) version kotlinVersion
+}
+apply {
+    plugin("kotlin-android")
 }
 
 android {
     compileSdkVersion(AndroidSdk.compile)
-    buildToolsVersion = "30.0.2"
+    buildToolsVersion = "30.0.3"
 
     defaultConfig {
         minSdkVersion(AndroidSdk.min)
@@ -35,41 +39,32 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        allWarningsAsErrors = true
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
 }
 
 dependencies {
     implementation(fileTree("dir" to "libs", "include" to arrayOf("*.jar")))
     implementation(Libraries.kotlinStdLib)
-    implementation(Libraries.coreKtx)
-    implementation(Libraries.appcompat)
     testImplementation(TestLibraries.junit)
-    androidTestImplementation(TestLibraries.androidTestJunit)
-    androidTestImplementation(TestLibraries.androidTestEspresso)
     implementation(Libraries.retrofit)
-    implementation(Libraries.retrofitConverterMoshi)
-    implementation(Libraries.moshiKotlin)
-    kapt(Libraries.moshiKotlinCodeGen)
-
-    // Lifecycle
-    implementation(Libraries.lifecycleExtensions)
-    implementation(Libraries.lifecycleViewModelKtx)
-    implementation(Libraries.lifecycleRuntime)
-    implementation(Libraries.lifecycleLiveData)
-    implementation(Libraries.lifecycleViewModelSaveState)
-    implementation(Libraries.lifecycleCommonJava8)
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation(Libraries.roomRuntime)
     kapt(Libraries.kaptRoomCompiler)
     implementation(Libraries.roomKtx)
     testImplementation(Libraries.testRoom)
 
     implementation(Libraries.timber)
-    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("org.jsoup:jsoup:1.13.1")
 
     implementation(Libraries.hiltDagger)
     kapt(Libraries.hiltDaggerCompilerKapt)
 
     implementation(Libraries.kotlinCoroutinesCore)
-    implementation(Libraries.kotlinCoroutinesAndroid)
+    implementation(Libraries.kotlinSerialization)
+    implementation(Libraries.kotlinSerializationConverter)
+}
+repositories {
+    mavenCentral()
 }

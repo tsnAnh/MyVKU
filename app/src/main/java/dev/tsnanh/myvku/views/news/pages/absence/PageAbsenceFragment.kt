@@ -26,7 +26,6 @@ class PageAbsenceFragment : Fragment() {
 
     private lateinit var binding: FragmentPageNewsBinding
     private val viewModel: PageAbsenceViewModel by viewModels()
-
     private lateinit var adapterAbsence: AbsenceAdapter
 
     override fun onCreateView(
@@ -71,8 +70,10 @@ class PageAbsenceFragment : Fragment() {
                         if (absences != null && absences.isNotEmpty()) {
                             adapterAbsence.submitList(state.data)
                         } else {
-                            showLayout(requireContext().getString(R.string.text_no_absences_here),
-                                R.drawable.empty)
+                            showLayout(
+                                requireContext().getString(R.string.text_no_absences_here),
+                                R.drawable.empty
+                            )
                         }
                     }
                 }

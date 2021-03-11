@@ -33,7 +33,8 @@ class AttachmentReceiver @Inject constructor() : BroadcastReceiver() {
                         if (ContentResolver.SCHEME_FILE == uri.scheme) {
                             val file = uri.path?.let { File(it) }
                             newUri = file?.let {
-                                FileProvider.getUriForFile(p0, "dev.tsnanh.myvku.fileprovider",
+                                FileProvider.getUriForFile(
+                                    p0, "dev.tsnanh.myvku.fileprovider",
                                     it
                                 )
                             }

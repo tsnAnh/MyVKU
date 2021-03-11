@@ -73,18 +73,22 @@ fun showSnackbar(
 ) {
     val bar = Snackbar
         .make(
-            view, msg, if (!actionButton.isNullOrBlank()) {
+            view, msg,
+            if (!actionButton.isNullOrBlank()) {
                 Snackbar.LENGTH_INDEFINITE
             } else {
                 Snackbar.LENGTH_LONG
             }
         )
 
-    bar.setAction(actionButton, if (action != null) {
-        action
-    } else {
-        { bar.dismiss() }
-    })
+    bar.setAction(
+        actionButton,
+        if (action != null) {
+            action
+        } else {
+            { bar.dismiss() }
+        }
+    )
     anchorView?.let {
         bar.setAnchorView(it)
     }

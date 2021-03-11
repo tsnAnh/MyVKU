@@ -28,12 +28,18 @@ class MyVKUApplication : Application(), Configuration.Provider {
 
         // UI Mode
         preferences.registerOnSharedPreferenceChangeListener { pref, _ ->
-            AppCompatDelegate.setDefaultNightMode(when (pref?.getString(getString(R.string.night_mode_key),
-                Constants.MODE_SYSTEM)) {
-                Constants.MODE_DARK -> AppCompatDelegate.MODE_NIGHT_YES
-                Constants.MODE_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
-                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            })
+            AppCompatDelegate.setDefaultNightMode(
+                when (
+                    pref?.getString(
+                        getString(R.string.night_mode_key),
+                        Constants.MODE_SYSTEM
+                    )
+                ) {
+                    Constants.MODE_DARK -> AppCompatDelegate.MODE_NIGHT_YES
+                    Constants.MODE_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                }
+            )
         }
         when (preferences.getString(getString(R.string.night_mode_key), Constants.MODE_SYSTEM)) {
             Constants.MODE_DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -45,6 +51,4 @@ class MyVKUApplication : Application(), Configuration.Provider {
     override fun getWorkManagerConfiguration() = Configuration.Builder()
         .setWorkerFactory(workerFactory)
         .build()
-
-
 }

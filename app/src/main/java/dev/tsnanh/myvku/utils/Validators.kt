@@ -12,4 +12,3 @@ fun TextInputEditText.validate(messageError: String, validator: (String) -> Bool
         this.error = if (validator(it.toString())) null else messageError
     }
 }
-

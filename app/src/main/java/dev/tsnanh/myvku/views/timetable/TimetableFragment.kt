@@ -4,101 +4,80 @@
 
 package dev.tsnanh.myvku.views.timetable
 
+import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Bundle
 import android.provider.AlarmClock
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
-import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.myvku.R
 import dev.tsnanh.myvku.base.BaseFragment
+import dev.tsnanh.myvku.base.OnListStateChangeListener
 import dev.tsnanh.myvku.databinding.FragmentTimetableBinding
+import dev.tsnanh.myvku.domain.entities.State
 import dev.tsnanh.myvku.domain.entities.Subject
 import dev.tsnanh.myvku.utils.Constants
 import dev.tsnanh.myvku.utils.getDayOfWeekFromString
 import dev.tsnanh.myvku.utils.getHourFromLesson
 import dev.tsnanh.myvku.utils.getMinutesFromStringLesson
+import dev.tsnanh.myvku.utils.showSnackbar
+import dev.tsnanh.myvku.views.main.MainViewModel
 import dev.tsnanh.myvku.views.timetable.adapter.TimetableAdapter
 import dev.tsnanh.myvku.views.timetable.adapter.TimetableClickListener
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-@AndroidEntryPoint
-class TimetableFragment : BaseFragment(), TimetableBindingHandler {
-    private lateinit var binding: FragmentTimetableBinding
+private const val GOOGLE_SIGN_IN_REQUEST_CODE = 0
 
+@AndroidEntryPoint
+class TimetableFragment : BaseFragment<TimetableViewModel, FragmentTimetableBinding>(),
+    OnListStateChangeListener {
+    private lateinit var timetableAdapter: TimetableAdapter
     override val viewModel: TimetableViewModel by viewModels()
+    private val activityViewModel by activityViewModels<MainViewModel>()
 
     @Inject
-    lateinit var mGoogleSignInClient: GoogleSignInClient
+    lateinit var googleSignInClient: GoogleSignInClient
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = DataBindingUtil
-            .inflate(inflater, R.layout.fragment_timetable, container, false)
-
-        setHasOptionsMenu(true)
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        with(binding) {
-            lifecycleOwner = viewLifecycleOwner
-            viewModel = this@TimetableFragment.viewModel
-            handler = this@TimetableFragment
-        }
-
-        val timetableAdapter = createTimetableAdapter()
-
-        with(binding.listSubjects) {
-            setHasFixedSize(false)
-            isNestedScrollingEnabled = true
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = timetableAdapter
-        }
-    }
-
-    override fun setupView() {
-
-    }
-
-    override fun bindView() {
-        jobs.add(
-            lifecycleScope.launchWhenStarted {
-                viewModel.user.collect { acc ->
-                    binding.signIn.isVisible = acc == null
+    private val loginResultHandler =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+            try {
+                GoogleSignIn.getSignedInAccountFromIntent(it.data).addOnSuccessListener { user ->
+                    activityViewModel.setUser(user)
+                    viewModel.refresh()
+                }.addOnFailureListener { e ->
+                    println(e)
+                    showSnackbar(binding.root, "Failed to sign in")
                 }
+            } catch (e: ApiException) {
+                println(e)
+                showSnackbar(binding.root, "Failed to sign in")
             }
-        )
-    }
-
-//    private suspend fun observe() {
-//        viewModel.getTimetable()
-//    }
+        }
 
     private fun createTimetableAdapter(): TimetableAdapter {
         return TimetableAdapter(
             TimetableClickListener(
                 setAlarmClickListener, comeInClassClickListener
-            )
+            ),
+            this
         )
     }
 
@@ -122,20 +101,80 @@ class TimetableFragment : BaseFragment(), TimetableBindingHandler {
         startActivity(Intent(Intent.ACTION_VIEW, Constants.ROOMS[subject.room]?.toUri()))
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
+    override fun initDataBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+    ): FragmentTimetableBinding {
+        setHasOptionsMenu(true)
+        return FragmentTimetableBinding.inflate(inflater, container, false)
+    }
 
-        if (::binding.isInitialized) {
-            outState.putInt("filterType", when (binding.chipGroup.checkedChipId) {
-                R.id.all_filter_chip -> 0
-                R.id.today_filter_chip -> 1
-                R.id.tomorrow_filter_chip -> 2
-                else -> 0
-            })
+    override fun FragmentTimetableBinding.initViews() {
+        with(this) {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = this@TimetableFragment.viewModel
+        }
+
+        timetableAdapter = createTimetableAdapter()
+
+        with(listSubjects) {
+            setHasFixedSize(false)
+            isNestedScrollingEnabled = true
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = timetableAdapter
         }
     }
 
-    override fun signIn() {
+    override suspend fun TimetableViewModel.observeData() {
+        println("YESSSSSSSSSS")
+        activityViewModel.user.collect { acc ->
+            if (acc != null) {
+                binding.listSubjects.isVisible = true
+            } else {
+                binding.listSubjects.isVisible = false
+                performSignIn()
+            }
+        }
+        timetable
+            .catch { println(it) }
+            .collect { state ->
+            when (state) {
+                is State.Error -> println(state.throwable)
+                is State.Loading -> showProgress(true)
+                is State.Success -> {
+                    showProgress(false)
+                    timetableAdapter.submitList(state.data?.toMutableList())
+                    println("Data: ${state.data}")
+                }
+            }
+        }
+        refresh()
+    }
 
+    private fun showProgress(isVisible: Boolean = true) {
+        with(binding) {
+            progressBar.isVisible = isVisible
+            listSubjects.isVisible = !isVisible
+        }
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun performSignIn() {
+        loginResultHandler.launch(
+            IntentSenderRequest.Builder(
+                PendingIntent.getActivity(
+                    requireContext(),
+                    GOOGLE_SIGN_IN_REQUEST_CODE,
+                    googleSignInClient.signInIntent,
+                    PendingIntent.FLAG_ONE_SHOT
+                )
+            ).build()
+        )
+    }
+
+    override fun onListEmpty() {
+    }
+
+    override fun onListHasData() {
     }
 }

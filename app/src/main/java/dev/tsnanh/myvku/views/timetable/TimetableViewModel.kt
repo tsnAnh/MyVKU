@@ -4,18 +4,36 @@
 
 package dev.tsnanh.myvku.views.timetable
 
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
+import android.content.SharedPreferences
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.tsnanh.myvku.base.BaseViewModel
+import dev.tsnanh.myvku.domain.entities.State
+import dev.tsnanh.myvku.domain.entities.Subject
 import dev.tsnanh.myvku.domain.usecases.RetrieveUserTimetableUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import javax.inject.Inject
 
-class TimetableViewModel @ViewModelInject constructor(
+@HiltViewModel
+class TimetableViewModel @Inject constructor(
     private val retrieveUserTimetableUseCase: RetrieveUserTimetableUseCase,
-    @Assisted savedStateHandle: SavedStateHandle,
+    private val sharedPreferences: SharedPreferences,
 ) : BaseViewModel() {
-    val filter: LiveData<Int>? = savedStateHandle["filterType"]
+    private var _timetable =
+        retrieveUserTimetableUseCase.invoke(sharedPreferences.getString("email", "")!!.also { println(it) })
+    val timetable: Flow<State<List<Subject>>>
+        get() = _timetable
 
-    fun getTimetable(email: String) = retrieveUserTimetableUseCase.invoke(email)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun refresh() {
+        _timetable = _timetable.flatMapLatest {
+            retrieveUserTimetableUseCase.invoke(
+                sharedPreferences.getString(
+                    "email",
+                    ""
+                )!!
+            )
+        }
+    }
 }

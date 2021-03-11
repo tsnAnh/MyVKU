@@ -11,7 +11,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -22,32 +21,19 @@ import dev.tsnanh.myvku.base.BaseActivity
 import dev.tsnanh.myvku.databinding.ActivityMainBinding
 import dev.tsnanh.myvku.services.NEWS_NOTIFY_CHANNEL_ID
 import dev.tsnanh.myvku.utils.createNotificationChannel
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var navController: NavController
-
+class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     override val viewModel: MainViewModel by viewModels()
+
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // DataBinding initialization
-        binding = DataBindingUtil.setContentView(
-            this,
-            R.layout.activity_main
-        )
-
         intent?.handleIntent()
 
-        // Navigation Component things
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment) as NavHostFragment
-        navController = navHostFragment.navController
-
-        NavigationUI.setupWithNavController(binding.bottomNav, navController)
 
         // create notification channel
         val notificationManager = getSystemService<NotificationManager>()
@@ -69,26 +55,12 @@ class MainActivity : BaseActivity() {
                 getString(R.string.text_news)
             )
         }
-
-        observe()
-    }
-
-    private fun observe() {
-        jobs.add(
-            lifecycleScope.launchWhenStarted {
-                viewModel.user.collect { account ->
-                    if (account != null) {
-
-                    }
-                }
-            }
-        )
     }
 
     override fun onStart() {
         super.onStart()
         val account = GoogleSignIn.getLastSignedInAccount(this)
-        viewModel.setUser(account)
+        viewModel.setUser(account.also(::println))
     }
 
     private fun Intent.handleIntent() {
@@ -112,5 +84,20 @@ class MainActivity : BaseActivity() {
         super.onNewIntent(intent)
 
         intent?.handleIntent()
+    }
+
+    override fun initDataBinding(): ActivityMainBinding =
+        DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+    override fun ActivityMainBinding.initViews() {
+        // Navigation Component things
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment) as NavHostFragment
+        navController = navHostFragment.navController
+
+        NavigationUI.setupWithNavController(bottomNav, navController)
+    }
+
+    override fun MainViewModel.observeData() {
     }
 }

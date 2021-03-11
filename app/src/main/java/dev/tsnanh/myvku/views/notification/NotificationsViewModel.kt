@@ -4,7 +4,9 @@
 
 package dev.tsnanh.myvku.views.notification
 
-import androidx.hilt.lifecycle.ViewModelInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.tsnanh.myvku.base.BaseViewModel
+import javax.inject.Inject
 
-class NotificationsViewModel @ViewModelInject constructor() : BaseViewModel()
+@HiltViewModel
+class NotificationsViewModel @Inject constructor() : BaseViewModel()

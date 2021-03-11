@@ -121,8 +121,10 @@ class SchoolReminderService : Service() {
                             val tomorrowSubjects = result.filter {
                                 dayOfWeekFilter(
                                     it,
-                                    when (val tomorrow =
-                                        Calendar.getInstance()[Calendar.DAY_OF_WEEK]) {
+                                    when (
+                                        val tomorrow =
+                                            Calendar.getInstance()[Calendar.DAY_OF_WEEK]
+                                    ) {
                                         7 -> Calendar.SUNDAY
                                         else -> tomorrow + 1
                                     }

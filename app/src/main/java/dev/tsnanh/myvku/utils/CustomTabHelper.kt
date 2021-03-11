@@ -55,18 +55,21 @@ class CustomTabHelper {
 
         when {
             packagesSupportingCustomTabs.isEmpty() -> sPackageNameToUse = null
-            packagesSupportingCustomTabs.size == 1 -> sPackageNameToUse =
-                packagesSupportingCustomTabs[0]
-            !TextUtils.isEmpty(defaultViewHandlerPackageName)
-                    && !hasSpecializedHandlerIntents(context, activityIntent)
-                    && packagesSupportingCustomTabs.contains(defaultViewHandlerPackageName) ->
+            packagesSupportingCustomTabs.size == 1 ->
+                sPackageNameToUse =
+                    packagesSupportingCustomTabs[0]
+            !TextUtils.isEmpty(defaultViewHandlerPackageName) &&
+                !hasSpecializedHandlerIntents(context, activityIntent)
+                && packagesSupportingCustomTabs.contains(defaultViewHandlerPackageName) ->
                 sPackageNameToUse = defaultViewHandlerPackageName
-            packagesSupportingCustomTabs.contains(STABLE_PACKAGE) -> sPackageNameToUse =
-                STABLE_PACKAGE
+            packagesSupportingCustomTabs.contains(STABLE_PACKAGE) ->
+                sPackageNameToUse =
+                    STABLE_PACKAGE
             packagesSupportingCustomTabs.contains(BETA_PACKAGE) -> sPackageNameToUse = BETA_PACKAGE
             packagesSupportingCustomTabs.contains(DEV_PACKAGE) -> sPackageNameToUse = DEV_PACKAGE
-            packagesSupportingCustomTabs.contains(LOCAL_PACKAGE) -> sPackageNameToUse =
-                LOCAL_PACKAGE
+            packagesSupportingCustomTabs.contains(LOCAL_PACKAGE) ->
+                sPackageNameToUse =
+                    LOCAL_PACKAGE
         }
         return sPackageNameToUse
     }

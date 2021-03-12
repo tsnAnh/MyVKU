@@ -8,6 +8,6 @@ object SecretConstants {
     const val ABSENCE_URL = "http://daotao.vku.udn.vn/thongbaonghi"
     const val MAKEUP_URL = "http://daotao.vku.udn.vn/thongbaobu"
     const val TEACHERS_URL = "http://daotao.vku.udn.vn/listgv"
-    const val NEWS_URL = "http://daotao.vku.udn.vn/thong-bao-chung/new-"
+    const val NEWS_URL = "http://daotao.vku.udn.vn/baimoinhat"
     const val TKB_URL = "http://daotao.vku.udn.vn/tkb"
 }

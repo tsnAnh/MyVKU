@@ -10,12 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialFadeThrough
-import kotlinx.coroutines.Job
 
-abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment() {
-    protected abstract val viewModel: VM
+abstract class BaseFragment<DB : ViewDataBinding> : Fragment() {
     protected lateinit var binding: DB
-    protected val jobs = mutableListOf<Job>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,17 +41,10 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
-        jobs.add(
-            lifecycleScope.launchWhenStarted {
-                viewModel.observeData()
-            }
-        )
+        lifecycleScope.launchWhenStarted {
+            observeData()
+        }
     }
 
-    protected abstract suspend fun VM.observeData()
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        jobs.forEach(Job::cancel)
-    }
+    protected abstract fun observeData()
 }

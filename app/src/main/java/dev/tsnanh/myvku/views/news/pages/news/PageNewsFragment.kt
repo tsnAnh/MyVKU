@@ -7,12 +7,9 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ActivityCompat
@@ -21,8 +18,6 @@ import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -46,6 +41,7 @@ import dev.tsnanh.myvku.utils.unescapeJava
 import dev.tsnanh.myvku.views.news.NewsFragmentDirections
 import dev.tsnanh.myvku.views.news.attachment.adapter.AttachmentAdapter
 import dev.tsnanh.myvku.views.news.attachment.adapter.AttachmentClickListener
+import dev.tsnanh.myvku.views.news.pages.BaseNewsPageFragment
 import kotlinx.coroutines.flow.collect
 import org.apache.commons.text.StringEscapeUtils
 import timber.log.Timber
@@ -53,14 +49,13 @@ import java.net.URLConnection
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PageNewsFragment : Fragment() {
+class PageNewsFragment : BaseNewsPageFragment() {
 
     companion object {
         fun newInstance() = PageNewsFragment()
     }
 
     private val viewModel: PageNewsViewModel by viewModels()
-    private lateinit var binding: FragmentPageNewsBinding
     private val customTabHelper = CustomTabHelper()
     private lateinit var adapterNews: NewsAdapter
     private val attachmentReceiver = AttachmentReceiver()
@@ -98,6 +93,35 @@ class PageNewsFragment : Fragment() {
             }
         }
 
+    private val onPressListener: (News) -> Boolean = { news ->
+        val binding =
+            LayoutDialogPreviewNewsBinding.inflate(LayoutInflater.from(requireContext()))
+        with(binding) {
+            titleText =
+                news.title?.removeSurrounding("\"")?.unescapeJava()?.replace("\\", "")
+            content.text =
+                HtmlCompat.fromHtml(
+                    StringEscapeUtils.unescapeJava(
+                        StringEscapeUtils.unescapeHtml4(
+                            news.content
+                        )
+                    ) ?: "",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+        }
+        with(dialog) {
+            setView(binding.root)
+            show()
+        }
+        this@PageNewsFragment.binding.list.layoutManager =
+            object : LinearLayoutManager(requireContext()) {
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }
+        true
+    }
+
     private fun requestPermission(): Unit =
         permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
@@ -106,20 +130,36 @@ class PageNewsFragment : Fragment() {
 
     private val dialog by lazy { MaterialAlertDialogBuilder(requireContext()).create() }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page_news, container, false)
-
-        return binding.root
+    private val shareClickListener = { news: News ->
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_SUBJECT, news.title)
+            putExtra(Intent.EXTRA_TEXT, "${news.content?.take(30)}...")
+        }
+        startActivity(
+            Intent.createChooser(
+                intent,
+                requireContext().getString(R.string.text_share_via)
+            )
+        )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private val onReleaseListener = {
+        with(dialog) {
+            setView(null)
+            dismiss()
+        }
+        binding.list.layoutManager =
+            object : LinearLayoutManager(requireContext()) {
+                override fun canScrollVertically(): Boolean {
+                    return true
+                }
+            }
+        true
+    }
 
-        binding.lifecycleOwner = viewLifecycleOwner
+    override fun FragmentPageNewsBinding.initViews() {
+        super.initViews()
 
         with(binding.layoutNoItem) {
             message.text = requireContext().getString(R.string.text_no_news_here)
@@ -129,69 +169,17 @@ class PageNewsFragment : Fragment() {
         adapterNews = NewsAdapter(
             NewsClickListener(
                 viewClickListener = ::launchNews,
-                shareClickListener = { news ->
-                    val intent = Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_SUBJECT, news.title)
-                        putExtra(Intent.EXTRA_TEXT, "${news.content?.take(30)}...")
-                    }
-                    startActivity(
-                        Intent.createChooser(
-                            intent,
-                            requireContext().getString(R.string.text_share_via)
-                        )
-                    )
-                },
-                onPressListener = { news ->
-                    val binding =
-                        LayoutDialogPreviewNewsBinding.inflate(LayoutInflater.from(requireContext()))
-                    with(binding) {
-                        titleText =
-                            news.title?.removeSurrounding("\"")?.unescapeJava()?.replace("\\", "")
-                        content.text =
-                            HtmlCompat.fromHtml(
-                                StringEscapeUtils.unescapeJava(
-                                    StringEscapeUtils.unescapeHtml4(
-                                        news.content
-                                    )
-                                ) ?: "",
-                                HtmlCompat.FROM_HTML_MODE_LEGACY
-                            )
-                    }
-                    with(dialog) {
-                        setView(binding.root)
-                        show()
-                    }
-                    this@PageNewsFragment.binding.list.layoutManager =
-                        object : LinearLayoutManager(requireContext()) {
-                            override fun canScrollVertically(): Boolean {
-                                return false
-                            }
-                        }
-                    true
-                },
-                onReleaseListener = {
-                    with(dialog) {
-                        setView(null)
-                        dismiss()
-                    }
-                    this@PageNewsFragment.binding.list.layoutManager =
-                        object : LinearLayoutManager(requireContext()) {
-                            override fun canScrollVertically(): Boolean {
-                                return true
-                            }
-                        }
-                    true
-                }
+                shareClickListener = shareClickListener,
+                onPressListener = onPressListener,
+                onReleaseListener = onReleaseListener
             )
         )
 
-        binding.list.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            setHasFixedSize(true)
-            adapter = adapterNews
-        }
+        list.adapter = adapterNews
 
+    }
+
+    override fun observeData() {
         lifecycleScope.launchWhenStarted {
             viewModel.news
                 .collect { state ->

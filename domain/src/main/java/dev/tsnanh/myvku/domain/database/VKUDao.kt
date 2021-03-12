@@ -67,6 +67,9 @@ interface VKUDao {
      */
     @Query("SELECT * FROM subjects WHERE dayOfWeek = :dayOfWeek")
     fun getTimetableWithFilter(dayOfWeek: String): Flow<List<Subject>>
+
+    @Query("SELECT * FROM news ORDER BY createdDate DESC")
+    suspend fun getLatestNews(): News
 //
 //    @Insert(entity = Teacher::class, onConflict = OnConflictStrategy.REPLACE)
 //    fun insertAllTeachers(vararg teacher: Teacher)

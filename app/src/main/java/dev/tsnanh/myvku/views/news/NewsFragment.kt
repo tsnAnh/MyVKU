@@ -21,8 +21,8 @@ private const val MIN_ALPHA = 0.5f
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class NewsFragment : BaseFragment<NewsViewModel, FragmentNewsBinding>() {
-    override val viewModel: NewsViewModel by viewModels()
+class NewsFragment : BaseFragment<FragmentNewsBinding>() {
+    private val viewModel: NewsViewModel by viewModels()
     override fun initDataBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -81,7 +81,7 @@ class NewsFragment : BaseFragment<NewsViewModel, FragmentNewsBinding>() {
         }.attach()
     }
 
-    override suspend fun NewsViewModel.observeData() {
-        binding.viewModel = this
+    override fun observeData() {
+        binding.viewModel = viewModel
     }
 }

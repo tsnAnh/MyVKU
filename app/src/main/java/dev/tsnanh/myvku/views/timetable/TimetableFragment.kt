@@ -13,10 +13,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -34,22 +35,21 @@ import dev.tsnanh.myvku.utils.getDayOfWeekFromString
 import dev.tsnanh.myvku.utils.getHourFromLesson
 import dev.tsnanh.myvku.utils.getMinutesFromStringLesson
 import dev.tsnanh.myvku.utils.showSnackbar
-import dev.tsnanh.myvku.views.main.MainViewModel
 import dev.tsnanh.myvku.views.timetable.adapter.TimetableAdapter
 import dev.tsnanh.myvku.views.timetable.adapter.TimetableClickListener
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 private const val GOOGLE_SIGN_IN_REQUEST_CODE = 0
 
 @AndroidEntryPoint
 class TimetableFragment :
-    BaseFragment<TimetableViewModel, FragmentTimetableBinding>(),
+    BaseFragment<FragmentTimetableBinding>(),
     OnListStateChangeListener {
     private lateinit var timetableAdapter: TimetableAdapter
-    override val viewModel: TimetableViewModel by viewModels()
-    private val activityViewModel by activityViewModels<MainViewModel>()
+    private val viewModel: TimetableViewModel by viewModels()
 
     @Inject
     lateinit var googleSignInClient: GoogleSignInClient
@@ -59,28 +59,35 @@ class TimetableFragment :
 
     private val loginResultHandler =
         registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-            try {
-                GoogleSignIn.getSignedInAccountFromIntent(it.data).addOnSuccessListener { user ->
-                    activityViewModel.setUser(user)
-                    viewModel.refresh()
-                }.addOnFailureListener { e ->
+            lifecycleScope.launch {
+                showProgress(isVisible = false)
+                try {
+                    val account = GoogleSignIn.getSignedInAccountFromIntent(it.data).await()
+                    if (account.email != null && account.email!!.endsWith("vku.udn.vn")) {
+                        sharedPreferences.edit(commit = true) {
+                            putString("email", account.email)
+                        }
+                    } else {
+                        googleSignInClient.signOut().await()
+                        showSnackbar(
+                            binding.root,
+                            "You must use vku.udn.vn email!",
+                            "Try again",
+                            { performSignIn() })
+                    }
+                } catch (e: ApiException) {
                     println(e)
                     showSnackbar(binding.root, "Failed to sign in")
                 }
-            } catch (e: ApiException) {
-                println(e)
-                showSnackbar(binding.root, "Failed to sign in")
             }
         }
 
-    private fun createTimetableAdapter(): TimetableAdapter {
-        return TimetableAdapter(
-            TimetableClickListener(
-                setAlarmClickListener, comeInClassClickListener
-            ),
-            this
-        )
-    }
+    private fun createTimetableAdapter() = TimetableAdapter(
+        TimetableClickListener(
+            setAlarmClickListener, comeInClassClickListener
+        ),
+        this
+    )
 
     private val setAlarmClickListener: (Subject) -> Unit = { subject ->
         val intent = Intent(AlarmClock.ACTION_SET_ALARM).apply {
@@ -124,39 +131,33 @@ class TimetableFragment :
             layoutManager = LinearLayoutManager(requireContext())
             adapter = timetableAdapter
         }
-    }
-
-    override suspend fun TimetableViewModel.observeData() {
-        println("YESSSSSSSSSS")
-        activityViewModel.user.collect { acc ->
-            if (acc != null) {
-                binding.listSubjects.isVisible = true
-            } else {
-                binding.listSubjects.isVisible = false
-                performSignIn()
+        chipGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.all_filter_chip -> this@TimetableFragment.viewModel.onFilterAll()
+                R.id.tomorrow_filter_chip -> this@TimetableFragment.viewModel.onFilterTomorrow()
+                R.id.today_filter_chip -> this@TimetableFragment.viewModel.onFilterToday()
             }
         }
-        timetable
-            .catch { println(it) }
-            .collect { state ->
+    }
+
+    override fun observeData() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.timetable.collect { state ->
                 when (state) {
                     is State.Error -> println(state.throwable)
                     is State.Loading -> showProgress(true)
                     is State.Success -> {
-                        showProgress(false)
-                        timetableAdapter.submitList(state.data?.toMutableList())
-                        println("Data: ${state.data}")
+                        timetableAdapter.submitList(state.data?.toMutableList()) {
+                            showProgress(isVisible = false)
+                        }
                     }
                 }
             }
-        refresh()
+        }
     }
 
     private fun showProgress(isVisible: Boolean = true) {
-        with(binding) {
-            progressBar.isVisible = isVisible
-            listSubjects.isVisible = !isVisible
-        }
+        binding.progressBar.isVisible = isVisible
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
@@ -173,9 +174,28 @@ class TimetableFragment :
         )
     }
 
+    override fun onStart() {
+        super.onStart()
+        val account = GoogleSignIn.getLastSignedInAccount(requireContext())
+        if (account == null) {
+            showProgress()
+            performSignIn()
+        } else {
+            showProgress(isVisible = false)
+        }
+    }
+
     override fun onListEmpty() {
+        with(binding) {
+            layoutNoItem.root.isVisible = true
+            listSubjects.isVisible = false
+        }
     }
 
     override fun onListHasData() {
+        with(binding) {
+            layoutNoItem.root.isVisible = false
+            listSubjects.isVisible = true
+        }
     }
 }

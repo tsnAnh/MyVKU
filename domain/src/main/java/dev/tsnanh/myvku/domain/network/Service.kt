@@ -7,6 +7,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import dev.tsnanh.myvku.domain.constants.SecretConstants
 import dev.tsnanh.myvku.domain.entities.Absence
 import dev.tsnanh.myvku.domain.entities.MakeUpClass
+import dev.tsnanh.myvku.domain.entities.News
 import dev.tsnanh.myvku.domain.entities.Notification
 import dev.tsnanh.myvku.domain.entities.Subject
 import dev.tsnanh.myvku.domain.entities.Teacher
@@ -14,7 +15,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -43,7 +43,9 @@ private val client = OkHttpClient.Builder()
 private val retrofit = Retrofit.Builder()
     .client(client)
     .addConverterFactory(
-        Json.asConverterFactory(MediaType.parse("application/json")!!)
+        Json {
+            isLenient = true
+        }.asConverterFactory(MediaType.parse("application/json")!!)
     )
     .baseUrl(BASE_URL)
     .build()
@@ -74,7 +76,7 @@ interface VKUService {
     suspend fun getNews(
         @Url url: String = SecretConstants.NEWS_URL,
         @Query("time") time: String
-    ): ResponseBody
+    ): List<News>
 
     /**
      * Get all teacher from daotao.sict.udn.vn

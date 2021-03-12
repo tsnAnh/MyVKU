@@ -199,4 +199,5 @@
     <string name="school_reminder_time_title">School reminder time</string>
     <string name="school_reminder_time_summary">Change when the app reminds you to go to school</string>
     <string name="sign_in">Sign In</string>
+    <string name="scroll_to_top_of_the_list">Scroll to top of the list</string>
 </resources>

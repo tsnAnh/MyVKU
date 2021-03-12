@@ -6,7 +6,6 @@ package dev.tsnanh.myvku.views.notification
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.myvku.base.BaseFragment
@@ -15,8 +14,7 @@ import dev.tsnanh.myvku.views.notification.adapter.NotificationAdapter
 import dev.tsnanh.myvku.views.notification.adapter.NotificationClickListener
 
 @AndroidEntryPoint
-class NotificationsFragment : BaseFragment<NotificationsViewModel, FragmentNotificationsBinding>() {
-    override val viewModel: NotificationsViewModel by viewModels()
+class NotificationsFragment : BaseFragment<FragmentNotificationsBinding>() {
     override fun initDataBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,6 +33,6 @@ class NotificationsFragment : BaseFragment<NotificationsViewModel, FragmentNotif
         }
     }
 
-    override suspend fun NotificationsViewModel.observeData() {
+    override fun observeData() {
     }
 }

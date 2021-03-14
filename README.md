@@ -1,3 +1,4 @@
+[![Android CI](https://github.com/tsnanh/MyVKU/actions/workflows/android.yml/badge.svg?branch=master)](https://github.com/tsnanh/MyVKU/actions/workflows/android.yml)
 # My VKU
 ## Caution
 My VKU is currently under heavy development. Note that some changes (such as database schema modifications) are not backwards compatible and may cause the app to crash. In this case, please uninstall and re-install the app.
@@ -30,7 +31,6 @@ Gradle’s Kotlin DSL provides an alternative syntax to the traditional Groovy D
 * Google's Android Library
   * [AndroidX Browser](https://developer.chrome.com/multidevice/android/customtabs)
   * [Google Material Design](https://material.io) - Material Design library for Android
-  * [Google FlexboxLayout](https://github.com/google/flexbox-layout) - FlexboxLayout is a library project which brings the similar capabilities of CSS Flexible Box Layout Module to Android.
 * [Android Jetpack](https://developer.android.com/jetpack) - Jetpack is a suite of libraries, tools, and guidance to help developers write high-quality apps more easily.
   * [AppCompat](https://developer.android.com/topic/libraries/support-library/packages#v7-appcompat) - Degrade gracefully on older versions of Android.
   * [Android KTX](https://developer.android.com/kotlin/ktx) - Write more concise, idiomatic Kotlin code.

@@ -54,6 +54,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
                 getString(R.string.text_news)
             )
         }
+        // startNotifyNewsServicePeriodic()
     }
 
     override fun onStart() {
@@ -98,5 +99,12 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     }
 
     override fun MainViewModel.observeData() {
+    }
+
+    override fun onBackPressed() {
+        if (navController.currentDestination?.id == R.id.navigation_news)
+            finish()
+        else
+            super.onBackPressed()
     }
 }

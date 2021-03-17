@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2020 My VKU by tsnAnh
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionBarSize"
+        android:elevation="0dp"
+        android:gravity="center"
+        android:transitionGroup="false"
+        app:buttonGravity="center_vertical"
+        app:contentInsetStart="0dp"
+        app:navigationIcon="@drawable/ic_outline_settings_24">
+
+        <ImageView
+            android:id="@+id/vku"
+            android:layout_width="@dimen/vku_photo_app_bar_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/profile_photo"
+            android:padding="4dp"
+            app:srcCompat="@drawable/vku_logo_official" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/app_bar_profile_photo_size"
+            android:layout_height="@dimen/app_bar_profile_photo_size"
+            android:layout_gravity="end"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircleImageOverlay"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+</layout>

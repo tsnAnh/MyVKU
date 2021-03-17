@@ -7,13 +7,16 @@ import dev.tsnanh.myvku.domain.repositories.TimetableRepo
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface RetrieveUserTimetableUseCase {
+interface RetrieveTimetableUseCase {
     fun invoke(email: String, type: TimetableFilter): Flow<State<List<Subject>>>
+    suspend fun refresh(email: String)
 }
 
-class RetrieveUserTimetableUseCaseImpl @Inject constructor(
+class RetrieveTimetableUseCaseImpl @Inject constructor(
     private val timetableRepo: TimetableRepo
-) : RetrieveUserTimetableUseCase {
+) : RetrieveTimetableUseCase {
     override fun invoke(email: String, type: TimetableFilter) =
-        timetableRepo.getTimetable(email, type)
+        timetableRepo.getLocalTimetable(email, type)
+
+    override suspend fun refresh(email: String) = timetableRepo.refresh(email)
 }

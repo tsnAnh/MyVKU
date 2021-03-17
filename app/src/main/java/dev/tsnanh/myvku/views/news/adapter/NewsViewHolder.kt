@@ -6,11 +6,9 @@ package dev.tsnanh.myvku.views.news.adapter
 
 import android.os.Build
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.myvku.R
-import dev.tsnanh.myvku.adapters.NewsClickListener
 import dev.tsnanh.myvku.databinding.ItemNewsBinding
 import dev.tsnanh.myvku.domain.entities.News
 import dev.tsnanh.myvku.utils.unescapeJava
@@ -42,13 +40,6 @@ class NewsViewHolder private constructor(
                     }
                 }
                 setOnLongClickListener { listener.onPress(news) }
-                setOnTouchListener { v, event ->
-                    v.onTouchEvent(event)
-                    when (event.action) {
-                        MotionEvent.ACTION_UP -> listener.onRelease()
-                    }
-                    true
-                }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 root.isContextClickable = false

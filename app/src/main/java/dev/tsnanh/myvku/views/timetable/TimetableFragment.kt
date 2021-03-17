@@ -113,23 +113,21 @@ class TimetableFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
     ): FragmentTimetableBinding {
-        setHasOptionsMenu(true)
         return FragmentTimetableBinding.inflate(inflater, container, false)
     }
 
     override fun FragmentTimetableBinding.initViews() {
         with(this) {
             lifecycleOwner = viewLifecycleOwner
-            viewModel = this@TimetableFragment.viewModel
         }
 
         timetableAdapter = createTimetableAdapter()
 
         with(listSubjects) {
-            setHasFixedSize(false)
-            isNestedScrollingEnabled = true
+            setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = timetableAdapter
+            itemAnimator = null
         }
         chipGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
@@ -138,6 +136,7 @@ class TimetableFragment :
                 R.id.today_filter_chip -> this@TimetableFragment.viewModel.onFilterToday()
             }
         }
+        layoutNoItem.message.text = "No Subjects"
     }
 
     override fun observeData() {
@@ -145,9 +144,12 @@ class TimetableFragment :
             viewModel.timetable.collect { state ->
                 when (state) {
                     is State.Error -> println(state.throwable)
-                    is State.Loading -> showProgress(true)
+                    is State.Loading -> {
+                        showProgress(true)
+                        binding.layoutNoItem.root.isVisible = false
+                    }
                     is State.Success -> {
-                        timetableAdapter.submitList(state.data?.toMutableList()) {
+                        timetableAdapter.submitList(state.data) {
                             showProgress(isVisible = false)
                         }
                     }
@@ -188,14 +190,12 @@ class TimetableFragment :
     override fun onListEmpty() {
         with(binding) {
             layoutNoItem.root.isVisible = true
-            listSubjects.isVisible = false
         }
     }
 
     override fun onListHasData() {
         with(binding) {
             layoutNoItem.root.isVisible = false
-            listSubjects.isVisible = true
         }
     }
 }

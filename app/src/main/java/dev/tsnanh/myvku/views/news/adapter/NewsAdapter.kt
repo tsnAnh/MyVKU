@@ -2,18 +2,19 @@
  * Copyright (c) 2020 My VKU by tsnAnh
  */
 
-package dev.tsnanh.myvku.adapters
+package dev.tsnanh.myvku.views.news.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
+import dev.tsnanh.myvku.base.BaseRecyclerViewAdapter
+import dev.tsnanh.myvku.base.OnListStateChangeListener
 import dev.tsnanh.myvku.domain.entities.News
-import dev.tsnanh.myvku.views.news.adapter.NewsViewHolder
 import javax.inject.Inject
 
 class NewsAdapter @Inject constructor(
-    private val clickListener: NewsClickListener
-) : ListAdapter<News, NewsViewHolder>(NewsDiffUtil()) {
+    private val clickListener: NewsClickListener,
+    onListStateChangeListener: OnListStateChangeListener
+) : BaseRecyclerViewAdapter<News, NewsViewHolder>(NewsDiffUtil(), onListStateChangeListener) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         NewsViewHolder.from(parent)
 
@@ -27,12 +28,10 @@ class NewsClickListener(
     val viewClickListener: (News) -> Unit,
     val shareClickListener: (News) -> Unit,
     val onPressListener: (News) -> Boolean,
-    val onReleaseListener: () -> Boolean,
 ) {
     fun onViewClick(news: News) = viewClickListener(news)
     fun onShareClick(news: News) = shareClickListener(news)
     fun onPress(news: News) = onPressListener(news)
-    fun onRelease() = onReleaseListener()
 }
 
 class NewsDiffUtil : DiffUtil.ItemCallback<News>() {

@@ -4,4 +4,6 @@
 
 <resources>
     <dimen name="actionBarSize">64dp</dimen>
+    <dimen name="app_bar_profile_photo_size">36dp</dimen>
+    <dimen name="vku_photo_app_bar_width">200dp</dimen>
 </resources>

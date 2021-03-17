@@ -10,7 +10,10 @@ import javax.inject.Inject
 class TimetableAdapter @Inject constructor(
     private val listener: TimetableClickListener,
     onListStateChangeListener: OnListStateChangeListener
-) : BaseRecyclerViewAdapter<Subject, SubjectViewHolder>(SubjectDiffUtil(), onListStateChangeListener) {
+) : BaseRecyclerViewAdapter<Subject, SubjectViewHolder>(
+    SubjectDiffUtil(),
+    onListStateChangeListener
+) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         SubjectViewHolder.from(parent)
 
@@ -20,7 +23,8 @@ class TimetableAdapter @Inject constructor(
 }
 
 class SubjectDiffUtil : DiffUtil.ItemCallback<Subject>() {
-    override fun areItemsTheSame(oldItem: Subject, newItem: Subject) = oldItem === newItem
+    override fun areItemsTheSame(oldItem: Subject, newItem: Subject) =
+        oldItem.className == newItem.className
 
     override fun areContentsTheSame(oldItem: Subject, newItem: Subject) =
         oldItem.className == newItem.className

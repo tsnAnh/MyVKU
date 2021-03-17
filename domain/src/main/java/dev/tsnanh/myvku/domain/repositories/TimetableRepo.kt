@@ -1,37 +1,57 @@
 package dev.tsnanh.myvku.domain.repositories
 
+import dev.tsnanh.myvku.domain.database.VKUDao
 import dev.tsnanh.myvku.domain.entities.State
 import dev.tsnanh.myvku.domain.entities.Subject
 import dev.tsnanh.myvku.domain.network.VKUServiceApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.mapLatest
 import java.util.Calendar
 import javax.inject.Inject
 
 interface TimetableRepo {
-    fun getTimetable(email: String, type: TimetableFilter): Flow<State<List<Subject>>>
+    fun getLocalTimetable(email: String, type: TimetableFilter): Flow<State<List<Subject>>>
+    suspend fun refresh(email: String)
 }
 
-class TimetableRepoImpl @Inject constructor() : TimetableRepo {
-    override fun getTimetable(email: String, type: TimetableFilter) = flow {
+class TimetableRepoImpl @Inject constructor(
+    private val vkuDao: VKUDao
+) : TimetableRepo {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun getLocalTimetable(email: String, type: TimetableFilter) = flow {
         emit(State.loading())
-        val subjects = VKUServiceApi.network.getTimetable(email = email)
-            .filter {
+        emitAll(vkuDao.getAllSubjectsFlow().mapLatest {
+            State.success(it.filter { subject ->
                 val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
                 when (type) {
                     TimetableFilter.ALL -> true
-                    TimetableFilter.TODAY -> dayOfWeek.toVietnameseDayOfWeek == it.dayOfWeek
-                    TimetableFilter.TOMORROW -> (if (dayOfWeek == 7) 0 else dayOfWeek + 1)
-                        .toVietnameseDayOfWeek == it.dayOfWeek
+                    TimetableFilter.TODAY -> dayOfWeek.toVietnameseDayOfWeek == subject.dayOfWeek
+                    TimetableFilter.TOMORROW -> (if (dayOfWeek == 7) 1 else dayOfWeek + 1)
+                        .toVietnameseDayOfWeek == subject.dayOfWeek
                 }
-            }
-        emit(State.success(subjects))
+            })
+        })
     }.catch { t ->
         emit(State.error(t))
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun refresh(email: String) {
+        val subjects = VKUServiceApi.network.getTimetable(email = email).sortedBy { it.className }
+        val localSubjects = vkuDao.getAllSubjects().sortedBy { it.className }
+        if (localSubjects.isEmpty() || (!subjects.containsAll(localSubjects) && !localSubjects.containsAll(
+                subjects
+            ))
+        ) {
+            vkuDao.deleteAllSubjects()
+            vkuDao.insertAllSubjects(*subjects.toTypedArray())
+        }
+    }
 }
 
 enum class TimetableFilter {

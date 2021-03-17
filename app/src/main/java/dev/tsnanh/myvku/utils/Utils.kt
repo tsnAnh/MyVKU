@@ -6,6 +6,7 @@
 
 package dev.tsnanh.myvku.utils
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.ContentResolver
@@ -16,6 +17,7 @@ import android.net.NetworkInfo
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.view.View
+import androidx.core.content.getSystemService
 import com.google.android.material.snackbar.Snackbar
 import dev.tsnanh.myvku.R
 import dev.tsnanh.myvku.domain.entities.Subject
@@ -135,27 +137,28 @@ fun String.getDrawableType(): Int {
     }
 }
 
-fun AlarmManager.startNotifyNewsServicePeriodic(context: Context) {
+@SuppressLint("UnspecifiedImmutableFlag")
+fun Context.startNotifyNewsServicePeriodic() {
     val pendingIntent = PendingIntent.getBroadcast(
-        context,
+        this,
         9797,
-        Intent(context, NotifyNewsReceiver::class.java),
+        Intent(this, NotifyNewsReceiver::class.java),
         PendingIntent.FLAG_NO_CREATE
     )
 
     if (pendingIntent == null) {
         val anotherPendingIntent = PendingIntent.getBroadcast(
-            context,
+            this,
             9797,
-            Intent(context, NotifyNewsReceiver::class.java),
+            Intent(this, NotifyNewsReceiver::class.java),
             PendingIntent.FLAG_NO_CREATE
         )
 
         val triggerAt = Calendar.getInstance().timeInMillis
-        setInexactRepeating(
+        getSystemService<AlarmManager>()?.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             triggerAt,
-            triggerAt + 5000,
+            AlarmManager.INTERVAL_HOUR * 2,
             anotherPendingIntent
         )
     }

@@ -4,11 +4,12 @@
 
 package dev.tsnanh.myvku.domain.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import dev.tsnanh.myvku.domain.entities.Absence
+import dev.tsnanh.myvku.domain.entities.MakeupClass
 import dev.tsnanh.myvku.domain.entities.News
 import dev.tsnanh.myvku.domain.entities.Subject
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +26,10 @@ interface VKUDao {
      * @return List<News>
      */
     @Query("SELECT * FROM news ORDER BY updatedDate DESC")
-    fun getAllNews(): Flow<List<News>>
+    fun getAllNewsFlow(): Flow<List<News>>
+
+    @Query("SELECT * FROM news ORDER BY updatedDate DESC LIMIT :limit")
+    suspend fun getAllNewsWithLimit(limit: Int = 10): List<News>
 
     /**
      * Insert all news get from REST API
@@ -46,31 +50,46 @@ interface VKUDao {
     /**
      * Retrieve all subjects cached in database
      * @author tsnAnh
-     * @return LiveData<List<Subject>>
-     */
-    @Query("SELECT * FROM subjects ORDER BY lesson")
-    fun getAllSubjectsLiveData(): LiveData<List<Subject>>
-
-    /**
-     * Retrieve all subjects cached in database
-     * @author tsnAnh
      * @return List<Subject>
      */
-    @Query("SELECT * FROM subjects ORDER BY lesson")
-    fun getAllSubjects(): Flow<List<Subject>>
+    @Query("SELECT * FROM subjects ORDER BY className")
+    fun getAllSubjectsFlow(): Flow<List<Subject>>
 
-    /**
-     * Retrieve all subject with specified day of week
-     * @author tsnAnh
-     * @param dayOfWeek String
-     * @return Flow<List<Subject>>
-     */
-    @Query("SELECT * FROM subjects WHERE dayOfWeek = :dayOfWeek")
-    fun getTimetableWithFilter(dayOfWeek: String): Flow<List<Subject>>
+    @Query("SELECT * FROM subjects ORDER BY className")
+    fun getAllSubjects(): List<Subject>
 
-    @Query("SELECT * FROM news ORDER BY createdDate DESC")
+    @Query("SELECT * FROM news ORDER BY updatedDate DESC")
     suspend fun getLatestNews(): News
 //
 //    @Insert(entity = Teacher::class, onConflict = OnConflictStrategy.REPLACE)
 //    fun insertAllTeachers(vararg teacher: Teacher)
+    @Query("DELETE FROM subjects")
+    suspend fun deleteAllSubjects()
+
+    @Query("DELETE FROM news")
+    suspend fun deleteAllNews()
+
+    @Query("SELECT * FROM absence ORDER BY dateNotice DESC, className ASC")
+    fun getAllAbsencesFlow(): Flow<List<Absence>>
+
+    @Query("SELECT * FROM absence ORDER BY dateNotice DESC, className ASC LIMIT :limit")
+    fun getAllAbsencesWithLimit(limit: Int = 10): List<Absence>
+
+    @Query("DELETE FROM absence")
+    suspend fun deleteAllAbsences()
+
+    @Insert(entity = Absence::class, onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllAbsences(vararg absences: Absence)
+
+    @Query("SELECT * FROM makeupclass ORDER BY dateMakeUp DESC")
+    fun getAllMakeupClassesFlow(): Flow<List<MakeupClass>>
+
+    @Query("SELECT * FROM makeupclass ORDER BY dateMakeUp DESC LIMIT :limit")
+    fun getAllMakeupClassesWithLimit(limit: Int = 10): List<MakeupClass>
+
+    @Query("DELETE FROM makeupclass")
+    suspend fun deleteAllMakeupClasses()
+
+    @Insert(entity = MakeupClass::class, onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllMakeupClasses(vararg makeupClasses: MakeupClass)
 }

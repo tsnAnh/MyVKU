@@ -4,10 +4,12 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.tsnanh.myvku.domain.repositories.AbsenceRepo
+import dev.tsnanh.myvku.domain.repositories.AbsenceRepoImpl
+import dev.tsnanh.myvku.domain.repositories.MakeupRepo
+import dev.tsnanh.myvku.domain.repositories.MakeupRepoImpl
 import dev.tsnanh.myvku.domain.repositories.NewsRepo
 import dev.tsnanh.myvku.domain.repositories.NewsRepoImpl
-import dev.tsnanh.myvku.domain.repositories.NoticeRepo
-import dev.tsnanh.myvku.domain.repositories.NoticeRepoImpl
 import dev.tsnanh.myvku.domain.repositories.NotificationRepo
 import dev.tsnanh.myvku.domain.repositories.NotificationRepoImpl
 import dev.tsnanh.myvku.domain.repositories.TeacherRepo
@@ -25,7 +27,11 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindNoticeRepo(noticeRepoImpl: NoticeRepoImpl): NoticeRepo
+    abstract fun bindAbsenceRepo(absenceRepoImpl: AbsenceRepoImpl): AbsenceRepo
+
+    @Binds
+    @Singleton
+    abstract fun bindMakeupRepo(makeupRepoImpl: MakeupRepoImpl): MakeupRepo
 
     @Binds
     @Singleton

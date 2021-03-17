@@ -16,6 +16,7 @@ import javax.inject.Inject
 
 interface NewsRepo {
     fun getLatestNews(): Flow<State<List<News>>>
+    suspend fun refresh()
 }
 
 class NewsRepoImpl @Inject constructor(
@@ -25,14 +26,15 @@ class NewsRepoImpl @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getLatestNews() = flow {
         emit(State.loading())
-        val news = VKUServiceApi.network.getNews(time = "")
-        if (news[0] == dao.getLatestNews()) {
-            emitAll(dao.getAllNews().mapLatest { State.success(it) })
-            return@flow
+        emitAll(dao.getAllNewsFlow().mapLatest { State.success(it) })
+    }.catch { emit(State.error(it)) }.flowOn(Dispatchers.IO)
+
+    override suspend fun refresh() {
+        val news = VKUServiceApi.network.getNews()
+        val subList = news.sortedByDescending { it.updatedDate }.subList(0, 10)
+        val localNews = dao.getAllNewsWithLimit()
+        if (localNews.isEmpty() || (!subList.containsAll(localNews) && !localNews.containsAll(subList))) {
+            dao.insertAllNews(*news.toTypedArray())
         }
-        dao.insertAllNews(*news.toTypedArray())
-        emit(State.success(news))
-    }.catch { t ->
-        emit(State.error(t))
-    }.flowOn(Dispatchers.IO)
+    }
 }

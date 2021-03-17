@@ -7,6 +7,7 @@ package dev.tsnanh.myvku.views.news
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.myvku.R
@@ -31,6 +32,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>() {
     override fun FragmentNewsBinding.initViews() {
         binding.pager.apply {
             adapter = NewsPagerAdapter(this@NewsFragment)
+            this.offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
             // TODO: 8/28/2020 make material shared axis page transformer
             setPageTransformer { page, position ->
                 page.apply {

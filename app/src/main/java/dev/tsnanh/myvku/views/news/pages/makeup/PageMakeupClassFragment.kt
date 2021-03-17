@@ -23,7 +23,7 @@ class PageMakeupClassFragment : BaseNewsPageFragment() {
     override fun FragmentPageNewsBinding.initViews() {
         super.initViews()
         adapterMakeupClass = MakeupClassAdapter()
-        list.adapter = adapterMakeupClass
+        listNews.list.adapter = adapterMakeupClass
     }
 
     override fun observeData() {
@@ -47,7 +47,6 @@ class PageMakeupClassFragment : BaseNewsPageFragment() {
                             } else {
                                 showLayout(
                                     requireContext().getString(R.string.text_no_absences_here),
-                                    R.drawable.empty
                                 )
                             }
                         }
@@ -56,10 +55,9 @@ class PageMakeupClassFragment : BaseNewsPageFragment() {
         }
     }
 
-    private fun showLayout(messageString: String, drawable: Int) {
+    private fun showLayout(messageString: String) {
         with(binding.layoutNoItem) {
             message.text = messageString
-            image.setImageResource(drawable)
             root.isVisible = true
         }
     }

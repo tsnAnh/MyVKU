@@ -6,7 +6,7 @@ package dev.tsnanh.myvku.domain.network
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dev.tsnanh.myvku.domain.constants.SecretConstants
 import dev.tsnanh.myvku.domain.entities.Absence
-import dev.tsnanh.myvku.domain.entities.MakeUpClass
+import dev.tsnanh.myvku.domain.entities.MakeupClass
 import dev.tsnanh.myvku.domain.entities.News
 import dev.tsnanh.myvku.domain.entities.Notification
 import dev.tsnanh.myvku.domain.entities.Subject
@@ -75,7 +75,7 @@ interface VKUService {
     @GET
     suspend fun getNews(
         @Url url: String = SecretConstants.NEWS_URL,
-        @Query("time") time: String
+        @Query("time") time: String = ""
     ): List<News>
 
     /**
@@ -87,13 +87,16 @@ interface VKUService {
     suspend fun getAllTeachers(@Url url: String = SecretConstants.TEACHERS_URL): List<Teacher>
 
     @GET
-    suspend fun getAbsenceNotice(@Url url: String = SecretConstants.ABSENCE_URL, @Query("time") time: String): List<Absence>
+    suspend fun getAbsenceNotice(
+        @Url url: String = SecretConstants.ABSENCE_URL,
+        @Query("time") time: String = ""
+    ): List<Absence>
 
     @GET
     suspend fun getMakeUpClassNotice(
         @Url url: String = SecretConstants.MAKEUP_URL,
-        @Query("time") time: String
-    ): List<MakeUpClass>
+        @Query("time") time: String = ""
+    ): List<MakeupClass>
 }
 
 /**

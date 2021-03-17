@@ -14,7 +14,7 @@
 
         <variable
             name="clickListener"
-            type="dev.tsnanh.myvku.adapters.NewsClickListener" />
+            type="dev.tsnanh.myvku.views.news.adapter.NewsClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

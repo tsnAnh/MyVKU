@@ -140,9 +140,10 @@ data class Teacher(
 
 sealed class Notice
 
-//@Entity
+@Entity
 @Serializable
 data class Absence(
+    @PrimaryKey
     @SerialName("tenlop")
     val className: String,
     @SerialName("chucdanh")
@@ -155,9 +156,10 @@ data class Absence(
     val dateNotice: String
 ) : Notice()
 
-//@Entity
+@Entity
 @Serializable
-data class MakeUpClass(
+data class MakeupClass(
+    @PrimaryKey
     @SerialName("tenlop")
     val className: String,
     @SerialName("chucdanh")

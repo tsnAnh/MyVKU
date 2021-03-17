@@ -4,19 +4,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import dev.tsnanh.myvku.services.SchoolReminderService
 import timber.log.Timber
 
 class SchoolReminderReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val newIntent = Intent(context, SchoolReminderService::class.java).apply {
-            putExtra("email", intent.getStringExtra("email"))
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(newIntent)
+            context.startForegroundService(intent)
         } else {
-            context.startService(newIntent)
+            context.startService(intent)
         }
         Timber.i("Receiver called")
     }

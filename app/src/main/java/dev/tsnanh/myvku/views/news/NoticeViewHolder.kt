@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.tsnanh.myvku.R
 import dev.tsnanh.myvku.databinding.ItemNoticeBinding
 import dev.tsnanh.myvku.domain.entities.Absence
-import dev.tsnanh.myvku.domain.entities.MakeUpClass
+import dev.tsnanh.myvku.domain.entities.MakeupClass
 import dev.tsnanh.myvku.domain.entities.Notice
 
 class NoticeViewHolder private constructor(
@@ -36,7 +36,7 @@ class NoticeViewHolder private constructor(
                         "${notice.lastName} ${notice.firstName}"
                     )
                 }
-                is MakeUpClass -> {
+                is MakeupClass -> {
                     noticeType.text = root.context.getString(R.string.text_makeup_classes)
                     className.text = root.context.getString(
                         R.string.makeup_class_name,

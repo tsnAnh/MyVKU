@@ -7,9 +7,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
-            name="viewModel"
-            type="dev.tsnanh.myvku.views.timetable.TimetableViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -18,10 +15,17 @@
         android:transitionGroup="false">
 
 
+        <include
+            android:id="@+id/layoutNoItem"
+            layout="@layout/layout_no_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#FFFFFF"
             android:elevation="0dp"
             android:transitionGroup="false"
             app:elevation="0dp"
@@ -30,7 +34,6 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
                 android:transitionGroup="false"
                 app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:titleEnabled="false"
@@ -41,25 +44,9 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <com.google.android.material.appbar.MaterialToolbar
-                        android:id="@+id/toolbar"
+                    <dev.tsnanh.myvku.custom.VKUTopAppBar
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/actionBarSize"
-                        android:elevation="0dp"
-                        android:gravity="center"
-                        android:transitionGroup="false"
-                        app:buttonGravity="center_vertical"
-                        app:contentInsetStart="0dp">
-
-                        <ImageView
-                            android:id="@+id/imageView3"
-                            android:layout_width="200dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:padding="4dp"
-                            app:srcCompat="@drawable/vku_logo_official" />
-
-                    </com.google.android.material.appbar.MaterialToolbar>
+                        android:layout_height="wrap_content" />
 
                     <HorizontalScrollView
                         android:layout_width="match_parent"
@@ -111,27 +98,13 @@
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_subjects"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/list_subjects"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:listitem="@layout/item_subject" />
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+            android:scrollbars="vertical"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            tools:listitem="@layout/item_subject" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -140,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
-            app:layout_anchor="@id/nested_scroll_view"
+            app:layout_anchor="@id/list_subjects"
             app:layout_anchorGravity="center" />
 
         <Button
@@ -148,13 +121,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sign_in"
-            android:visibility="gone"
-            app:layout_anchor="@id/list_subjects"
-            app:layout_anchorGravity="center" />
-
-        <include
-            android:id="@+id/layout_no_item"
-            layout="@layout/layout_no_item"
             android:visibility="gone" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

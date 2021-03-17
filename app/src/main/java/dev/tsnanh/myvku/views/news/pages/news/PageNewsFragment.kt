@@ -25,8 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.myvku.R
-import dev.tsnanh.myvku.adapters.NewsAdapter
-import dev.tsnanh.myvku.adapters.NewsClickListener
+import dev.tsnanh.myvku.base.OnListStateChangeListener
 import dev.tsnanh.myvku.databinding.AttachmentDialogLayoutBinding
 import dev.tsnanh.myvku.databinding.FragmentPageNewsBinding
 import dev.tsnanh.myvku.databinding.LayoutDialogPreviewNewsBinding
@@ -39,6 +38,8 @@ import dev.tsnanh.myvku.utils.CustomTabHelper
 import dev.tsnanh.myvku.utils.showSnackbar
 import dev.tsnanh.myvku.utils.unescapeJava
 import dev.tsnanh.myvku.views.news.NewsFragmentDirections
+import dev.tsnanh.myvku.views.news.adapter.NewsAdapter
+import dev.tsnanh.myvku.views.news.adapter.NewsClickListener
 import dev.tsnanh.myvku.views.news.attachment.adapter.AttachmentAdapter
 import dev.tsnanh.myvku.views.news.attachment.adapter.AttachmentClickListener
 import dev.tsnanh.myvku.views.news.pages.BaseNewsPageFragment
@@ -49,7 +50,7 @@ import java.net.URLConnection
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PageNewsFragment : BaseNewsPageFragment() {
+class PageNewsFragment : BaseNewsPageFragment(), OnListStateChangeListener {
 
     companion object {
         fun newInstance() = PageNewsFragment()
@@ -108,12 +109,17 @@ class PageNewsFragment : BaseNewsPageFragment() {
                     ) ?: "",
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
+            executePendingBindings()
         }
-        with(dialog) {
-            setView(binding.root)
-            show()
-        }
-        this@PageNewsFragment.binding.list.layoutManager =
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(binding.root)
+            .setOnDismissListener {
+                this@PageNewsFragment.binding.listNews.layoutManager =
+                    LinearLayoutManager(requireContext())
+            }
+            .create()
+            .show()
+        this@PageNewsFragment.binding.listNews.layoutManager =
             object : LinearLayoutManager(requireContext()) {
                 override fun canScrollVertically(): Boolean {
                     return false
@@ -127,8 +133,6 @@ class PageNewsFragment : BaseNewsPageFragment() {
 
     @Inject
     lateinit var preferences: SharedPreferences
-
-    private val dialog by lazy { MaterialAlertDialogBuilder(requireContext()).create() }
 
     private val shareClickListener = { news: News ->
         val intent = Intent(Intent.ACTION_SEND).apply {
@@ -144,26 +148,11 @@ class PageNewsFragment : BaseNewsPageFragment() {
         )
     }
 
-    private val onReleaseListener = {
-        with(dialog) {
-            setView(null)
-            dismiss()
-        }
-        binding.list.layoutManager =
-            object : LinearLayoutManager(requireContext()) {
-                override fun canScrollVertically(): Boolean {
-                    return true
-                }
-            }
-        true
-    }
-
     override fun FragmentPageNewsBinding.initViews() {
         super.initViews()
 
         with(binding.layoutNoItem) {
             message.text = requireContext().getString(R.string.text_no_news_here)
-            image.setImageResource(R.drawable.ic_round_news_24)
         }
 
         adapterNews = NewsAdapter(
@@ -171,12 +160,15 @@ class PageNewsFragment : BaseNewsPageFragment() {
                 viewClickListener = ::launchNews,
                 shareClickListener = shareClickListener,
                 onPressListener = onPressListener,
-                onReleaseListener = onReleaseListener
-            )
+            ),
+            this@PageNewsFragment
         )
 
-        list.adapter = adapterNews
-
+        listNews.list.apply {
+            adapter = adapterNews
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+        }
     }
 
     override fun observeData() {
@@ -184,17 +176,22 @@ class PageNewsFragment : BaseNewsPageFragment() {
             viewModel.news
                 .collect { state ->
                     when (state) {
-                        is State.Loading -> binding.progressBar.isVisible = true
+                        is State.Loading -> {
+                            binding.layoutNoItem.root.isVisible = false
+                            binding.progressBar.isVisible = true
+                        }
                         is State.Error -> {
-                            if (state.data != null) {
-                                adapterNews.submitList(state.data)
+                            val list = state.data?.toMutableList()
+                            if (list != null) {
+                                adapterNews.submitList(list)
                             } else {
                                 println("Error: ${state.throwable?.localizedMessage}")
                             }
                         }
                         is State.Success -> {
-                            binding.progressBar.isVisible = false
-                            adapterNews.submitList(state.data)
+                            adapterNews.submitList(state.data?.toMutableList()) {
+                                binding.progressBar.isVisible = false
+                            }
                         }
                     }
                 }
@@ -315,5 +312,13 @@ class PageNewsFragment : BaseNewsPageFragment() {
                 showSnackbar(binding.root, getString(R.string.text_no_attachment))
             }
         }
+    }
+
+    override fun onListEmpty() {
+        binding.layoutNoItem.root.isVisible = true
+    }
+
+    override fun onListHasData() {
+        binding.layoutNoItem.root.isVisible = false
     }
 }

@@ -6,6 +6,8 @@ package dev.tsnanh.myvku.domain.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import dev.tsnanh.myvku.domain.entities.Absence
+import dev.tsnanh.myvku.domain.entities.MakeupClass
 import dev.tsnanh.myvku.domain.entities.News
 import dev.tsnanh.myvku.domain.entities.Subject
 import dev.tsnanh.myvku.domain.entities.SubjectNotification
@@ -19,6 +21,8 @@ import dev.tsnanh.myvku.domain.entities.SubjectNotification
         News::class,
         Subject::class,
         SubjectNotification::class,
+        Absence::class,
+        MakeupClass::class
     ],
     exportSchema = false,
     version = 1

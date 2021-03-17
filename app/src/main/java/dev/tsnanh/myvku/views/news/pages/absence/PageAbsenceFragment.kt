@@ -20,10 +20,9 @@ class PageAbsenceFragment : BaseNewsPageFragment() {
     private val viewModel: PageAbsenceViewModel by viewModels()
     private lateinit var adapterAbsence: AbsenceAdapter
 
-    private fun showLayout(messageString: String, drawable: Int) {
+    private fun showLayout(messageString: String) {
         with(binding.layoutNoItem) {
             message.text = messageString
-            image.setImageResource(drawable)
             root.isVisible = true
         }
     }
@@ -31,7 +30,7 @@ class PageAbsenceFragment : BaseNewsPageFragment() {
     override fun FragmentPageNewsBinding.initViews() {
         super.initViews()
         adapterAbsence = AbsenceAdapter().also {
-            list.adapter = it
+            listNews.list.adapter = it
         }
     }
 
@@ -53,7 +52,6 @@ class PageAbsenceFragment : BaseNewsPageFragment() {
                         } else {
                             showLayout(
                                 requireContext().getString(R.string.text_no_absences_here),
-                                R.drawable.empty
                             )
                         }
                     }

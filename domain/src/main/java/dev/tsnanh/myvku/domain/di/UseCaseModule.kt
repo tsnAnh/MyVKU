@@ -4,16 +4,18 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.tsnanh.myvku.domain.usecases.RetrieveAbsencesUseCase
+import dev.tsnanh.myvku.domain.usecases.RetrieveAbsencesUseCaseImpl
+import dev.tsnanh.myvku.domain.usecases.RetrieveMakeupClassesUseCase
+import dev.tsnanh.myvku.domain.usecases.RetrieveMakeupClassesUseCaseImpl
 import dev.tsnanh.myvku.domain.usecases.RetrieveNewsUseCase
 import dev.tsnanh.myvku.domain.usecases.RetrieveNewsUseCaseImpl
-import dev.tsnanh.myvku.domain.usecases.RetrieveNoticeUseCase
-import dev.tsnanh.myvku.domain.usecases.RetrieveNoticeUseCaseImpl
 import dev.tsnanh.myvku.domain.usecases.RetrieveNotificationsUseCase
 import dev.tsnanh.myvku.domain.usecases.RetrieveNotificationsUseCaseImpl
 import dev.tsnanh.myvku.domain.usecases.RetrieveTeachersUseCase
 import dev.tsnanh.myvku.domain.usecases.RetrieveTeachersUseCaseImpl
-import dev.tsnanh.myvku.domain.usecases.RetrieveUserTimetableUseCase
-import dev.tsnanh.myvku.domain.usecases.RetrieveUserTimetableUseCaseImpl
+import dev.tsnanh.myvku.domain.usecases.RetrieveTimetableUseCase
+import dev.tsnanh.myvku.domain.usecases.RetrieveTimetableUseCaseImpl
 import javax.inject.Singleton
 
 @Module
@@ -25,10 +27,6 @@ abstract class UseCaseModule {
 
     @Binds
     @Singleton
-    abstract fun bindRetrieveNoticeUseCase(retrieveNoticeUseCaseImpl: RetrieveNoticeUseCaseImpl): RetrieveNoticeUseCase
-
-    @Binds
-    @Singleton
     abstract fun bindRetrieveNotificationUseCase(retrieveNotificationsUseCaseImpl: RetrieveNotificationsUseCaseImpl): RetrieveNotificationsUseCase
 
     @Binds
@@ -37,6 +35,12 @@ abstract class UseCaseModule {
 
     @Binds
     @Singleton
-    abstract fun bindRetrieveUserTimetableUseCase(retrieveUserTimetableUseCaseImpl: RetrieveUserTimetableUseCaseImpl): RetrieveUserTimetableUseCase
+    abstract fun bindRetrieveUserTimetableUseCase(retrieveUserTimetableUseCaseImpl: RetrieveTimetableUseCaseImpl): RetrieveTimetableUseCase
 
+    @Binds
+    @Singleton
+    abstract fun bindRetrieveAbsencesUseCase(retrieveAbsenceUseCaseImpl: RetrieveAbsencesUseCaseImpl): RetrieveAbsencesUseCase
+
+    @Binds
+    abstract fun bindRetrieveMakeupClassesUseCase(retrieveMakeupClassesUseCaseImpl: RetrieveMakeupClassesUseCaseImpl): RetrieveMakeupClassesUseCase
 }

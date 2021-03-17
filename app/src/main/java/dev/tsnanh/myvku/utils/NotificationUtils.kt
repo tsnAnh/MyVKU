@@ -15,11 +15,13 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
 import dev.tsnanh.myvku.R
+import dev.tsnanh.myvku.domain.entities.News
 import dev.tsnanh.myvku.domain.entities.NotificationTitle.MESSAGE_LIKE
 import dev.tsnanh.myvku.domain.entities.NotificationTitle.MESSAGE_TO_ALL_SUBSCRIBERS
 import dev.tsnanh.myvku.domain.entities.NotificationTitle.MESSAGE_TO_OWNER
 import dev.tsnanh.myvku.domain.entities.NotificationTitle.MESSAGE_TO_OWNER_CUSTOM
 import dev.tsnanh.myvku.domain.entities.NotificationTitle.MESSAGE_TO_QUOTED_USER
+import dev.tsnanh.myvku.services.NEWS_NOTIFY_CHANNEL_ID
 import dev.tsnanh.myvku.views.main.MainActivity
 
 /**
@@ -107,4 +109,23 @@ fun NotificationManager.sendCloudMessageNotification(
     }
 
     notify(2, builder.build())
+}
+
+fun NotificationManager.sendLatestNewsNotification(context: Context, latestNews: List<News>) {
+    latestNews.forEachIndexed { index, news ->
+        val builder = NotificationCompat.Builder(
+            context,
+            context.getString(R.string.school_reminder_channel_id)
+        ).apply {
+            priority = NotificationManagerCompat.IMPORTANCE_DEFAULT
+            setContentTitle(news.title)
+            setSmallIcon(R.mipmap.ic_launcher)
+            setContentText(news.content)
+            setAutoCancel(true)
+            setStyle(NotificationCompat.BigTextStyle().bigText(news.content))
+            setAutoCancel(true)
+            setGroup(NEWS_NOTIFY_CHANNEL_ID)
+        }
+        notify(index, builder.build())
+    }
 }

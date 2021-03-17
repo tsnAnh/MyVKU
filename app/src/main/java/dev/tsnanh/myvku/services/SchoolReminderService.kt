@@ -5,7 +5,6 @@ import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -13,6 +12,8 @@ import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tsnanh.myvku.R
@@ -30,27 +31,27 @@ import dev.tsnanh.myvku.utils.dayOfWeekFilter
 import dev.tsnanh.myvku.utils.getExactHourStringFromLesson
 import dev.tsnanh.myvku.utils.sendSchoolReminderNotification
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Calendar
 import kotlin.random.Random
 
-private const val MORNING_GROUP = "dev.tsnanh.myvku.schoolReminder.morning"
-private const val AFTERNOON_GROUP = "dev.tsnanh.myvku.schoolReminder.afternoon"
-private const val EVENING_GROUP = "dev.tsnanh.myvku.schoolReminder.evening"
-private const val NIGHT_GROUP = "dev.tsnanh.myvku.schoolReminder.night"
-private const val DAY_OFF_GROUP = "dev.tsnanh.myvku.schoolReminder.dayOff"
-private const val ERROR_GROUP = "dev.tsnanh.myvku.schoolReminder.error"
+private const val MORNING_GROUP = "dev.tsnanh.myvku.schoolreminder.MORNING"
+private const val AFTERNOON_GROUP = "dev.tsnanh.myvku.schoolreminder.AFTERNOON"
+private const val EVENING_GROUP = "dev.tsnanh.myvku.schoolreminder.EVENING"
+private const val NIGHT_GROUP = "dev.tsnanh.myvku.schoolreminder.NIGHT"
+private const val DAY_OFF_GROUP = "dev.tsnanh.myvku.schoolreminder.DAY_OFF"
+private const val ERROR_GROUP = "dev.tsnanh.myvku.schoolreminder.ERROR"
 
 @AndroidEntryPoint
-class SchoolReminderService : Service() {
+class SchoolReminderService : LifecycleService() {
     private val notificationManager by lazy {
         getSystemService<NotificationManager>()
     }
 
     override fun onBind(intent: Intent): IBinder? {
+        super.onBind(intent)
         return null
     }
 
@@ -75,7 +76,7 @@ class SchoolReminderService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        GlobalScope.launch {
+        lifecycleScope.launch {
             try {
                 val context = this@SchoolReminderService
                 val email = withContext(Dispatchers.IO) { intent?.getStringExtra("email") }

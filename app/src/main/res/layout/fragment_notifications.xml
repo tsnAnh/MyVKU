@@ -16,46 +16,9 @@
         android:transitionGroup="false"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar_layout"
+        <dev.tsnanh.myvku.custom.VKUTopAppBar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/background"
-            android:elevation="0dp"
-            android:transitionGroup="false"
-            app:elevation="0dp"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
-            app:layout_scrollFlags="scroll|enterAlways">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/actionBarSize"
-                android:elevation="0dp"
-                android:gravity="center"
-                android:transitionGroup="false"
-                app:buttonGravity="center_vertical"
-                app:contentInsetStart="0dp"
-                app:navigationIcon="@drawable/ic_baseline_sort_24">
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="4dp"
-                    app:srcCompat="@drawable/vku_logo_official" />
-
-                <ImageView
-                    android:id="@+id/avatar"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="end"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
-            </com.google.android.material.appbar.MaterialToolbar>
-        </com.google.android.material.appbar.AppBarLayout>
+            android:layout_height="wrap_content" />
 
         <ProgressBar
             android:id="@+id/progressBar"

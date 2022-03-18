@@ -71,7 +71,7 @@ dependencies {
     coreLibraryDesugaring(Libraries.desugarJDKLibs)
 
     implementation("androidx.gridlayout:gridlayout:1.0.0")
-    ktlint("com.pinterest:ktlint:0.42.1")
+    ktlint("com.pinterest:ktlint:0.45.0")
     implementation(Libraries.kotlinStdLib)
     implementation(Libraries.appcompat)
     implementation(Libraries.coreKtx)

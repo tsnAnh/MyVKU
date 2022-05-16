@@ -56,7 +56,7 @@ dependencies {
     testImplementation(Libraries.testRoom)
 
     implementation(Libraries.timber)
-    implementation("org.jsoup:jsoup:1.13.1")
+    implementation("org.jsoup:jsoup:1.15.1")
 
     implementation(Libraries.hiltDagger)
     kapt(Libraries.hiltDaggerCompilerKapt)

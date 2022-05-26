@@ -20,7 +20,7 @@ buildscript {
         classpath(BuildPlugins.navigationSafeArgsPlugin)
         classpath(BuildPlugins.googleServicesPlugin)
         classpath(BuildPlugins.ktlintPlugin)
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.7.1")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.0")
         classpath(BuildPlugins.daggerHiltPlugin)
     }
 }
